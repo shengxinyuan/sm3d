@@ -31,6 +31,11 @@ const routes = [
     component: () => import('../views/bag.vue')
   },
   {
+    path: '/3ddd',
+    name: '3ddd',
+    component: () => import('../views/3ddd.vue')
+  },
+  {
     path: '*',
     name: '404',
     component: Home
