@@ -51,7 +51,7 @@
               </van-col>
             </van-row>
           </van-tab>
-          <van-tab title="对戒方案">
+          <van-tab title="对戒方案" v-if="false">
             <van-row v-if="isEmpty">
               <van-col span="24" class="bag-empty__height"></van-col>
               <van-col span="24" class="bag-empty__img">
@@ -91,8 +91,8 @@
         <van-row>分享</van-row>
       </van-col>
       <van-col class="bag-btns__btn bag-btns__share">
-        <van-row><van-icon name="share-o" color="rgb(193, 177, 138)" size="25"/></van-row>
-        <van-row>分享</van-row>
+        <van-row><van-icon name="edit" color="rgb(193, 177, 138)" size="25"/></van-row>
+        <van-row>修改</van-row>
       </van-col>
     </van-row>
     <van-row>
@@ -320,6 +320,8 @@ export default {
     background-color: #48484f;
     display: flex;
     align-items: center;
+    padding-left: 32px;
+    justify-content: space-between;
     .bag-btns__delete {
       margin-left: 16px;
     }

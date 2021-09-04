@@ -5,14 +5,114 @@
     </div>
     <p class="ddd-tip">3D定制效果仅供参考，商品以实物为准</p>
     <div class="ddd-name">
-      <p class="ddd-name__text">{{name}}</p>
-      <van-icon name="edit" class="ddd-name__edit" onclick="console.log(1)" size="15px"/>
+      <van-field v-model="name" label="设计名称：" placeholder="" clearable clear-trigger="always">
+      </van-field>
     </div>
     <div class="ddd-tab">
       <van-tabs v-model="active" class="ddd-tabs">
         <van-tab title="款式参数">
+          <div class="ddd-ks">
+            <div class="ddd-cell ddd-cell__picker">
+              <span class="ddd-cell__label">手寸</span>
+              <div is-link class="ddd-cell__value">
+                <span @click="showScPopup">{{ksInfo.sc.value}}</span>
+                <van-popup v-model="showSc" position="bottom">
+                  <van-picker
+                    title="标题"
+                    default-index=5
+                    show-toolbar
+                    :columns="columns"
+                    @confirm="onConfirm"
+                    @cancel="onCancel"
+                  />
+                </van-popup>
+              </div>
+              <van-icon name="question-o" size="24px" class="ddd-cell__picker-icon" @click="showHelpPopup"/>
+              <van-popup v-model="showHelp" closeable>
+                <div class="ddd-help">
+                  <p>如何测量正确的手寸？</p>
+                  <van-swipe class="my-swipe">
+                    <van-swipe-item>
+                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size1.png" width="315px" height="220px"/>
+                    </van-swipe-item>
+                    <van-swipe-item>
+                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size2.png" width="315px" height="220px"/>
+                    </van-swipe-item>
+                    <van-swipe-item>
+                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size3.png" width="315px" height="220px"/>
+                    </van-swipe-item>
+                    <van-swipe-item>
+                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size4.png" width="315px" height="220px"/>
+                    </van-swipe-item>
+                  </van-swipe>
+                </div>
+              </van-popup>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">款式</span>
+              <span class="ddd-cell__value">{{ksInfo.ks}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">材质</span>
+              <span class="ddd-cell__value">{{ksInfo.cz}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">工艺</span>
+              <span class="ddd-cell__value">{{ksInfo.gy}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">戒臂</span>
+              <span class="ddd-cell__value">{{ksInfo.jb}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">花头</span>
+              <span class="ddd-cell__value">{{ksInfo.ht}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">辅石</span>
+              <span class="ddd-cell__value">{{ksInfo.fs}}</span>
+            </div>
+          </div>
         </van-tab>
         <van-tab title="钻石参数">
+          <div class="ddd-ks">
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">证书</span>
+              <span class="ddd-cell__value">{{zsInfo.zs}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">钻重</span>
+              <span class="ddd-cell__value">{{zsInfo.zz}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">形状</span>
+              <span class="ddd-cell__value">{{zsInfo.xz}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">颜色</span>
+              <span class="ddd-cell__value">{{zsInfo.ys}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">净度</span>
+              <span class="ddd-cell__value">{{zsInfo.jd}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">荧光</span>
+              <span class="ddd-cell__value">{{zsInfo.yg}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">抛光</span>
+              <span class="ddd-cell__value">{{zsInfo.pg}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">切工</span>
+              <span class="ddd-cell__value">{{zsInfo.qg}}</span>
+            </div>
+            <div class="ddd-cell">
+              <span class="ddd-cell__label">对称</span>
+              <span class="ddd-cell__value">{{zsInfo.dc}}</span>
+            </div>
+          </div>
         </van-tab>
       </van-tabs>
     </div>
@@ -21,8 +121,13 @@
 
 <script>
 import Vue from 'vue'
-import { Tab, Tabs, Icon } from 'vant'
+import { Tab, Tabs, Icon, Field, Popup, Picker, Swipe, SwipeItem } from 'vant'
 
+Vue.use(Swipe)
+Vue.use(SwipeItem)
+Vue.use(Popup)
+Vue.use(Picker)
+Vue.use(Field)
 Vue.use(Icon)
 Vue.use(Tab)
 Vue.use(Tabs)
@@ -31,7 +136,73 @@ export default {
   data () {
     return {
       active: 2,
-      name: '我的设计-09012209'
+      name: '我的设计-09012209',
+      columns: [
+        // '5 43.6mm',
+        // '6 44.6mm',
+        // '7 45.8mm',
+        '8 46.7mm',
+        '9 47.7mm',
+        '10 49.0mm',
+        '11 50.2mm',
+        '12 51.2mm',
+        '13 52.4mm',
+        '14 53.4mm',
+        '15 54.4mm',
+        '16 55.6mm',
+        '17 56.8mm',
+        '18 58.1mm',
+        '19 59.0mm'
+        // '20 60.0mm',
+        // '21 61.2mm',
+        // '22 62.2mm',
+        // '24 63.4mm',
+        // '25 65.6mm',
+        // '26 66.6mm',
+        // '27 67.8mm',
+        // '28 69.0mm'
+      ],
+      ksInfo: {
+        sc: {
+          value: '12 51.2mm',
+          index: '12'
+        },
+        ks: '圆款钻石定制',
+        cz: '18K白',
+        gy: '抛光',
+        jb: 'BH116',
+        ht: 'AH007',
+        fs: '天然钻石(白)'
+      },
+      zsInfo: {
+        zs: 'GIA 232813821738',
+        zz: '0.30ct',
+        xz: '圆形',
+        ys: 'K',
+        jd: 'SI2',
+        yg: '无',
+        pg: 'EX',
+        qg: 'VG',
+        dc: 'EX'
+      },
+      showSc: false,
+      showHelp: false
+    }
+  },
+  methods: {
+    showScPopup () {
+      this.showSc = true
+    },
+    showHelpPopup () {
+      this.showHelp = true
+    },
+    onConfirm (value, index) {
+      this.ksInfo.sc.value = value
+      this.ksInfo.sc.index = index
+      this.showSc = false
+    },
+    onCancel () {
+      this.showSc = false
     }
   }
 }
@@ -41,6 +212,7 @@ export default {
 .ddd {
   width: 100vw;
   height: 100vh;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   background: #fff;
@@ -63,6 +235,21 @@ export default {
     padding: 12px 16px 12px 32px;
     color: #fff;
     background: rgb(72, 72, 79);
+    .van-cell.van-field {
+      background-color: #3c3c44;
+      height: 25px;
+      padding: 0;
+      color: #fff;
+      .van-cell__title {
+        width: auto;
+        padding-right: 6px;
+        background: rgb(72, 72, 79);
+        color: #fff;
+      }
+      .van-field__control {
+        color: #fff;
+      }
+    }
   }
   .ddd-name__edit {
     margin-left: 8px;
@@ -90,6 +277,65 @@ export default {
       background-color: rgb(193, 177, 138);
       width: 10px;
       height: 2px;
+    }
+  }
+  .ddd-ks {
+    background: rgb(72, 72, 79);
+    margin: 16px;
+    border-radius: 10px;
+    color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    .ddd-cell {
+      height: 42px;
+      display: flex;
+      padding: 8px;
+      align-items: center;
+      .ddd-cell__label {
+        padding-left: 30px;
+        padding-right: 80px;
+      }
+      .ddd-cell__value {
+        width: 140px;
+        color: rgb(193, 177, 138);
+        text-align: right;
+      }
+    }
+    .ddd-cell__picker {
+      height: 60px;
+      .ddd-cell__value {
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 26px;
+        text-align: right;
+        width: 120px;
+        margin-left: 20px;
+        background-color: rgb(84, 84, 91);
+        border-radius: 20px;
+      }
+      .ddd-cell__picker-icon {
+        color: rgb(193, 177, 138);
+        margin-left: 4px;
+      }
+    }
+    .ddd-help {
+      color: #000;
+      padding: 16px 0;
+      font-weight: 700;
+      .my-swipe {
+        margin: 32px 0;
+        width: 315px;
+        height: 220px;
+        .van-swipe__indicators {
+          position: absolute;
+          top: 180px;
+          .van-swipe__indicator {
+            background-color: #333;
+          }
+        }
+      }
     }
   }
 }
