@@ -1,14 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import DebugList from '../views/DebugList.vue'
+import DiamondsList from '../views/DiamondsList.vue'
 
 Vue.use(VueRouter)
 
-const routes = [
+export const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'DebugList',
+    component: DebugList
   },
   {
     path: '/home',
@@ -34,6 +36,11 @@ const routes = [
     path: '/3ddd',
     name: '3ddd',
     component: () => import('../views/3ddd.vue')
+  },
+  {
+    path: '/diamondsList',
+    name: 'diamondsList',
+    component: DiamondsList
   },
   {
     path: '*',

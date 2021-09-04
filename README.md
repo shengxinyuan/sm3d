@@ -22,7 +22,3 @@
 
 - node版本
 - 安装注意事项
-
-## 更新包
-- tnpm update --by=yarn
-
