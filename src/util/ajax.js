@@ -1,12 +1,15 @@
 import axios from 'axios'
 import { stringify } from 'qs'
 
+const env = 'development'
+
 const config = {
   // 环境变量
   env: {
     development: {
       cdn: './',
-      apiBaseUrl: 'http://localhost:8080'
+      apiBaseUrl: 'http://jcd.bavlo.com/manage'
+      // apiBaseUrl: 'http://localhost:8080'
     },
     release: {
       cdn: './',
@@ -16,10 +19,12 @@ const config = {
 }
 
 const getRequest = method => {
-  return (baseURL, url, data, options = {}) => {
-    const base = config.env.development
+  return ({ baseUrl = config.env[env].apiBaseUrl, url, data, options = {} }) => {
+    // eslint-disable-next-line no-debugger
+    debugger
+    console.log(url)
     return axios({
-      baseURL: baseURL || base.apiBaseUrl, // 请求域名地址
+      baseUrl: baseUrl, // 请求域名地址
       method,
       url,
       ...(method === 'POST'
@@ -38,6 +43,7 @@ const getRequest = method => {
       withCredentials: true
     })
       .then(res => {
+        console.log(res)
         if (typeof res.data !== 'object') {
           return Promise.reject(res)
         }

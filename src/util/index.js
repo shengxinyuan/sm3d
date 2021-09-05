@@ -8,3 +8,43 @@ export function cc (s) {
   s = s.replace(/,(\d\d)$/, '.$1')
   return '￥' + s.replace(/^\./, '0.')
 }
+
+const loeded = {}
+
+export function cssLoader (url) {
+  const status = loeded[url] || false
+  if (status) {
+    return Promise.resolve()
+  }
+  const style = document.createElement('link')
+  style.rel = 'stylesheet'
+  style.href = url
+  document.head.appendChild(style)
+  return new Promise((resolve) => {
+    style.addEventListener(
+      'load',
+      () => {
+        loeded[url] = true
+        resolve()
+      }
+    )
+  })
+}
+
+export function jsLoader (url) {
+  const status = loeded[url] || false
+  if (status) {
+    return Promise.resolve()
+  }
+  const script = document.createElement('script')
+  script.src = url
+  document.body.appendChild(script)
+  return new Promise((resolve) => {
+    script.addEventListener(
+      'load',
+      () => {
+        loeded[url] = true
+        resolve()
+      })
+  })
+}

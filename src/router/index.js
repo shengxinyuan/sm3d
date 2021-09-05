@@ -28,14 +28,9 @@ export const routes = [
     component: () => import('../views/MyDesign.vue')
   },
   {
-    path: '/bag',
-    name: 'bag',
-    component: () => import('../views/bag.vue')
-  },
-  {
-    path: '/3ddd',
-    name: '3ddd',
-    component: () => import('../views/3ddd.vue')
+    path: '/order',
+    name: 'Order',
+    component: () => import('../views/Order.vue')
   },
   {
     path: '/diamondsList',

@@ -1,10 +1,5 @@
 <template>
   <div class="home">
-    <div style="background:pink;">
-      <router-link to="/design"><button onclick="">设计</button></router-link>
-      <router-link to="/bag"><button onclick="">我的设计</button></router-link>
-      <router-link to="/3ddd"><button onclick="">3D订单</button></router-link>
-    </div>
     <router-link to="/design">
       <div class="home-banner"></div>
     </router-link>

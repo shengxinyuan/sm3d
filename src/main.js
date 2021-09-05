@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import 'vant/lib/index.css';
+import 'vant/lib/index.css'
 import { Tab, Tabs, Toast, NavBar, Col, Row, Button, Swipe, SwipeItem, Tabbar, TabbarItem, Icon, Divider } from 'vant'
 
 Vue.use(Divider)
@@ -17,6 +17,7 @@ Vue.use(NavBar)
 Vue.use(Tab)
 Vue.use(Tabs)
 Vue.use(Icon)
+Vue.use(Toast)
 
 Vue.config.productionTip = false
 
