@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import DebugList from '../views/DebugList.vue'
-import DiamondsList from '../views/DiamondsList.vue'
+import DiamondsList from '../views/DiamondsList/index.vue'
 
 Vue.use(VueRouter)
 
