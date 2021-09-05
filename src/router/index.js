@@ -33,11 +33,6 @@ export const routes = [
     component: () => import('../views/Order.vue')
   },
   {
-    path: '/test3D',
-    name: 'test3D',
-    component: () => import('../views/Test3D.vue')
-  },
-  {
     path: '/diamondsList',
     name: 'diamondsList',
     component: DiamondsList

@@ -5,7 +5,7 @@
       <div></div>
     </div>
     <div class="row nr">
-        <div class="col-7" align="center">
+        <div class="col-12" align="center">
             <div class="show">
                 <div id="web3d"></div>
                 <img class="touch-tip" src="../assets/touch-tip.gif">
@@ -46,23 +46,15 @@
             </div>
             <div class="normals"></div>
         </div>
-        <div class="col-5"><div id="bottom"></div></div>
+        <!-- <div class="col-5"><div id="bottom"></div></div> -->
     </div>
-    <div class="footer"></div>
+    <!-- <div class="footer"></div> -->
   </div>
 </template>
 
 <script>
-import { jsLoader, cssLoader } from '../util'
-
-import Vue from 'vue'
 import { Toast } from 'vant'
-
-// import '../core/js/three-gem.js'
-// import '../core/js/Web3D.js'
-// import '../core/js/three.min.js'
-
-Vue.use(Toast)
+import mock from '../mock/design'
 
 export default {
   name: 'Design',
@@ -71,8 +63,8 @@ export default {
     return {
       uInfo: 20230,
       baseUrl: '',
-      uNo: this.getQueryVariable('desNo'),
-      desNo: this.getQueryVariable('desNo'),
+      uNo: this.getQueryVariable('desNo') || 20230,
+      desNo: this.getQueryVariable('desNo') || 20230,
       apiUrl: 'https://jcd.bavlo.com/manage/',
       resourceDomainName: 'https://design.bavlo.com/',
       normalMapUrl: 'https://design.bavlo.com/NormalFiles/',
@@ -105,35 +97,27 @@ export default {
       orderDetailGems: null
     }
   },
-  async mounted  () {
-    await jsLoader('https://jcd.bavlo.com/WebJewelry/bootstrap/js/jquery-3.4.1.min.js')
-    Promise.all([
-      cssLoader('https://jcd.bavlo.com/WebJewelry/bootstrap/css/bootstrap.css'),
-      jsLoader('https://jcd.bavlo.com/WebJewelry/bootstrap/js/bootstrap.js'),
-      jsLoader('https://jcd.bavlo.com/WebJewelry/bootstrap/js/hammer.min.js'),
-      jsLoader('https://jcd.bavlo.com/WebJewelry/bootstrap/js/crypto-js.js'),
-      jsLoader('https://jcd.bavlo.com/WebJewelry/core/js/three.min.js')
-    ]).then(() => {
-      Promise.all([
-        jsLoader('https://jcd.bavlo.com/WebJewelry/core/js/three-gem.js'),
-        import('../core/js/Web3D.js')
-      ]).then(async () => {
-        await this.loadUserInfo(this.uInfo)
+  mounted  () {
+    this.$toast('mounted')
+    try {
+      const a = async () => {
+        await this.loadUserInfo(this.uNo)
         document.getElementsByTagName('title')[0].innerText = this.userInfo.name
-        // window.$('.top div:eq(0) text:eq(0)').html(this.userInfo.name)
-        // window.$('.top div:eq(1)').html(this.userInfo.brand.xcxIndexTitle)
-        // window.$('.footer').html(userInfo.name+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电话&nbsp;：'+userInfo.contactPhone)
+        window.$('.top div:eq(0) text:eq(0)').html(this.userInfo.name)
+        window.$('.top div:eq(1)').html(this.userInfo.brand.xcxIndexTitle)// +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系人&nbsp;：'+userInfo.realName
+        window.$('.footer').html(this.userInfo.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电话&nbsp;：' + this.userInfo.contactPhone)
 
-        // web3D第一步：初始化3D场景
-        this.my3d = window.Bavlo.initWeb3D(this.baseUrl, 'web3d', false, this.resourceDomainName, true)
+        // 初始化
+        // 加载3D第一步：初始化3D场景
+        this.my3d = window.Bavlo.initWeb3D(this.baseUrl, 'web3d', false, this.resourceDomainName, false)
         // 加载3D第二步：定义3D窗口尺寸
         this.my3d.onWindowResize(2)
         // 加载3D第三步：初始化web材质
-        await this.loadMetalWeb(this.uInfo)
-        await this.loadMetalWeb(this.uNo)
-        await this.loadGemWeb(this.uInfo)
-        await this.loadGemWeb(this.uNo)
-        await this.my3d.initUserMatInfo(this.metalWebDefault, this.metalWeb, this.gemWebDefault, this.gemWeb)
+        await this.loadMetalWeb(0)
+        // await this.loadMetalWeb(this.uNo)
+        await this.loadGemWeb(0)
+        // await this.loadGemWeb(this.uNo)
+        this.my3d.initUserMatInfo(this.metalWebDefault, this.metalWeb, this.gemWebDefault, this.gemWeb)
         // 记载3D第四步：设置3D场景背景色
         if (this.userInfo.webBackgroundColor) {
           this.my3d.changeBackground(this.userInfo.webBackgroundColor)
@@ -144,16 +128,17 @@ export default {
         const parts = []
         this.designInfo.parts.filter((item) => {
           parts.push.apply(parts, item)
-          partIds += item[0].id + ','
+          partIds += item.id + ','
+          // partIds += item[0].id + ','
         })
         partIds = partIds.substring(0, partIds.length - 1)
-        await this.my3d.loadVarDesign(this.designInfo, this.designInfo.mainParts[0].id, partIds)
+        this.my3d.loadVarDesign(this.designInfo, this.designInfo.mainParts[0].id, partIds)
 
         // 处理配件按类型分组
-        const map = {}
-        const dest = []
-        for (let i = 0; i < parts.length; i++) {
-          const ai = parts[i]
+        var map = {}
+        var dest = []
+        for (var i = 0; i < parts.length; i++) {
+          var ai = parts[i]
           if (!map[ai.partType.id]) {
             dest.push({
               id: ai.partType.id,
@@ -162,8 +147,8 @@ export default {
             })
             map[ai.partType.id] = ai
           } else {
-            for (let j = 0; j < dest.length; j++) {
-              const dj = dest[j]
+            for (var j = 0; j < dest.length; j++) {
+              var dj = dest[j]
               if (dj.id === ai.partType.id) {
                 dj.data.push(ai)
                 break
@@ -224,44 +209,215 @@ export default {
         '    <div>\n' +
         '        <div class="row">' + name + '</div>\n' + phone + wx + lxr +
         '    </div>'
-        document.getElementById('bottom').innerHTML = infoHtml
+
+        window.$('#bottom').html(infoHtml)
         if (this.designInfo.parts) {
           const gemWeight = this.designInfo.parts[0].gemWeight
           if (gemWeight) {
-            document.getElementsByClassName('layInfo').innerHTML = '<div class="row mgw">主石重量：' + gemWeight + 'ct </div>\n'
+            window.$('.layInfo').html('<div class="row mgw">主石重量：' + gemWeight + 'ct </div>\n')
           } else {
-            document.getElementsByClassName('mgw').remove(1)
+            window.$('.mgw').remove()
           }
         }
-        // window.$('.copy-btn').click( () {
+
+        // window.$('.copy-btn').click(function () {
         //   var e = document.getElementById('wxNo')
         //   e.select() // 选择对象
         //   document.execCommand('Copy') // 执行浏览器复制命令
         //   window.$('.copy-btn').html('已复制')
-        //   setTimeout("window.$('.copy-btn').html('复制');", 1200)
+        //   setTimeout("$('.copy-btn').html('复制');", 1200)
         // })
-        // window.$('.shoppingBtns button:eq(0)').click( () {
-        //   checkIsOnCart()
-        // })
-        // window.$('.shoppingBtns button:eq(1)').click( () {
-        //   addOrder()
-        // })
-        // window.$('.shoppingBtns img').click( () {
-        //   window.open('shoppingCart_pc.html?v=' + usNo, '_blank')
-        // })
+        window.$('.shoppingBtns button:eq(0)').click(() => {
+          this.checkIsOnCart()
+        })
+        window.$('.shoppingBtns button:eq(1)').click(() => {
+          this.addOrder()
+        })
+        window.$('.shoppingBtns img').click(() => {
+          window.open('shoppingCart_pc.html?v=' + this.usNo, '_blank')
+        })
 
-        // // 当前零件ID
-        // nowPartId = designInfo.mainParts[0].id
-        // setTimeout(loadNormalUI(), 500)
-        // loadLjs(2)
+        // 当前零件ID
+        this.nowPartId = this.designInfo.mainParts[0].id
+        setTimeout(this.loadNormalUI(), 500)
+        this.loadLjs(2)
 
-        // ot = window.$('.ljs').offset().top
-        // wh = window.$(window).height()
-        window.onresize = () => {
-          this.my3d.onWindowResize(2)
-        }
-      })
-    })
+        this.ot = window.$('.ljs').offset().top
+        this.wh = window.$(window).height()
+        // 操作提示展示
+        window.$('.topBtn img:eq(0)').click(function () {
+          window.$('.helpDetail').show()
+        })
+        // 关闭操作提示
+        window.$('.helpDetail div:last').click(function () {
+          window.$('.helpDetail').hide()
+        })
+
+        // 款式复位
+        window.$('.topBtn img:eq(2)').click(() => {
+          this.my3d.postureReset()
+        })
+        // 款式自转设置
+        let rotate = true
+        window.$('.topBtn img:eq(3)').click(() => {
+          rotate = !rotate
+          this.my3d.setRotationState(rotate)
+          if (rotate) {
+            window.$('.topBtn img:eq(3)').attr('src', 'img/stop.png')
+          } else {
+            window.$('.topBtn img:eq(3)').attr('src', 'img/play.png')
+          }
+        })
+        // 跳转首页
+        window.$('.topBtn img:eq(4)').click(() => {
+          /* let hcid = localStorage.getItem('userInfo');
+    if(hcid){
+        window.close();
+    }else { */
+          window.location.href = 'index_pc.html?l=1&v=' + this.usNo
+          // }
+        })
+
+        // 加载主体UI
+        window.$('.btns div:eq(0)').click(() => {
+          this.loadLjs(2)
+          window.$('.layers').hide()
+          window.$('.czs').hide()
+          window.$('.ky').hide()
+          window.$('.partTypes').hide()
+          window.$('.ljs').show()
+        })
+        // 加载主体配件UI
+        window.$('.btns div:eq(1)').click(() => {
+          this.loadLjs(1)
+          window.$('.layers').hide()
+          window.$('.czs').hide()
+          window.$('.ky').hide()
+          window.$('.partTypes').show()
+          window.$('.ljs').show()
+        })
+        // 加载图层信息和材质信息
+        window.$('.btns div:eq(2)').click(() => {
+          this.loadDiy()
+          this.loadCzs(this.designInfo.layers[0].id)
+          window.$('.cts').hide()
+          window.$('.ljs').hide()
+          window.$('.ky').hide()
+          window.$('.partTypes').hide()
+          window.$('.layers').show()
+          window.$('.czs').show()
+        })
+        // 刻字
+        window.$('.btns div:eq(3)').click(() => {
+          const state = this.my3d.getTryOnState()
+          if (state === 0) {
+            window.$('.cts').hide()
+            window.$('.ljs').hide()
+            window.$('.layers').hide()
+            window.$('.czs').hide()
+            window.$('.partTypes').hide()
+            window.$('.ky').show()
+          }
+        })
+        window.$('.ky input').bind('keyup', function (event) {
+          if (event.keyCode === '13') {
+            // 回车执行查询
+            window.$('.ky button').click()
+          }
+        })
+        window.$('.ky button').click(() => {
+          const kyText = window.$('.ky input').val()
+          if (kyText.length <= 16) {
+            this.my3d.printUserTextOfLayer(this.nowLayer.id, kyText)
+            rotate = false
+            this.my3d.setRotationState(rotate)
+            window.$('.topBtn img:eq(3)').attr('src', 'img/play.png')
+          } else {
+            alert('刻字内容不可超过16个字符！')
+          }
+        })
+        // 图片试戴
+        window.$('.btns div:eq(4)').click(() => {
+          if (this.webModelPics) {} else {
+            this.loadModelPicList()
+          }
+          const state = this.my3d.getTryOnState()
+          if (state === 0) {
+            const dheight = window.$('.show').height()
+            window.$('.show').css('width', (dheight / 4 * 3) + 'px')
+            this.my3d.onWindowResize(6)
+            window.$('.tbbts').css('width', (dheight * 0.7) + 'px')
+            const nowWebModelPic = this.webModelPics[0]
+            nowWebModelPic.imgUrl = 'https://design.bavlo.com/WebModelPics/' + this.uNo + '/' + nowWebModelPic.name
+            this.my3d.setModelTryonMode(true, nowWebModelPic)
+            // $(this).attr('src', 'img/img_closeTry.png');
+            window.$('.topBtn').hide()
+            window.$('.partTypes').hide()
+            window.$('.tbbts input').show()
+            window.$('.ky').hide()
+          } else {
+            this.my3d.setModelTryonMode(false, null)
+            window.$('.show').css('width', '')
+            this.my3d.onWindowResize(2)
+            window.$('.topBtn').show()
+            window.$('.tbbts input').hide()
+            window.$('.tbbts input').val(1)
+            // $(this).attr('src', 'img/img_try.png');
+            if (window.$('.ljs').css('display') === 'none' && window.$('.layers').css('display') === 'none') {
+              window.$('.btns div:eq(0)').click()
+            }
+          }
+          // alert("模特试戴即将开放！");
+        })
+        window.$('.tbbts input').bind('input propertychange', function () {
+          this.my3d.zoomCamera(window.$('.tbbts input').val())
+        })
+
+        // 定位到底部信息部分
+        window.$('.btns div:eq(5)').click(function () {
+          location.href = '#bottom'
+        })
+
+        // 零件点击
+        window.$('.ljs').on('click', 'div', () => {
+          const loadState = 2// my3d.getLoadModelState()
+          if (loadState === 2) {
+            if (this.nowAsType === 1) {
+              this.nowPjIndex = window.$(this).index()
+            } else {
+              this.nowJbIndex = window.$(this).index()
+            }
+            window.$('.ljs .active').removeClass('active')
+            const type = window.$(this).attr('type')
+            const pId = window.$(this).attr('pd')
+            this.nowPartId = pId
+            if (type === 1) {
+              const gpId = window.$(this).attr('gd')
+              this.nowCtIndex = null
+              this.loadCts(gpId)
+              window.$('.mgw').remove()
+            } else {
+              window.$(this).addClass('active')
+              window.$('.cts').hide()
+              this.my3d.switchPart(this.nowAsType, Number(pId))
+            }
+            this.loadNormalUI()
+          }
+        })
+
+        // 零件旋转
+        window.$('.rotate button').click(() => {
+          const jd = 30
+          this.my3d.setPartRotation(this.nowPartId, 'y', jd)
+        })
+      }
+      a()
+    } catch (error) {
+      console.log(error)
+    }
+    window.onresize = () => {
+      this.my3d.onWindowResize(2)
+    }
   },
   methods: {
     /**
@@ -280,9 +436,9 @@ export default {
     },
 
     /**
- * 获取金属材质列表（用于切换材质）
- * @param userId
- */
+     * 获取金属材质列表（用于切换材质）
+     * @param userId
+     */
     loadMetalList (userId) {
       window.$.ajax({
         url: this.apiUrl + 'app/findUserMetalByUser',
@@ -295,7 +451,7 @@ export default {
           if (data.code === 0) {
             if (data.list.length > 0) {
               this.metals = []
-              data.list.filter(function (item) {
+              data.list.filter((item) => {
                 this.metals.push(item.metal)
               })
             } else {
@@ -338,7 +494,7 @@ export default {
             this.gems = data.list
             if (data.list.length > 0) {
               this.gems = []
-              data.list.filter(function (item) {
+              data.list.filter((item) => {
                 this.gems.push(item.gem)
               })
             } else {
@@ -494,7 +650,7 @@ export default {
         type: 'GET',
         crossDomain: true,
         async: false,
-        complete: function (response) {
+        complete: (response) => {
           if (response.status === 200) {
             // alert('有效');
           } else {
@@ -516,7 +672,7 @@ export default {
       }, 5)
       window.$('.ljs div[gd=' + gpId + ']').addClass('active')
       let tjHtml = ''
-      this.designInfo.partGroups.filter(function (item) {
+      this.designInfo.partGroups.filter((item) => {
         if (gpId === item.id) {
           let i = 0
           item.parts.filter((item1) => {
@@ -568,7 +724,7 @@ export default {
     loadPj (ptId) {
       let tjHtml = ''
       let i = 0
-      const parts = this.partsGroupByType.filter(function (item) {
+      const parts = this.partsGroupByType.filter((item) => {
         return item.id === ptId
       })[0]
 
@@ -602,7 +758,7 @@ export default {
       if (asType === 1) {
         let i = 0
         if (this.partsGroupByType) {
-          this.partsGroupByType.filter(function (item) {
+          this.partsGroupByType.filter((item) => {
             let classHtml = ''
             if (this.nowPartTypeIndex) {
               if (i === this.nowPartTypeIndex) {
@@ -628,7 +784,7 @@ export default {
         })
       } else if (asType === 2) {
         let i = 0
-        this.designInfo.mainParts.filter(function (item) {
+        this.designInfo.mainParts.filter((item) => {
           let classHtml = ''
           if (this.nowJbIndex) {
             if (i === this.nowJbIndex) {
@@ -755,7 +911,7 @@ export default {
         const czId = window.$(this).attr('md')
         window.$('.czs div').attr('class', '')
         window.$(this).attr('class', 'active')
-        const layer = this.designInfo.layers.filter(function (item) {
+        const layer = this.designInfo.layers.filter((item) => {
           return item.id === ld
         })[0]
         if (layer.type === 9) {
@@ -924,11 +1080,12 @@ export default {
       window.$.ajax({
         url: this.apiUrl + 'app/getVariableDesignLayerInfo',
         type: 'POST',
-        data: { id: this.desNo },
+        data: { id: 1 },
         crossDomain: true,
         async: false,
         success: (data) => {
-          data = window.$.parseJSON(data)
+          data = mock.mock1
+          // data = window.$.parseJSON(data)
           if (data.code === 0) {
             this.designInfo = data.info
           } else {
@@ -949,7 +1106,7 @@ export default {
           item.filter((item1) => {
             if (item1.id === this.nowPartId) {
               item1.layers.filter((item2) => {
-                if (item2.normal.length > 0) {
+                if (item2.normal && item2.normal.length > 0) {
                   normals = item2.normal
                   layerName = item2.name
                 }
@@ -961,7 +1118,7 @@ export default {
         this.designInfo.mainParts.filter((item) => {
           if (item.id === this.nowPartId) {
             item.layers.filter((item1) => {
-              if (item1.normal.length > 0) {
+              if (item1.normal && item1.normal.length > 0) {
                 normals = item1.normal
                 layerName = item1.name
               }
