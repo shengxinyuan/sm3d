@@ -54,7 +54,7 @@
 
 <script>
 import { Toast } from 'vant'
-import mock from '../mock/design'
+// import mock from '../mock/design'
 
 export default {
   name: 'Design',
@@ -128,8 +128,8 @@ export default {
         const parts = []
         this.designInfo.parts.filter((item) => {
           parts.push.apply(parts, item)
-          partIds += item.id + ','
-          // partIds += item[0].id + ','
+          // partIds += item.id + ','
+          partIds += item[0].id + ','
         })
         partIds = partIds.substring(0, partIds.length - 1)
         this.my3d.loadVarDesign(this.designInfo, this.designInfo.mainParts[0].id, partIds)
@@ -1080,12 +1080,11 @@ export default {
       window.$.ajax({
         url: this.apiUrl + 'app/getVariableDesignLayerInfo',
         type: 'POST',
-        data: { id: 1 },
+        data: { id: 30163 },
         crossDomain: true,
         async: false,
         success: (data) => {
-          data = mock.mock1
-          // data = window.$.parseJSON(data)
+          data = window.$.parseJSON(data)
           if (data.code === 0) {
             this.designInfo = data.info
           } else {
