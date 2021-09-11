@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import DebugList from '../views/DebugList.vue'
 import DiamondsList from '../views/DiamondsList/index.vue'
+import OrderConfirm from '../views/OrderConfirm/index.vue'
+
 
 Vue.use(VueRouter)
 
@@ -36,6 +38,11 @@ export const routes = [
     path: '/diamondsList',
     name: 'diamondsList',
     component: DiamondsList
+  },
+  {
+    path: '/orderConfirm',
+    name: 'orderConfirm',
+    component: OrderConfirm
   },
   {
     path: '*',
