@@ -1,5 +1,13 @@
 <template>
   <div class="order">
+    <van-nav-bar
+      title="设计信息"
+      left-text=""
+      left-arrow
+      @click-left="onClickLeft"
+      :safe-area-inset-top="true"
+      class="bag-bar"
+    />
     <div class="order-header">
       <img src="https://admin.zbird.com/storage/uploads/images/2021/09/01/8UrCONYnQH4OlRt99NUL6rh7qkCHra0YeEMluwEt.png" width="300px" height="300px">
     </div>
@@ -18,7 +26,7 @@
                 <span @click="showScPopup">{{ksInfo.sc.value}}</span>
                 <van-popup v-model="showSc" position="bottom">
                   <van-picker
-                    title="标题"
+                    title=""
                     default-index=5
                     show-toolbar
                     :columns="columns"
@@ -48,10 +56,10 @@
                 </div>
               </van-popup>
             </div>
-            <div class="order-cell">
+            <!-- <div class="order-cell">
               <span class="order-cell__label">款式</span>
               <span class="order-cell__value">{{ksInfo.ks}}</span>
-            </div>
+            </div> -->
             <div class="order-cell">
               <span class="order-cell__label">材质</span>
               <span class="order-cell__value">{{ksInfo.cz}}</span>
@@ -116,6 +124,19 @@
         </van-tab>
       </van-tabs>
     </div>
+    <van-row class="order-bottom">
+      <van-row class="bag-btns">
+        <router-link to="/mydesign">
+          <van-col class="bag-btns__btn bag-btns__mydesign">
+            <van-row><van-icon name="bag-o" color="rgb(193, 177, 138)" size="25"/></van-row>
+          </van-col>
+        </router-link>
+        <van-col style="flex:1;"></van-col>
+        <van-col class="bag-btns__btn bag-btns__share">
+          <van-button type="primary" class="button bag-list__btn--buy" @click="buy">确认购买</van-button>
+        </van-col>
+      </van-row>
+    </van-row>
   </div>
 </template>
 
@@ -135,8 +156,10 @@ Vue.use(Tabs)
 export default {
   data () {
     return {
+      custId: '',
+      query: {},
       active: 2,
-      name: '我的设计-09012209',
+      name: '我的设计' + Date.now(),
       columns: [
         // '5 43.6mm',
         // '6 44.6mm',
@@ -167,12 +190,14 @@ export default {
           value: '12 51.2mm',
           index: '12'
         },
-        ks: '圆款钻石定制',
         cz: '18K白',
+        cz_id: 2,
         gy: '抛光',
-        jb: 'BH116',
-        ht: 'AH007',
-        fs: '天然钻石(白)'
+        jb: '',
+        ht: '',
+        fs: '',
+        fs_id: 1,
+        kz: ''
       },
       zsInfo: {
         zs: 'GIA 232813821738',
@@ -190,10 +215,24 @@ export default {
     }
   },
   created () {
-    
-    console.log(12);
+    this.getQuery()
   },
   methods: {
+    getQuery () {
+      if (window.location.search.split('?')[1]) {
+        const queryList = decodeURI(window.location.search).split('?')[1].split('&')
+        queryList.forEach((i) => {
+          this.query[i.split('=')[0]] = i.split('=')[1]
+        })
+        this.ksInfo.ht = this.query.flower_head_id
+        this.ksInfo.jb = this.query.ring_arm_id
+        this.ksInfo.kz = this.query.ring_print
+        this.ksInfo.cz = this.query.texture_text
+        this.ksInfo.cz_id = this.query.texture_id
+        this.ksInfo.fs = this.query.second_diamond_text
+        this.ksInfo.fs_id = this.query.second_diamond_id
+      }
+    },
     showScPopup () {
       this.showSc = true
     },
@@ -207,6 +246,33 @@ export default {
     },
     onCancel () {
       this.showSc = false
+    },
+    onClickLeft () {
+      this.$router.back()
+    },
+    buy () {
+      this.$post({
+        url: '/api/design/saveDesign',
+        data: {
+          flower_head_id: this.ksInfo.ht,
+          ring_arm_id: this.ksInfo.jb,
+          diamond_id: this.zsInfo.zs,
+          ring_print: this.ksInfo.kz,
+          texture_id: this.ksInfo.cz_id,
+          title: this.name,
+          ring_size: this.ksInfo.sc.index,
+          good_type: 1,
+          member_id: 0,
+          preview_image: '',
+          second_diamond_id: this.ksInfo.fs_id
+        }
+      }).then((res) => {
+        this.custId = res.data.custId
+        this.$router.push(`./orderConfirm?custId=${this.custId}`)
+      }).catch(() => {
+        this.custId = 123
+        this.$router.push(`./orderConfirm?custId=${this.custId}`)
+      })
     }
   }
 }
@@ -263,6 +329,7 @@ export default {
     position: relative;
     flex: 1;
     background-color: #3c3c44 !important;
+    margin-bottom: 140px;
     .van-tabs__wrap {
       margin-bottom: 12px;
       width: 50%;
@@ -345,6 +412,55 @@ export default {
         }
       }
     }
+  }
+  .bag-btns__count {
+    color: rgb(193, 177, 138);
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .bag-btns__mydesign {
+    margin: 0 40px;
+  }
+  .bag-btns {
+    position: fixed;
+    width: 100vw;
+    padding-bottom: 40px;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    background: #48484f;
+    height: 140px;
+    padding-right: 32px;
+  }
+  .bag-bar {
+    .van-icon {
+      color: #000 !important;
+    }
+    .van-nav-bar__content {
+      height: 100px;
+    }
+    .van-nav-bar__title {
+      line-height: 100px;
+      font-size: 32px;
+      font-weight: 700 !important;
+      color: #000;
+    }
+    .van-nav-bar__arrow {
+      font-size: 48px;
+    }
+    .van-nav-bar__left, .van-nav-bar__right {
+      padding: 16px;
+    }
+  }
+  .button {
+    width: 300px;
+    height: 60px;
+    line-height: 86px;
+    background-color: rgb(193, 177, 138);
+    color: rgb(60, 60, 68);
+    border: unset;
+    border-radius: 100px;
+    font-size: 32px;
   }
 }
 </style>

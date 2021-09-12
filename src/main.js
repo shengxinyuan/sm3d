@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import 'vant/lib/index.css'
+import { get, post } from '../src/util/ajax'
 import { Tab, Tabs, Toast, NavBar, Col, Row, Button, Swipe, SwipeItem, Tabbar, TabbarItem, Icon, Divider, List } from 'vant'
 
 Vue.use(Divider)
@@ -21,7 +22,8 @@ Vue.use(Toast)
 Vue.use(List)
 
 Vue.config.productionTip = false
-
+Vue.prototype.$get = get
+Vue.prototype.$post = post
 new Vue({
   router,
   store,
