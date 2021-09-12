@@ -1,21 +1,29 @@
 <template>
   <div class="design">
-    <div class="top">
+  <van-nav-bar
+      title="钻戒设计"
+      left-text=""
+      left-arrow
+      @click-left="onClickLeft"
+      :safe-area-inset-top="true"
+      class="bag-bar"
+    />
+    <!-- <div class="top">
       <div><text></text><text></text></div>
       <div></div>
-    </div>
+    </div> -->
     <div class="row nr">
         <div class="col-12" align="center">
             <div class="show">
                 <div id="web3d"></div>
                 <img class="touch-tip" src="../assets/touch-tip.gif">
-                <div class="topBtn" align="right">
+                <!-- <div class="topBtn" align="right">
                     <img style="display: none;" src="../assets/help.png"/>
                     <img src="../assets/audio.png"/>
                     <img src="../assets/reset.png"/>
                     <img src="../assets/stop.png"/>
                     <img src="../assets/home.png"/>
-                </div>
+                </div> -->
                 <div class="row tbbts">
                     <input type="range" style="display: none;" min="1" max="70" step="1" value="1">
                 </div>
@@ -41,14 +49,27 @@
                 <div class="col m-auto" style="display: none" ><img src="../assets/ky.png" /></div>
                 <div class="col m-auto" ><img src="../assets/try.png" /></div>
             </div>
-            <div class="rotate">
+            <!-- <div class="rotate">
                 <button>旋转</button>
-            </div>
+            </div> -->
             <div class="normals"></div>
         </div>
         <!-- <div class="col-5"><div id="bottom"></div></div> -->
     </div>
     <!-- <div class="footer"></div> -->
+    <van-row>
+      <van-row class="bag-btns">
+        <router-link to="/mydesign">
+          <van-col class="bag-btns__btn bag-btns__mydesign">
+            <van-row><van-icon name="bag-o" color="rgb(193, 177, 138)" size="25"/></van-row>
+          </van-col>
+        </router-link>
+        <van-col class="bag-btns__count">¥10000</van-col>
+        <van-col class="bag-btns__btn bag-btns__share">
+          <van-button type="primary" class="button bag-list__btn--buy">确认设计</van-button>
+        </van-col>
+      </van-row>
+    </van-row>
   </div>
 </template>
 
@@ -98,41 +119,43 @@ export default {
     }
   },
   mounted  () {
-    this.$toast('mounted')
+    const that = this
+    that.$toast('mounted')
+    console.log('mounted')
     try {
       const a = async () => {
-        await this.loadUserInfo(this.uNo)
-        document.getElementsByTagName('title')[0].innerText = this.userInfo.name
-        window.$('.top div:eq(0) text:eq(0)').html(this.userInfo.name)
-        window.$('.top div:eq(1)').html(this.userInfo.brand.xcxIndexTitle)// +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系人&nbsp;：'+userInfo.realName
-        window.$('.footer').html(this.userInfo.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电话&nbsp;：' + this.userInfo.contactPhone)
+        await that.loadUserInfo(that.uNo)
+        document.getElementsByTagName('title')[0].innerText = that.userInfo.name
+        window.$('.top div:eq(0) text:eq(0)').html(that.userInfo.name)
+        window.$('.top div:eq(1)').html(that.userInfo.brand.xcxIndexTitle)// +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系人&nbsp;：'+userInfo.realName
+        window.$('.footer').html(that.userInfo.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电话&nbsp;：' + that.userInfo.contactPhone)
 
         // 初始化
         // 加载3D第一步：初始化3D场景
-        this.my3d = window.Bavlo.initWeb3D(this.baseUrl, 'web3d', false, this.resourceDomainName, false)
+        that.my3d = window.Bavlo.initWeb3D(that.baseUrl, 'web3d', false, that.resourceDomainName, false)
         // 加载3D第二步：定义3D窗口尺寸
-        this.my3d.onWindowResize(2)
+        that.my3d.onWindowResize(2)
         // 加载3D第三步：初始化web材质
-        await this.loadMetalWeb(0)
-        // await this.loadMetalWeb(this.uNo)
-        await this.loadGemWeb(0)
-        // await this.loadGemWeb(this.uNo)
-        this.my3d.initUserMatInfo(this.metalWebDefault, this.metalWeb, this.gemWebDefault, this.gemWeb)
+        await that.loadMetalWeb(0)
+        // await that.loadMetalWeb(that.uNo)
+        await that.loadGemWeb(0)
+        // await that.loadGemWeb(that.uNo)
+        that.my3d.initUserMatInfo(that.metalWebDefault, that.metalWeb, that.gemWebDefault, that.gemWeb)
         // 记载3D第四步：设置3D场景背景色
-        if (this.userInfo.webBackgroundColor) {
-          this.my3d.changeBackground(this.userInfo.webBackgroundColor)
+        if (that.userInfo.webBackgroundColor) {
+          that.my3d.changeBackground(that.userInfo.webBackgroundColor)
         }
         // 记载3D第五步：加载款式3D
-        await this.loadDesignInfo()
+        await that.loadDesignInfo()
         let partIds = ''
         const parts = []
-        this.designInfo.parts.filter((item) => {
+        that.designInfo.parts.filter((item) => {
           parts.push.apply(parts, item)
           // partIds += item.id + ','
           partIds += item[0].id + ','
         })
         partIds = partIds.substring(0, partIds.length - 1)
-        this.my3d.loadVarDesign(this.designInfo, this.designInfo.mainParts[0].id, partIds)
+        that.my3d.loadVarDesign(that.designInfo, that.designInfo.mainParts[0].id, partIds)
 
         // 处理配件按类型分组
         var map = {}
@@ -156,46 +179,46 @@ export default {
             }
           }
         }
-        this.partsGroupByType = dest
+        that.partsGroupByType = dest
 
         // 加载款式信息
         const layerText = ''
         const priceHtml = ''
-        let nameHtml = this.designInfo.name
+        let nameHtml = that.designInfo.name
         if (nameHtml === null || nameHtml === '') {
-          nameHtml = '编号：' + this.designInfo.id
-          this.shareDescText += this.designInfo.type.nameCn
+          nameHtml = '编号：' + that.designInfo.id
+          that.shareDescText += that.designInfo.type.nameCn
         } else {
-          this.shareDescText += this.designInfo.name + '，' + this.designInfo.type.nameCn
+          that.shareDescText += that.designInfo.name + '，' + that.designInfo.type.nameCn
         }
 
-        this.shareDescText += layerText
+        that.shareDescText += layerText
         let gender = ''
-        if (this.designInfo.gender === 0) {
+        if (that.designInfo.gender === 0) {
           gender = '女款'
-        } else if (this.designInfo.gender === 1) {
+        } else if (that.designInfo.gender === 1) {
           gender = '男款'
-        } else if (this.designInfo.gender === 2) {
+        } else if (that.designInfo.gender === 2) {
           gender = '均适款'
         }
 
-        this.shareDescText += '，' + gender
+        that.shareDescText += '，' + gender
 
         const sc = ''
 
-        if (this.designInfo.description) {
-          this.shareDescText += '，' + this.designInfo.description
+        if (that.designInfo.description) {
+          that.shareDescText += '，' + that.designInfo.description
         }
 
         let phone = ''
         let wx = ''
         const lxr = ''
-        const name = this.userInfo.name
-        if (this.userInfo.contactPhone) {
-          phone = '        <div class="row">电话：<a href="tel:' + this.userInfo.contactPhone + '">' + this.userInfo.contactPhone + '</a></div>\n'
+        const name = that.userInfo.name
+        if (that.userInfo.contactPhone) {
+          phone = '        <div class="row">电话：<a href="tel:' + that.userInfo.contactPhone + '">' + that.userInfo.contactPhone + '</a></div>\n'
         }
-        if (this.userInfo.contactWxNo) {
-          wx = '        <div class="row">咨询微信：<div class="col-5"><input type="text" readonly id="wxNo" value="' + this.userInfo.contactWxNo + '"/></div><div class="col-3"></div></div>\n'
+        if (that.userInfo.contactWxNo) {
+          wx = '        <div class="row">咨询微信：<div class="col-5"><input type="text" readonly id="wxNo" value="' + that.userInfo.contactWxNo + '"/></div><div class="col-3"></div></div>\n'
         }
         const infoHtml = '<div>\n' +
         '        <div class="row">\n' +
@@ -204,15 +227,15 @@ export default {
         '        </div>\n' +
         '        <div class="row">类型：' + gender + '</div>\n' + sc + '<div class="layInfo"></div>' +
         '    </div>\n' +
-        '    <div class="row">\n' + this.designInfo.description +
+        '    <div class="row">\n' + that.designInfo.description +
         '    </div>\n' +
         '    <div>\n' +
         '        <div class="row">' + name + '</div>\n' + phone + wx + lxr +
         '    </div>'
 
         window.$('#bottom').html(infoHtml)
-        if (this.designInfo.parts) {
-          const gemWeight = this.designInfo.parts[0].gemWeight
+        if (that.designInfo.parts) {
+          const gemWeight = that.designInfo.parts[0].gemWeight
           if (gemWeight) {
             window.$('.layInfo').html('<div class="row mgw">主石重量：' + gemWeight + 'ct </div>\n')
           } else {
@@ -228,22 +251,22 @@ export default {
         //   setTimeout("$('.copy-btn').html('复制');", 1200)
         // })
         window.$('.shoppingBtns button:eq(0)').click(() => {
-          this.checkIsOnCart()
+          that.checkIsOnCart()
         })
         window.$('.shoppingBtns button:eq(1)').click(() => {
-          this.addOrder()
+          that.addOrder()
         })
         window.$('.shoppingBtns img').click(() => {
-          window.open('shoppingCart_pc.html?v=' + this.usNo, '_blank')
+          window.open('shoppingCart_pc.html?v=' + that.usNo, '_blank')
         })
 
         // 当前零件ID
-        this.nowPartId = this.designInfo.mainParts[0].id
-        setTimeout(this.loadNormalUI(), 500)
-        this.loadLjs(2)
+        that.nowPartId = that.designInfo.mainParts[0].id
+        setTimeout(that.loadNormalUI(), 500)
+        that.loadLjs(2)
 
-        this.ot = window.$('.ljs').offset().top
-        this.wh = window.$(window).height()
+        that.ot = window.$('.ljs').offset().top
+        that.wh = window.$(window).height()
         // 操作提示展示
         window.$('.topBtn img:eq(0)').click(function () {
           window.$('.helpDetail').show()
@@ -255,13 +278,13 @@ export default {
 
         // 款式复位
         window.$('.topBtn img:eq(2)').click(() => {
-          this.my3d.postureReset()
+          that.my3d.postureReset()
         })
         // 款式自转设置
         let rotate = true
         window.$('.topBtn img:eq(3)').click(() => {
           rotate = !rotate
-          this.my3d.setRotationState(rotate)
+          that.my3d.setRotationState(rotate)
           if (rotate) {
             window.$('.topBtn img:eq(3)').attr('src', 'img/stop.png')
           } else {
@@ -274,13 +297,13 @@ export default {
     if(hcid){
         window.close();
     }else { */
-          window.location.href = 'index_pc.html?l=1&v=' + this.usNo
+          window.location.href = 'index_pc.html?l=1&v=' + that.usNo
           // }
         })
 
         // 加载主体UI
         window.$('.btns div:eq(0)').click(() => {
-          this.loadLjs(2)
+          that.loadLjs(2)
           window.$('.layers').hide()
           window.$('.czs').hide()
           window.$('.ky').hide()
@@ -289,7 +312,7 @@ export default {
         })
         // 加载主体配件UI
         window.$('.btns div:eq(1)').click(() => {
-          this.loadLjs(1)
+          that.loadLjs(1)
           window.$('.layers').hide()
           window.$('.czs').hide()
           window.$('.ky').hide()
@@ -298,8 +321,8 @@ export default {
         })
         // 加载图层信息和材质信息
         window.$('.btns div:eq(2)').click(() => {
-          this.loadDiy()
-          this.loadCzs(this.designInfo.layers[0].id)
+          that.loadDiy()
+          that.loadCzs(that.designInfo.layers[0].id)
           window.$('.cts').hide()
           window.$('.ljs').hide()
           window.$('.ky').hide()
@@ -309,7 +332,7 @@ export default {
         })
         // 刻字
         window.$('.btns div:eq(3)').click(() => {
-          const state = this.my3d.getTryOnState()
+          const state = that.my3d.getTryOnState()
           if (state === 0) {
             window.$('.cts').hide()
             window.$('.ljs').hide()
@@ -328,9 +351,9 @@ export default {
         window.$('.ky button').click(() => {
           const kyText = window.$('.ky input').val()
           if (kyText.length <= 16) {
-            this.my3d.printUserTextOfLayer(this.nowLayer.id, kyText)
+            that.my3d.printUserTextOfLayer(that.nowLayer.id, kyText)
             rotate = false
-            this.my3d.setRotationState(rotate)
+            that.my3d.setRotationState(rotate)
             window.$('.topBtn img:eq(3)').attr('src', 'img/play.png')
           } else {
             alert('刻字内容不可超过16个字符！')
@@ -338,27 +361,27 @@ export default {
         })
         // 图片试戴
         window.$('.btns div:eq(4)').click(() => {
-          if (this.webModelPics) {} else {
-            this.loadModelPicList()
+          if (that.webModelPics) {} else {
+            that.loadModelPicList()
           }
-          const state = this.my3d.getTryOnState()
+          const state = that.my3d.getTryOnState()
           if (state === 0) {
             const dheight = window.$('.show').height()
             window.$('.show').css('width', (dheight / 4 * 3) + 'px')
-            this.my3d.onWindowResize(6)
+            that.my3d.onWindowResize(6)
             window.$('.tbbts').css('width', (dheight * 0.7) + 'px')
-            const nowWebModelPic = this.webModelPics[0]
-            nowWebModelPic.imgUrl = 'https://design.bavlo.com/WebModelPics/' + this.uNo + '/' + nowWebModelPic.name
-            this.my3d.setModelTryonMode(true, nowWebModelPic)
+            const nowWebModelPic = that.webModelPics[0]
+            nowWebModelPic.imgUrl = 'https://design.bavlo.com/WebModelPics/' + that.uNo + '/' + nowWebModelPic.name
+            that.my3d.setModelTryonMode(true, nowWebModelPic)
             // $(this).attr('src', 'img/img_closeTry.png');
             window.$('.topBtn').hide()
             window.$('.partTypes').hide()
             window.$('.tbbts input').show()
             window.$('.ky').hide()
           } else {
-            this.my3d.setModelTryonMode(false, null)
+            that.my3d.setModelTryonMode(false, null)
             window.$('.show').css('width', '')
-            this.my3d.onWindowResize(2)
+            that.my3d.onWindowResize(2)
             window.$('.topBtn').show()
             window.$('.tbbts input').hide()
             window.$('.tbbts input').val(1)
@@ -370,7 +393,7 @@ export default {
           // alert("模特试戴即将开放！");
         })
         window.$('.tbbts input').bind('input propertychange', function () {
-          this.my3d.zoomCamera(window.$('.tbbts input').val())
+          that.my3d.zoomCamera(window.$('.tbbts input').val())
         })
 
         // 定位到底部信息部分
@@ -379,36 +402,36 @@ export default {
         })
 
         // 零件点击
-        window.$('.ljs').on('click', 'div', () => {
+        window.$('.ljs').on('click', 'div', function () {
           const loadState = 2// my3d.getLoadModelState()
           if (loadState === 2) {
-            if (this.nowAsType === 1) {
-              this.nowPjIndex = window.$(this).index()
+            if (that.nowAsType === 1) {
+              that.nowPjIndex = window.$(this).index()
             } else {
-              this.nowJbIndex = window.$(this).index()
+              that.nowJbIndex = window.$(this).index()
             }
             window.$('.ljs .active').removeClass('active')
             const type = window.$(this).attr('type')
             const pId = window.$(this).attr('pd')
-            this.nowPartId = pId
+            that.nowPartId = pId
             if (type === 1) {
               const gpId = window.$(this).attr('gd')
-              this.nowCtIndex = null
-              this.loadCts(gpId)
+              that.nowCtIndex = null
+              that.loadCts(gpId)
               window.$('.mgw').remove()
             } else {
               window.$(this).addClass('active')
               window.$('.cts').hide()
-              this.my3d.switchPart(this.nowAsType, Number(pId))
+              that.my3d.switchPart(that.nowAsType, Number(pId))
             }
-            this.loadNormalUI()
+            that.loadNormalUI()
           }
         })
 
         // 零件旋转
         window.$('.rotate button').click(() => {
           const jd = 30
-          this.my3d.setPartRotation(this.nowPartId, 'y', jd)
+          that.my3d.setPartRotation(that.nowPartId, 'y', jd)
         })
       }
       a()
@@ -416,10 +439,13 @@ export default {
       console.log(error)
     }
     window.onresize = () => {
-      this.my3d.onWindowResize(2)
+      that.my3d.onWindowResize(2)
     }
   },
   methods: {
+    onClickLeft () {
+      this.$router.back()
+    },
     /**
      * 获取url参数
      * @param variable
@@ -440,8 +466,9 @@ export default {
      * @param userId
      */
     loadMetalList (userId) {
+      const that = this
       window.$.ajax({
-        url: this.apiUrl + 'app/findUserMetalByUser',
+        url: that.apiUrl + 'app/findUserMetalByUser',
         type: 'POST',
         data: { userId: userId },
         crossDomain: true,
@@ -450,20 +477,20 @@ export default {
           data = window.$.parseJSON(data)
           if (data.code === 0) {
             if (data.list.length > 0) {
-              this.metals = []
+              that.metals = []
               data.list.filter((item) => {
-                this.metals.push(item.metal)
+                that.metals.push(item.metal)
               })
             } else {
               window.$.ajax({
-                url: this.apiUrl + 'app/desMetalList',
+                url: that.apiUrl + 'app/desMetalList',
                 type: 'POST',
                 crossDomain: true,
                 async: false,
                 success: (data) => {
                   data = window.$.parseJSON(data)
                   if (data.code === 0) {
-                    this.metals = data.list
+                    that.metals = data.list
                   } else {
                     Toast('数据加载失败！')
                   }
@@ -482,8 +509,9 @@ export default {
  * @param userId
  */
     loadGemList (userId) {
+      const that = this
       window.$.ajax({
-        url: this.apiUrl + 'app/findUserGemByUser',
+        url: that.apiUrl + 'app/findUserGemByUser',
         type: 'POST',
         data: { userId: userId },
         crossDomain: true,
@@ -491,22 +519,22 @@ export default {
         success: (data) => {
           data = window.$.parseJSON(data)
           if (data.code === 0) {
-            this.gems = data.list
+            that.gems = data.list
             if (data.list.length > 0) {
-              this.gems = []
+              that.gems = []
               data.list.filter((item) => {
-                this.gems.push(item.gem)
+                that.gems.push(item.gem)
               })
             } else {
               window.$.ajax({
-                url: this.apiUrl + 'app/desGemList',
+                url: that.apiUrl + 'app/desGemList',
                 type: 'POST',
                 crossDomain: true,
                 async: false,
                 success: (data) => {
                   data = window.$.parseJSON(data)
                   if (data.code === 0) {
-                    this.gems = data.list
+                    that.gems = data.list
                   } else {
                     Toast('数据加载失败！')
                   }
@@ -524,15 +552,16 @@ export default {
  * 获取其它宝石列表（用于切换材质）
  */
     loadOtherGemList () {
+      const that = this
       window.$.ajax({
-        url: this.apiUrl + 'app/otherGemList',
+        url: that.apiUrl + 'app/otherGemList',
         type: 'POST',
         crossDomain: true,
         async: false,
         success: (data) => {
           data = window.$.parseJSON(data)
           if (data.code === 0) {
-            this.otherGems = data.list
+            that.otherGems = data.list
           } else {
             Toast('数据加载失败！')
           }
@@ -545,8 +574,9 @@ export default {
  * @param userId
  */
     loadMetalWeb (userId) {
+      const that = this
       window.$.ajax({
-        url: this.apiUrl + 'app/findMetalWebsByUser',
+        url: that.apiUrl + 'app/findMetalWebsByUser',
         type: 'POST',
         data: { userId: userId },
         crossDomain: true,
@@ -555,9 +585,9 @@ export default {
           data = window.$.parseJSON(data)
           if (data.code === 0) {
             if (userId === 0) {
-              this.metalWebDefault = data.list
+              that.metalWebDefault = data.list
             } else {
-              this.metalWeb = data.list
+              that.metalWeb = data.list
             }
           } else {
             Toast('数据加载失败！')
@@ -571,8 +601,9 @@ export default {
  * @param userId
  */
     loadGemWeb (userId) {
+      const that = this
       window.$.ajax({
-        url: this.apiUrl + 'app/findGemWebsByUser',
+        url: that.apiUrl + 'app/findGemWebsByUser',
         type: 'POST',
         data: { userId: userId },
         crossDomain: true,
@@ -581,9 +612,9 @@ export default {
           data = window.$.parseJSON(data)
           if (data.code === 0) {
             if (userId === 0) {
-              this.gemWebDefault = data.list
+              that.gemWebDefault = data.list
             } else {
-              this.gemWeb = data.list
+              that.gemWeb = data.list
             }
           } else {
             Toast('数据加载失败！')
@@ -597,8 +628,9 @@ export default {
  * @param userId
  */
     loadMaterialWeb (userId) {
+      const that = this
       window.$.ajax({
-        url: this.apiUrl + 'app/findMaterialWebsByUserAndType',
+        url: that.apiUrl + 'app/findMaterialWebsByUserAndType',
         type: 'POST',
         data: { userId: userId },
         crossDomain: true,
@@ -607,9 +639,9 @@ export default {
           data = window.$.parseJSON(data)
           if (data.code === 0) {
             if (userId === 0) {
-              this.materialWebDefault = data.list
+              that.materialWebDefault = data.list
             } else {
-              this.materialWeb = data.list
+              that.materialWeb = data.list
             }
           } else {
             Toast('数据加载失败！')
@@ -622,16 +654,17 @@ export default {
  * 获取试戴背景图列表
  */
     loadModelPicList () {
+      const that = this
       window.$.ajax({
-        url: this.apiUrl + 'app/webModelPicList',
+        url: that.apiUrl + 'app/webModelPicList',
         type: 'POST',
-        data: { userId: this.uNo, desTypeId: this.designInfo.type.id },
+        data: { userId: that.uNo, desTypeId: that.designInfo.type.id },
         crossDomain: true,
         async: false,
         success: (data) => {
           data = window.$.parseJSON(data)
           if (data.code === 0) {
-            this.webModelPics = data.list
+            that.webModelPics = data.list
           } else {
             Toast('数据加载失败！')
           }
@@ -644,9 +677,10 @@ export default {
  * @returns {boolean}
  */
     glbIsExist () {
+      const that = this
       let isExist = true
       window.$.ajax({
-        url: this.modelUrl + this.desNo + '.glb',
+        url: that.modelUrl + that.desNo + '.glb',
         type: 'GET',
         crossDomain: true,
         async: false,
@@ -667,24 +701,25 @@ export default {
  * @param gpId
  */
     loadCts (gpId) {
+      const that = this
       setTimeout(() => {
         window.$('.cts').show()
       }, 5)
       window.$('.ljs div[gd=' + gpId + ']').addClass('active')
       let tjHtml = ''
-      this.designInfo.partGroups.filter((item) => {
+      that.designInfo.partGroups.filter((item) => {
         if (gpId === item.id) {
           let i = 0
           item.parts.filter((item1) => {
             let classHtml = ''
-            if (this.nowCtIndex) {
-              if (i === this.nowCtIndex) {
+            if (that.nowCtIndex) {
+              if (i === that.nowCtIndex) {
                 classHtml = 'class="active"'
               }
             } else {
               if (tjHtml === '') {
                 classHtml = 'class="active"'
-                this.nowCtIndex = 0
+                that.nowCtIndex = 0
               }
             }
             let ctcl = item1.gemWeight
@@ -704,15 +739,15 @@ export default {
         }
       })
       window.$('.cts').html(tjHtml)
-      this.my3d.switchPart(this.nowAsType, Number(window.$('.cts .active').attr('pd')))
-      window.$('.cts div').click(() => {
-        const loadState = this.my3d.getLoadModelState()
+      that.my3d.switchPart(that.nowAsType, Number(window.$('.cts .active').attr('pd')))
+      window.$('.cts div').click(function () {
+        const loadState = that.my3d.getLoadModelState()
         if (loadState === 2) {
           window.$('.cts div').attr('class', '')
           window.$(this).attr('class', 'active')
           const pId = window.$(this).attr('pd')
-          this.my3d.switchPart(this.nowAsType, Number(pId))
-          this.nowCtIndex = window.$(this).index()
+          that.my3d.switchPart(that.nowAsType, Number(pId))
+          that.nowCtIndex = window.$(this).index()
         }
       })
     },
@@ -722,30 +757,31 @@ export default {
  * @param ptId
  */
     loadPj (ptId) {
+      const that = this
       let tjHtml = ''
       let i = 0
-      const parts = this.partsGroupByType.filter((item) => {
+      const parts = that.partsGroupByType.filter((item) => {
         return item.id === ptId
       })[0]
 
       parts.data.filter((item) => {
         let classHtml = ''
-        if (this.nowPjIndex) {
-          if (i === this.nowPjIndex) {
+        if (that.nowPjIndex) {
+          if (i === that.nowPjIndex) {
             classHtml = 'class="active"'
-            this.nowPartId = item.id
+            that.nowPartId = item.id
           }
         } else {
           if (tjHtml === '') {
             classHtml = 'class="active"'
-            this.nowPartId = item.id
+            that.nowPartId = item.id
           }
         }
         tjHtml += '<div ' + classHtml + ' pd="' + item.id + '" type="0"><img src="https://design.bavlo.com/PartRes/webImg/' + item.defaultImg + '!250"></div>'
         i++
       })
       window.$('.ljs').html(tjHtml)
-      this.loadNormalUI()
+      that.loadNormalUI()
     },
 
     /**
@@ -753,15 +789,16 @@ export default {
  * @param asType
  */
     loadLjs (asType) {
-      this.nowAsType = asType
+      const that = this
+      that.nowAsType = asType
       let tjHtml = ''
       if (asType === 1) {
         let i = 0
-        if (this.partsGroupByType) {
-          this.partsGroupByType.filter((item) => {
+        if (that.partsGroupByType) {
+          that.partsGroupByType.filter((item) => {
             let classHtml = ''
-            if (this.nowPartTypeIndex) {
-              if (i === this.nowPartTypeIndex) {
+            if (that.nowPartTypeIndex) {
+              if (i === that.nowPartTypeIndex) {
                 classHtml = 'class="active"'
               }
             } else {
@@ -774,27 +811,27 @@ export default {
           })
         }
         window.$('.partTypes').html(tjHtml)
-        this.loadPj(this.partsGroupByType[0].id)
-        window.$('.partTypes div').click(() => {
+        that.loadPj(that.partsGroupByType[0].id)
+        window.$('.partTypes div').click(function () {
           window.$('.partTypes div').attr('class', '')
           window.$(this).attr('class', 'active')
           const pt = window.$(this).attr('pt')
-          this.nowPartTypeIndex = window.$(this).index()
-          this.loadPj(pt)
+          that.nowPartTypeIndex = window.$(this).index()
+          that.loadPj(pt)
         })
       } else if (asType === 2) {
         let i = 0
-        this.designInfo.mainParts.filter((item) => {
+        that.designInfo.mainParts.filter((item) => {
           let classHtml = ''
-          if (this.nowJbIndex) {
-            if (i === this.nowJbIndex) {
+          if (that.nowJbIndex) {
+            if (i === that.nowJbIndex) {
               classHtml = 'class="active"'
-              this.nowPartId = item.id
+              that.nowPartId = item.id
             }
           } else {
             if (tjHtml === '') {
               classHtml = 'class="active"'
-              this.nowPartId = item.id
+              that.nowPartId = item.id
             }
           }
           tjHtml += '<div type="2" pd="' + item.id + '" ' + classHtml + '><img src="https://design.bavlo.com/PartRes/webImg/' + item.defaultImg + '!250"></div>'
@@ -802,7 +839,7 @@ export default {
         })
         window.$('.cts').hide()
         window.$('.ljs').html(tjHtml)
-        this.loadNormalUI()
+        that.loadNormalUI()
       }
     },
 
@@ -811,15 +848,16 @@ export default {
  * @param layerId
  */
     loadCzs (layerId) {
-      this.designInfo.layers.filter((item) => {
+      const that = this
+      that.designInfo.layers.filter((item) => {
         if (layerId === item.id) {
           let iconUrl; let czName = ''
           let tjHtml = ''
           if (item.type === 0) {
-            if (this.metals) {} else {
-              this.loadMetalList(this.uNo)
+            if (that.metals) {} else {
+              that.loadMetalList(that.uNo)
             }
-            this.metals.filter((item1) => {
+            that.metals.filter((item1) => {
               let classHtml = ''
               iconUrl = 'RoundMetalIcons/' + item1.id + '.png'
               czName = item1.nameCn
@@ -833,10 +871,10 @@ export default {
             })
           } else if (item.type === 1) {
             if (item.ogType === 0) {
-              if (this.gems) {} else {
-                this.loadGemList(this.uNo)
+              if (that.gems) {} else {
+                that.loadGemList(that.uNo)
               }
-              this.gems.filter((item1) => {
+              that.gems.filter((item1) => {
                 if (item1.faceType === item.gem.faceType) {
                   iconUrl = 'GemIcons/' + item1.id + '.png'
                   let classHtml = ''
@@ -854,10 +892,10 @@ export default {
                 }
               })
             } else if (item.ogType === 1) {
-              if (this.otherGems) {} else {
-                this.loadOtherGemList()
+              if (that.otherGems) {} else {
+                that.loadOtherGemList()
               }
-              const otherGemsDetail = this.otherGems.filter((item1) => {
+              const otherGemsDetail = that.otherGems.filter((item1) => {
                 return item1.id === item.otherGem.gemType.id
               })[0]
               otherGemsDetail.gemDetals.filter((item1) => {
@@ -880,11 +918,11 @@ export default {
               })
             }
           } if (item.type >= 2) {
-            if (this.materialWeb) {} else {
-              this.loadMaterialWeb(this.uNo)
+            if (that.materialWeb) {} else {
+              that.loadMaterialWeb(that.uNo)
             }
-            if (this.materialWeb) {
-              this.materialWeb.filter((item1) => {
+            if (that.materialWeb) {
+              that.materialWeb.filter((item1) => {
                 if (item1.type === item.type) {
                   let classHtml = ''
                   let imgStyle = 'background-color:rgb(' + item1.color + ');'
@@ -906,12 +944,12 @@ export default {
           window.$('.czs').html(tjHtml)
         }
       })
-      window.$('.czs div').click(() => {
+      window.$('.czs div').click(function () {
         const ld = window.$('.layers .active').attr('ld')
         const czId = window.$(this).attr('md')
         window.$('.czs div').attr('class', '')
         window.$(this).attr('class', 'active')
-        const layer = this.designInfo.layers.filter((item) => {
+        const layer = that.designInfo.layers.filter((item) => {
           return item.id === ld
         })[0]
         if (layer.type === 9) {
@@ -920,9 +958,9 @@ export default {
           window.$('.layers .active img').attr('src', window.$(this).children('img').attr('src'))
         }
         window.$('.layers .active span').html(window.$(this).children('span').html())
-        this.changeMaterial(ld, czId)
-        const nowInfo = this.my3d.getUserDiyInfo()
-        this.designInfo.layers = nowInfo.layers
+        that.changeMaterial(ld, czId)
+        const nowInfo = that.my3d.getUserDiyInfo()
+        that.designInfo.layers = nowInfo.layers
       })
     },
 
@@ -932,39 +970,40 @@ export default {
  * @param materialId
  */
     changeMaterial (layerId, materialId) {
-      const layer = this.designInfo.layers.filter((item) => {
+      const that = this
+      const layer = that.designInfo.layers.filter((item) => {
         return item.id === layerId
       })[0]
       if (layer.type === 0) {
-        const material = this.metals.filter((item) => {
+        const material = that.metals.filter((item) => {
           return item.id === materialId
         })[0]
-        this.my3d.customizeMetalClass(layer.name, material)
+        that.my3d.customizeMetalClass(layer.name, material)
       } if (layer.type === 1) {
         if (layer.ogType === 0) {
-          const material = this.gems.filter((item) => {
+          const material = that.gems.filter((item) => {
             return item.id === materialId
           })[0]
           if (layer.gem.faceType === 'faceted') {
-            this.my3d.customizeGemClass(0, layer.name, material)
+            that.my3d.customizeGemClass(0, layer.name, material)
           } else {
-            this.my3d.changeLayerMaterial(layer.name, material)
+            that.my3d.changeLayerMaterial(layer.name, material)
           }
         } if (layer.ogType === 1) {
-          const materials = this.otherGems.filter((item) => {
+          const materials = that.otherGems.filter((item) => {
             return item.id === layer.otherGem.gemType.id
           })[0]
           const material = materials.gemDetals.filter((item) => {
             return item.id === materialId
           })[0]
           material.refraction = layer.otherGem.gemType.refraction
-          this.my3d.customizeGemClass(1, layer.name, material)
+          that.my3d.customizeGemClass(1, layer.name, material)
         }
       } else if (layer.type >= 2) {
-        const material = this.materialWeb.filter((item) => {
+        const material = that.materialWeb.filter((item) => {
           return item.id === materialId
         })[0]
-        this.my3d.changeLayerMaterial(layer.name, material)
+        that.my3d.changeLayerMaterial(layer.name, material)
       }
     },
 
@@ -972,10 +1011,11 @@ export default {
  * 加载图层信息UI
  */
     loadDiy () {
+      const that = this
       let tjHtml = ''
-      const nowInfo = this.my3d.getUserDiyInfo()
+      const nowInfo = that.my3d.getUserDiyInfo()
       const nowPids = nowInfo.partIds.split(',')
-      this.designInfo.layers.filter((item) => {
+      that.designInfo.layers.filter((item) => {
         let iconUrl = 'https://design.bavlo.com/IconRes/'
         let czName = ''
         let imgStyle = ''
@@ -1034,16 +1074,17 @@ export default {
         }
       })
       window.$('.layers').html(tjHtml)
-      window.$('.layers div').click(() => {
+      window.$('.layers div').click(function () {
         const ld = window.$(this).attr('ld')
-        this.nowLayer = this.designInfo.layers.filter((item) => {
+        console.log(ld)
+        that.nowLayer = that.designInfo.layers.filter((item) => {
           return item.id === ld
         })[0]
-        const lt = this.nowLayer.type
+        const lt = that.nowLayer.type
         if (lt === -1) {
           window.$('.btns div:eq(3)').click()
         } else {
-          this.loadCzs(ld)
+          that.loadCzs(ld)
           window.$('.layers div').attr('class', '')
           window.$(this).attr('class', 'active')
         }
@@ -1055,8 +1096,9 @@ export default {
  * @param userId
  */
     loadUserInfo (userId) {
+      const that = this
       window.$.ajax({
-        url: this.apiUrl + 'app/userInfo',
+        url: that.apiUrl + 'app/userInfo',
         type: 'POST',
         // Cookie: 'JSESSIONID=6324DD7DB3D48731D33CC616AFD07E73',
         data: { id: userId },
@@ -1065,7 +1107,7 @@ export default {
         success: (data) => {
           data = window.$.parseJSON(data)
           if (data.code === 0) {
-            this.userInfo = data.user
+            that.userInfo = data.user
           } else {
             console.log('数据加载失败！')
           }
@@ -1077,8 +1119,9 @@ export default {
  * 加载款式信息
  */
     loadDesignInfo () {
+      const that = this
       window.$.ajax({
-        url: this.apiUrl + 'app/getVariableDesignLayerInfo',
+        url: that.apiUrl + 'app/getVariableDesignLayerInfo',
         type: 'POST',
         data: { id: 30163 },
         crossDomain: true,
@@ -1086,7 +1129,7 @@ export default {
         success: (data) => {
           data = window.$.parseJSON(data)
           if (data.code === 0) {
-            this.designInfo = data.info
+            that.designInfo = data.info
           } else {
             console.log('数据加载失败！')
           }
@@ -1098,12 +1141,13 @@ export default {
  * 加载贴图信息UI
  */
     loadNormalUI () {
+      const that = this
       let normals
       let layerName
-      if (this.nowAsType === 1) {
-        this.designInfo.parts.filter((item) => {
+      if (that.nowAsType === 1) {
+        that.designInfo.parts.filter((item) => {
           item.filter((item1) => {
-            if (item1.id === this.nowPartId) {
+            if (item1.id === that.nowPartId) {
               item1.layers.filter((item2) => {
                 if (item2.normal && item2.normal.length > 0) {
                   normals = item2.normal
@@ -1114,8 +1158,8 @@ export default {
           })
         })
       } else {
-        this.designInfo.mainParts.filter((item) => {
-          if (item.id === this.nowPartId) {
+        that.designInfo.mainParts.filter((item) => {
+          if (item.id === that.nowPartId) {
             item.layers.filter((item1) => {
               if (item1.normal && item1.normal.length > 0) {
                 normals = item1.normal
@@ -1132,7 +1176,7 @@ export default {
           if (item.onOff && item.mapNames) {
             const maps = item.mapNames
             maps.filter((item1) => {
-              imgHtml += '<div nd="' + item.id + '"><img src="' + this.normalMapUrl + item.id + '/' + item1.imgName + '" crossorigin="anonymous"/></div>\n'
+              imgHtml += '<div nd="' + item.id + '"><img src="' + that.normalMapUrl + item.id + '/' + item1.imgName + '" crossorigin="anonymous"/></div>\n'
             })
             tjHtml += '<div >\n' + imgHtml + '</div>'
           }
@@ -1140,14 +1184,14 @@ export default {
         window.$('.normals').html(tjHtml)
 
         if (tjHtml) {
-          window.$('.normals>div div img').click(() => {
+          window.$('.normals>div div img').click(function () {
             const nd = window.$(this).parent().attr('nd')
             const normal = normals.filter((item) => {
               return item.id === nd
             })[0]
             const imgSrc = window.$(this).attr('src')
             const defaultMap = imgSrc.substring(imgSrc.lastIndexOf('/') + 1)
-            this.my3d.updateSubLayerMaterialNormalMap(this.nowPartId, layerName, normal.id, normal.sort, normal.onOff, defaultMap)
+            that.my3d.updateSubLayerMaterialNormalMap(that.nowPartId, layerName, normal.id, normal.sort, normal.onOff, defaultMap)
           })
         }
       }
@@ -1164,6 +1208,51 @@ export default {
 //   width: 100px;
 // }
   ::v-deep {
+    .bag-btns__count {
+      color: rgb(193, 177, 138);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .bag-btns__mydesign {
+      margin: 0 40px;
+    }
+    .bag-btns {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #48484f;
+      height: 100px
+    }
+    .bag-bar {
+    .van-icon {
+      color: #000 !important;
+    }
+    .van-nav-bar__content {
+      height: 100px;
+    }
+    .van-nav-bar__title {
+      line-height: 100px;
+      font-size: 32px;
+      font-weight: 700 !important;
+      color: #000;
+    }
+    .van-nav-bar__arrow {
+      font-size: 48px;
+    }
+    .van-nav-bar__left, .van-nav-bar__right {
+      padding: 16px;
+    }
+  }
+  .button {
+    width: 300px;
+    height: 60px;
+    line-height: 86px;
+    background-color: rgb(193, 177, 138);
+    color: rgb(60, 60, 68);
+    border: unset;
+    border-radius: 100px;
+    font-size: 32px;
+  }
     img {
         width: 100%;
     }
@@ -1223,7 +1312,7 @@ export default {
     }
 
     .nr {
-        padding: 3.8vh 9.5%;
+        // padding: 3.8vh 9.5%;
     }
     .show {
         height: 62vh;
@@ -1242,7 +1331,7 @@ export default {
     }
     .topBtn img {
         margin-left: 6.5%;
-        width: 16%;
+        width: 25%;
     }
     .topBtn img:nth-child(2) {
           display: none;

@@ -189,6 +189,10 @@ export default {
       showHelp: false
     }
   },
+  created () {
+    
+    console.log(12);
+  },
   methods: {
     showScPopup () {
       this.showSc = true
