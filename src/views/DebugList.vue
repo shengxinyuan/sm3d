@@ -3,6 +3,7 @@
     <router-link :to="v.path" v-for="(v, i) in routes.filter((v, i) => i > 0)" :key="i" tag="div" class="item">
       {{v.name}}
     </router-link>
+    <a href="/design.html">design.html</a>
   </div>
 </template>
 
