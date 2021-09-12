@@ -3,7 +3,7 @@
     <div>
       <div class="diamonds-count">
         <span class="num">864590颗钻石供您挑选</span>
-        <span class="filter-btn">筛选</span>
+        <span class="filter-btn" @click="filter">筛选</span>
       </div>
       <div class="diamond-weight-list">
         <span>30分</span>
@@ -41,6 +41,9 @@ export default {
   },
   computed: {},
   methods: {
+    filter() {
+      this.$router.replace('/diamondFilter')
+    },
     onLoad() {
       this.finished = true;
       // setTimeout(() => {
