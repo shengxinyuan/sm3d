@@ -1,13 +1,9 @@
 <template>
   <div class="home">
-    <router-link to="/design">
-      <div class="home-banner"></div>
-    </router-link>
+    <a href="/design.html"><div class="home-banner"></div></a>
     <div class="home-text"></div>
     <div class="home-tag"></div>
-    <router-link to="/design">
-      <div class="home-design"></div>
-    </router-link>
+    <a href="/design.html"><div class="home-design"></div></a>
     <router-link to="/mydesign">
       <div class="home-mydesign"></div>
     </router-link>

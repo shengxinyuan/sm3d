@@ -20,8 +20,6 @@ const config = {
 
 const getRequest = method => {
   return ({ baseUrl = config.env[env].apiBaseUrl, url, data, options = {} }) => {
-    // eslint-disable-next-line no-debugger
-    debugger
     console.log(url)
     return axios({
       baseUrl: baseUrl, // 请求域名地址
