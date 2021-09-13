@@ -15,7 +15,7 @@
             <van-row v-if="isEmpty">
               <van-col span="24" class="bag-empty__height"></van-col>
               <van-col span="24" class="bag-empty__img">
-                <img src="https://h5.zbird.com/static/icons/design-empty.png" width="50px" height="66px">
+                <img src="https://h5.zbird.com/static/icons/design-empty.png" width="25px" height="66px">
               </van-col>
               <van-col span="24">
                 <van-row span="24" class="bag-empty__p">
@@ -55,7 +55,7 @@
             <van-row v-if="isEmpty">
               <van-col span="24" class="bag-empty__height"></van-col>
               <van-col span="24" class="bag-empty__img">
-                <img src="https://h5.zbird.com/static/icons/design-empty.png" width="50px" height="66px">
+                <img src="https://h5.zbird.com/static/icons/design-empty.png" width="25px" height="66px">
               </van-col>
               <van-col span="24">
                 <van-row span="24" class="bag-empty__p">
@@ -169,16 +169,16 @@ export default {
       color: #000 !important;
     }
     .van-nav-bar__content {
-      height: 100px;
+      height: 50px;
     }
     .van-nav-bar__title {
-      line-height: 100px;
-      font-size: 32px;
+      line-height: 50px;
+      font-size: 16px;
       font-weight: 700 !important;
       color: #000;
     }
     .van-nav-bar__arrow {
-      font-size: 48px;
+      font-size: 24px;
     }
     .van-nav-bar__left, .van-nav-bar__right {
       padding: 16px;
@@ -189,8 +189,8 @@ export default {
     flex: 1;
     background-color: #3c3c44 !important;
     .van-tabs__wrap {
-      height: 100px;
-      margin-bottom: 12px;
+      height: 50px;
+      margin-bottom: 6px;
       width: 50%;
     }
     .van-tabs__nav {
@@ -198,17 +198,17 @@ export default {
     }
     .van-tab {
       color: #fff;
-      font-size: 28px;
-      line-height: 40px;
+      font-size: 14px;
+      line-height: 20px;
     }
     .van-tab--active {
-      line-height: 80px;
+      line-height: 40px;
       color: rgb(193, 177, 138);
-      font-size: 36px;
+      font-size: 18px;
     }
     .van-tabs__line {
       background-color: rgb(193, 177, 138);
-      width: 20px;
+      width: 10px;
       height: 4px;
     }
     .bag-tab__right {
@@ -217,22 +217,22 @@ export default {
       right: 0;
       background-color: rgb(72, 72, 79);
       color: rgb(157, 157, 157);
-      margin: 30px;
+      margin: 15px;
       width: 120px;
-      height: 40px;
-      line-height: 40px;
-      font-size: 28px;
-      border-radius: 100px;
+      height: 20px;
+      line-height: 20px;
+      font-size: 14px;
+      border-radius: 50px;
     }
     .bag-empty__height {
       height: 200px;
     }
     .bag-empty__p {
       color: #999;
-      height: 100px;
+      height: 50px;
       p {
-        line-height: 100px;
-        font-size: 30px;
+        line-height: 50px;
+        font-size: 15px;
       }
     }
   }
@@ -240,12 +240,12 @@ export default {
     width: 366px;
     height: 86px;
     line-height: 86px;
-    margin-top: 50px;
+    margin-top: 25px;
     background-color: rgb(193, 177, 138);
     color: rgb(60, 60, 68);
     border: unset;
-    border-radius: 100px;
-    font-size: 32px;
+    border-radius: 50px;
+    font-size: 16px;
   }
   .van-tabs__content {
     background-color: #3c3c44;
@@ -253,73 +253,73 @@ export default {
   .bag-list {
     .bag-list__p {
       text-align: center;
-      padding-top: 20px;
+      padding-top: 10px;
       color: rgb(193, 177, 138);
     }
     .bag-list__p--top {
-      font-size: 36px;
+      font-size: 18px;
       font-weight: 500;
     }
     .bag-list__p--middle {
-      font-size: 24px;
-      margin: 8px 0;
+      font-size: 12px;
+      margin: 4px 0;
     }
     .bag-list__p--bottom {
-      font-size: 30px;
+      font-size: 15px;
       font-weight: 700;
     }
     .bag-list__btns {
-      margin-top: 60px;
+      margin-top: 30px;
     }
     .bag-list__buy {
-      margin-top: 60px;
+      margin-top: 30px;
     }
     .bag-list__btn--left {
       width: 40vw;
       background-color: rgb(72, 72, 79);
       color: #fff;
-      height: 90px;
-      line-height: 90px;
-      font-size: 26px;
+      height: 45px;
+      line-height: 45px;
+      font-size: 13px;
       font-weight: 700;
-      margin: 60px 20px;
+      margin: 30px 10px;
     }
     .bag-list__btn--right {
       width: 40vw;
       background-color: rgb(72, 72, 79);
       background-color: #c1b18a;
-      height: 90px;
-      line-height: 90px;
-      font-size: 26px;
+      height: 45px;
+      line-height: 45px;
+      font-size: 13px;
       font-weight: 700;
-      margin: 60px 20px;
+      margin: 30px 10px;
     }
     .bag-list__btn--buy {
       width: 60vw;
-      height: 90px;
-      line-height: 90px;
-      margin: 20px auto auto;
+      height: 45px;
+      line-height: 45px;
+      margin: 10px auto auto;
       background-color: #c1b18a;
       color: rgb(60, 60, 68);
-      font-size: 26px;
+      font-size: 13px;
       font-weight: 700;
       text-align: center;
     }
   }
   .van-tabbar {
-    height: 8px;
+    height: 4px;
     background-color: #48484f;
   }
   .bag-btns {
-    height: 150px;
+    height: 60px;
     color: rgb(193, 177, 138);
     background-color: #48484f;
     display: flex;
     align-items: center;
-    padding-left: 64px;
+    padding-left: 32px;
     justify-content: space-between;
     .bag-btns__delete {
-      margin-left: 32px;
+      margin-left: 16px;
     }
   }
 }

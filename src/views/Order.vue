@@ -296,24 +296,24 @@ export default {
   }
   .order-tip {
     color: rgb(204, 204, 204);
-    font-size: 20px;
-    margin: 16px;
+    font-size: 12px;
+    margin: 8px;
   }
   .order-name {
     display: flex;
     align-items: flex-start;
-    padding: 24px 32px 24px 64px;
+    padding: 12px 16px 12px 32px;
     color: #fff;
     background: rgb(72, 72, 79);
     .van-cell.van-field {
       background-color: #3c3c44;
-      height: 50px;
+      height: 25px;
       padding: 0;
       color: #fff;
-      line-height: 50px;
+      line-height: 25px;
       .van-cell__title {
         width: auto;
-        padding-right: 12px;
+        padding-right: 6px;
         background: rgb(72, 72, 79);
         color: #fff;
       }
@@ -323,89 +323,89 @@ export default {
     }
   }
   .order-name__edit {
-    margin-left: 16px;
+    margin-left: 8px;
   }
   .order-tab {
     position: relative;
     flex: 1;
     background-color: #3c3c44 !important;
-    margin-bottom: 140px;
+    margin-bottom: 70px;
     .van-tabs__wrap {
-      margin-bottom: 12px;
+      margin-bottom: 6px;
       width: 50%;
-      height: 100px;
+      height: 50px;
     }
     .van-tabs__nav {
       background-color: #3c3c44 !important;
     }
     .van-tab {
       color: #fff;
-      font-size: 28px;
-      line-height: 40px;
+      font-size: 14px;
+      line-height: 20px;
     }
     .van-tab--active {
       color: rgb(193, 177, 138);
-      font-size: 36px;
-      line-height: 40px;
+      font-size: 18px;
+      line-height: 20px;
     }
     .van-tabs__line {
       background-color: rgb(193, 177, 138);
-      width: 20px;
-      height: 4px;
+      width: 10px;
+      height: 2px;
     }
   }
   .order-ks {
     background: rgb(72, 72, 79);
-    margin: 32px;
-    border-radius: 20px;
+    margin: 16px;
+    border-radius: 10px;
     color: rgb(255, 255, 255);
     display: flex;
     flex-direction: column;
     .order-cell {
-      height: 84px;
+      height: 42px;
       display: flex;
-      padding: 16px;
+      padding: 8px;
       align-items: center;
       .order-cell__label {
-        padding-left: 60px;
-        padding-right: 160px;
+        padding-left: 30px;
+        padding-right: 80px;
       }
       .order-cell__value {
-        width: 280px;
+        width: 140px;
         color: rgb(193, 177, 138);
         text-align: right;
       }
     }
     .order-cell__picker {
-      height: 120px;
+      height: 60px;
       .order-cell__value {
-        height: 52px;
+        height: 26px;
         display: flex;
         align-items: center;
         justify-content: center;
-        line-height: 52px;
+        line-height: 26px;
         text-align: right;
-        width: 240px;
-        margin-left: 40px;
+        width: 120px;
+        margin-left: 20px;
         background-color: rgb(84, 84, 91);
-        border-radius: 20px;
+        border-radius: 10px;
       }
       .order-cell__picker-icon {
         color: rgb(193, 177, 138);
-        margin-left: 8px;
+        margin-left: 4px;
       }
     }
     .order-help {
       color: #000;
-      padding: 32px 0;
+      padding: 16px 0;
       font-weight: 700;
       .my-swipe {
-        margin: 64px 0;
-        width: 630px;
-        height: 440px;
+        margin: 32px 0;
+        width: 315px;
+        height: 220px;
         .van-swipe__indicators {
           position: absolute;
-          top: 360px;
+          top: 180px;
           .van-swipe__indicator {
             background-color: #333;
           }
@@ -415,52 +415,51 @@ export default {
   }
   .bag-btns__count {
     color: rgb(193, 177, 138);
-    font-size: 18px;
+    font-size: 10px;
     font-weight: 700;
   }
   .bag-btns__mydesign {
-    margin: 0 40px;
+    margin: 0 20px;
   }
   .bag-btns {
     position: fixed;
     width: 100vw;
-    padding-bottom: 40px;
     bottom: 0;
     display: flex;
     align-items: center;
     background: #48484f;
-    height: 140px;
-    padding-right: 32px;
+    height: 70px;
+    padding-right: 16px;
   }
   .bag-bar {
     .van-icon {
       color: #000 !important;
     }
     .van-nav-bar__content {
-      height: 100px;
+      height: 50px;
     }
     .van-nav-bar__title {
-      line-height: 100px;
-      font-size: 32px;
+      line-height: 50px;
+      font-size: 16px;
       font-weight: 700 !important;
       color: #000;
     }
     .van-nav-bar__arrow {
-      font-size: 48px;
+      font-size: 24px;
     }
     .van-nav-bar__left, .van-nav-bar__right {
-      padding: 16px;
+      padding: 8px;
     }
   }
   .button {
-    width: 300px;
-    height: 60px;
-    line-height: 86px;
+    width: 160px;
+    height: 30px;
+    line-height: 43px;
     background-color: rgb(193, 177, 138);
     color: rgb(60, 60, 68);
     border: unset;
-    border-radius: 100px;
-    font-size: 32px;
+    border-radius: 50px;
+    font-size: 16px;
   }
 }
 </style>
