@@ -3,10 +3,18 @@
 
     <section class="filter-item">
       <div class="filter-item-label" @click="goback">钻石大小（克拉）</div>
-      <div @click="showPicker = true">
-        <div>1</div>
-        <div>1</div>
-        <div>1</div>
+      <div class="filter-item-value flex" @click="showPicker = true">
+        <div class="picker-value">
+          <div class="value">123</div>
+          <van-icon name="arrow-down" />
+          <div class="unit">ct</div>
+        </div>
+        <div>—</div>
+        <div class="picker-value">
+          <div class="value">123</div>
+          <van-icon name="arrow-down" />
+          <div class="unit">ct</div>
+        </div>
       </div>
       
     </section>
@@ -83,6 +91,10 @@
 </template>
 
 <script>
+const diamondSize = []
+for (let i = 0.3; i < 20.1; i= i + .1) {
+  diamondSize.push(i.toFixed(1))
+} 
 export default {
   components: {
   },
@@ -92,14 +104,12 @@ export default {
       showPicker: false,
       value: '',
       columns: [
-        // 第一列
         {
-          values: ['周一', '周二', '周三', '周四', '周五'],
+          values: diamondSize,
           defaultIndex: 2,
         },
-        // 第二列
         {
-          values: ['上午', '下午', '晚上'],
+          values: diamondSize,
           defaultIndex: 1,
         },
       ],
@@ -136,8 +146,30 @@ export default {
   flex-direction: column;
   padding: 15px 22px;
   text-align: left;
+  .flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .filter-item {
     margin-top: 10px;
+    .picker-value {
+      display: flex;
+      align-items: center;
+      width: 140px;
+      height: 30px;
+      border-radius: 15px;
+      background-color: #48484f;
+      color: #c1b18a;
+      margin: 0 15px;
+      .value {
+        flex: 1;
+        text-align: center;
+      }
+      .unit {
+        margin: 0 12px 0 16px;
+      }
+    }
     .filter-item-value {
       display: flex;
       align-items: center;

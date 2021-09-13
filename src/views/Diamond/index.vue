@@ -46,6 +46,9 @@ export default {
     };
   },
   computed: {},
+  created() {
+    // this.$get('')
+  },
   methods: {
     filter() {
       this.filterStatus = true;
