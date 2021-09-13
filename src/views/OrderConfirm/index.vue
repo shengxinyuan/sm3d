@@ -9,8 +9,8 @@
       </div>
       <div class="order-info-cont flex">
         <div class="flex1">
-          <p><span>李明</span><span class="phone-num">18323992200</span></p>
-          <p>上海市浦东新区碧波路690号</p>
+          <p><span>李明</span><span class="phone-num">18323992100</span></p>
+          <p class="address">上海市浦东新区碧波路690号</p>
         </div>
         <van-icon name="arrow" />
       </div>
@@ -25,7 +25,7 @@
       </div>
       <div class="order-info-cont">
         <div>
-          <img src="https://admin.zbird.com/storage/uploads/images/2021/09/01/8UrCONYnQH4OlRt99NUL6rh7qkCHra0YeEMluwEt.png" width="300px" height="300px">
+          <img src="../../assets/diamond-list/diamond-view.png" width="100%">
         </div>
         <div class="order-cell">
           <span class="order-cell__label">款式：</span>
@@ -66,16 +66,16 @@
           订单金额
         </div>
         <div class="title yellow">
-          ¥ 12300
+          ¥ 12150
         </div>
       </div>
       <div class="order-info-cont">
         <div class="flex">
           <van-icon name="cash-back-record icon-style" />
           <div class="flex1">商品金额</div>
-          <div>¥ 12300</div>
+          <div>¥ 12150</div>
         </div>
-        <div class="flex pt20">
+        <div class="flex pt10">
           <van-icon name="coupon-o icon-style" />
           <div class="flex1">优惠券</div>
           <div>¥ -0</div>
@@ -110,7 +110,7 @@ export default {
       },
       zsInfo: {
         zs: 'GIA 232813821738',
-        zz: '0.30ct',
+        zz: '0.15ct',
         xz: '圆形',
         ys: 'K',
         jd: 'SI2',
@@ -137,7 +137,7 @@ export default {
   flex-direction: column;
   text-align: left;
   overflow: scroll;
-  padding-bottom: 150px;
+  padding-bottom: 75px;
   .flex {
     display: flex;
     align-items: center;
@@ -148,46 +148,49 @@ export default {
   .yellow {
     color: rgb(193, 177, 138);
   }
-  .pt20 {
-    padding-top: 20px;
+  .pt10 {
+    padding-top: 10px;
   }
   .order-info-item {
     background: rgb(72, 72, 79);
     border-radius: 10px;
-    margin: 20px 20px 0;
+    margin: 10px 10px 0;
     .order-title-cont {
-      padding: 30px;
+      padding: 15px;
       border-bottom: 1px solid rgb(60, 60, 68);
       .title {
-        font-size: 28px;
+        font-size:14px;
       }
     }
     .order-info-cont {
-      padding: 30px;
+      padding: 15px;
+      .address {
+        margin-top: 10px;
+      }
       .order-cell {
-        font-size: 24px;
+        font-size: 12px;
         line-height: 2;
       }
       .phone-num {
-        margin-left: 20px;
+        margin-left: 10px;
         color: #ccc;
       }
     }
     .cont-info-more {
       border-top: 1px solid rgb(60, 60, 68);
-      padding: 30px;
+      padding: 15px;
       .remark-label {
-        margin-right: 20px;
+        margin-right: 10px;
       }
       .remark {
         background: rgb(72, 72, 79);
         border: 0;
-        font-size: 28px;
+        font-size:14px;
       }
     }
     .icon-style {
       margin-bottom: 4px;
-      margin-right: 20px;
+      margin-right: 10px;
     }
     
   }
@@ -197,20 +200,20 @@ export default {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 120px;
+    height: 55px;
     background-color: rgb(72, 72, 79);
     .btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
-      height: 80px;
-      border-radius: 40px;
+      font-size: 15px;
+      height: 40px;
+      border-radius: 20px;
       width: 100%;
-      margin: 20px 30px;
+      margin: 10px 15px;
       background-color: rgb(193, 177, 138);
       color: rgb(60, 60, 68);
-      font-size: 32px;
+      font-size: 16px;
     }
   }
 }

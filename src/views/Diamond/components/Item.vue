@@ -1,7 +1,7 @@
 <template>
   <div class="diamond-item">
     <div class="diamond-item-img-box">
-      <img class="diamond-item-img" src="../../assets/diamond-list/diamond.webp" alt="">
+      <img class="diamond-item-img" src="../../../assets/diamond-list/diamond.webp" alt="">
       <div class="diamond-img-tip"></div>
       <div class="diamond-ct">0.30ct</div>
       <div class="diamond-count">￥1,230</div>
@@ -44,6 +44,7 @@
 
 <script>
 export default {
+  name: 'diamondItem',
   components: {},
   data() {
     return {
@@ -73,59 +74,59 @@ export default {
 <style lang="scss" scoped>
 .diamond-item {
   background: rgb(72, 72, 79);
-  border-radius: 10px;
+  border-radius: 5px;
   display: flex;
-  margin: 12px 30px 0 30px;
+  margin: 6px 15px 0 15px;
   overflow: hidden;
   align-items: center;
   .diamond-item-img-box {
     position: relative;
     width: 30%;
     background: rgb(193, 177, 138);
-    padding: 30px 0;
+    padding: 15px 0;
     color: rgb(52, 52, 60);
     .diamond-item-img {
-      width: 80px;
+      width: 40px;
     }
     .diamond-img-tip {
       position: absolute;
       left: 0;
       top: 0;
-      width: 104px;
-      height: 104px;
-      background: url('../../assets/diamond-list/natural.png') no-repeat center/100%;
+      width: 52px;
+      height: 52px;
+      background: url('../../../assets/diamond-list/natural.png') no-repeat center/100%;
     }
     .diamond-ct {
-      font-size: 20px;
-      margin: 20px 0;
+      font-size: 10px;
+      margin: 10px 0;
     }
     .diamond-count {
-      font-size: 28px;
+      font-size: 14px;
     }
   }
   .info-box {
     width: 70%;
     height: 100%;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     .info-item-GIA {
       display: flex;
-      height: 60px;
+      height: 30px;
       align-items: center;
-      font-size: 24px;
+      font-size: 12px;
       color: rgb(153, 153, 153);
-      line-height: 40px;
+      line-height: 20px;
       .num {
         flex: 1;
         text-align: left;
       }
       .desc-btn {
         border: 1px solid rgb(193, 177, 138);
-        border-radius: 20px;
-        height: 40px;
-        margin-left: 20px;
-        font-size: 22px;
+        border-radius: 10px;
+        height: 20px;
+        margin-left: 10px;
+        font-size: 12px;
       }
     }
     .info-item {
@@ -134,17 +135,17 @@ export default {
         flex: 1;
         .label {
           display: block;
-          font-size: 24px;
+          font-size: 12px;
           color: #fff;
-          height: 60px;
-          line-height: 60px;
+          height: 30px;
+          line-height: 30px;
         }
         .value {
           display: block;
-          font-size: 24px;
+          font-size: 12px;
           color: rgb(193, 177, 138);
-          height: 60px;
-          line-height: 60px;
+          height: 30px;
+          line-height: 30px;
         }
       }
     }
