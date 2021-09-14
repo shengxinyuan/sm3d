@@ -5,13 +5,13 @@
       <div class="filter-item-label" @click="goback">钻石大小（克拉）</div>
       <div class="filter-item-value flex" @click="showPicker = true">
         <div class="picker-value">
-          <div class="value">123</div>
+          <div class="value">{{num1}}</div>
           <van-icon name="arrow-down" />
           <div class="unit">ct</div>
         </div>
         <div>—</div>
         <div class="picker-value">
-          <div class="value">123</div>
+          <div class="value">{{num2}}</div>
           <van-icon name="arrow-down" />
           <div class="unit">ct</div>
         </div>
@@ -75,7 +75,7 @@
     </section>
 
     <div class="btns-box">
-      <a class="btn-reset" @click="goback">重置</a>
+      <a class="btn-reset" @click="reset">重置</a>
       <a class="btn" @click="goback">确认筛选</a>
     </div>
 
@@ -85,6 +85,7 @@
         :columns="columns"
         @cancel="showPicker = false"
         @confirm="onConfirm"
+        @change="onChange"
       />
     </van-popup>
   </div>
@@ -95,6 +96,11 @@ const diamondSize = []
 for (let i = 0.3; i < 20.1; i= i + .1) {
   diamondSize.push(i.toFixed(1))
 } 
+const defaultVal = {
+  num1: '0.3',
+  num2: '1.0',
+}
+
 export default {
   components: {
   },
@@ -102,31 +108,48 @@ export default {
   data() {
     return {
       showPicker: false,
-      value: '',
-      columns: [
-        {
-          values: diamondSize,
-          defaultIndex: 2,
-        },
-        {
-          values: diamondSize,
-          defaultIndex: 1,
-        },
-      ],
+      num1: defaultVal.num1,
+      num2: defaultVal.num2,
     };
   },
-  computed: {},
+  computed: {
+    columns() {
+      return [
+        {
+          values: diamondSize,
+          defaultIndex: 0,
+        },
+        {
+          values: diamondSize.filter(v => +v > this.num1),
+          defaultIndex: 7,
+        },
+      ]
+    }
+  },
   created() {
+
   },
   mounted() {
   },
   methods: {
+    reset() {
+      for (let v in defaultVal) {
+        this[v] = defaultVal[v]
+      }
+    },
     goback() {
       this.$emit('close')
     },
-    onConfirm(value) {
-      this.value = value;
-      this.showPicker = false;
+    onChange(_, val) {
+      const [num1, num2] = val
+      this.num1 = num1
+      this.num2 = num2
+    },
+    onConfirm(val) {
+      const [num1, num2] = val
+      this.num1 = num1
+      this.num2 = num2
+      this.showPicker = false
     }
   },
 };
@@ -182,6 +205,7 @@ export default {
         text-align: center;
         height: 32px;
         line-height: 32px;
+        min-width: 32px;
         border-radius: 16px;
         background-color: #48484f;
         color: #c1b18a;
