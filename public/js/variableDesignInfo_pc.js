@@ -31,6 +31,13 @@ let ring_print
 let second_diamond_id
 let second_diamond_text
 
+
+var iframe = document.createElement('iframe');
+iframe.setAttribute("src", "yourIframeURL");
+iframe.setAttribute("style", "display:none;");
+document.body.appendChild(iframe);
+let iframeWindow = iframe.contentWindow;
+
 //------------------------------------函数------------------------------------
 /**
  * 获取url参数
@@ -824,6 +831,7 @@ $(document).ready(function(){
         partIds += item[0].id+","
     })
     partIds = partIds.substring(0, partIds.length-1)
+    iframeWindow.console.log(designInfo, designInfo.mainParts[0].id, partIds);
     my3d.loadVarDesign(designInfo, designInfo.mainParts[0].id, partIds);
 
 
@@ -1123,18 +1131,30 @@ $('.rotate button').click(function () {
     my3d.setPartRotation(nowPartId, 'y', jd)
 })
 
+let a = false
 
 $('.bag-list__btn--buy').click(function () {
-    let query = encodeURI('?'
-        + `ring_arm_id=${ring_arm_id||0}` // 戒臂id
-        + `&flower_head_id=${flower_head_id||0}` // 花头Id
-        + `&texture_id=${texture_id||2}` // 材质id
-        + `&texture_text=${texture_text||'18K白'}` // 材质文本
-        + `&ring_print=${ring_print||''}` // 刻字
-        + `&second_diamond_id=${second_diamond_id||1}` // 辅钻id
-        + `&second_diamond_text=${second_diamond_text||''}` // 辅钻文本
-    )
-    window.location.href = './order' + query
+    // 输出当前的图片
+    iframeWindow.console.log(my3d.getDesignImage());
+    // 输出当前的配置信息
+    iframeWindow.console.log(my3d.getUserDiyInfo());
+    // 配合上面的boolean a实现每两次记载一下设计信息
+    if (a) {
+        my3d.loadVarDesign(designInfo, ring_arm_id, flower_head_id);
+        a = !a
+    } else {
+        a = !a
+    }
+    // let query = encodeURI('?'
+    //     + `ring_arm_id=${ring_arm_id||0}` // 戒臂id
+    //     + `&flower_head_id=${flower_head_id||0}` // 花头Id
+    //     + `&texture_id=${texture_id||2}` // 材质id
+    //     + `&texture_text=${texture_text||'18K白'}` // 材质文本
+    //     + `&ring_print=${ring_print||''}` // 刻字
+    //     + `&second_diamond_id=${second_diamond_id||1}` // 辅钻id
+    //     + `&second_diamond_text=${second_diamond_text||''}` // 辅钻文本
+    // )
+    // window.location.href = './order' + query
     // $.ajax({
     //     // url: apiUrl + "api/design/saveDesign",
     //     url: 'https://yapi.kyy1996.com/mock/29/api/design/saveDesign',
