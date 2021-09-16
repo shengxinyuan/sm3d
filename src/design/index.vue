@@ -1,10 +1,12 @@
 <template>
   <div class="design">
-    {{ $store.state.optionList }}
+    {{ $store.state }}
   </div>
 </template>
 
 <script>
+import { resourceDomainName, normalMapUrl, baseUrl } from './const'
+
 export default {
   components: {},
   props: [],
@@ -20,15 +22,37 @@ export default {
     this.iframeWindow = iframe.contentWindow;
     // end iframe
 
-    this.$store.dispatch("loadUserInfo");
+    // 加载账号信息
+    this.$store.dispatch('loadUserInfo')
+    
+    // 请求：材质、宝石、设计数据
+    this.$store.dispatch('loadMetalWeb')
+    this.$store.dispatch('loadGemWeb')
+    this.$store.dispatch('loadDesignInfo')
   },
   mounted() {
-    this.iframeWindow.console.log(Bavlo);
+    this.iframeWindow.console.log(this.$store);
     // this.init3D();
   },
   methods: {
     // 初始化3D
-    init3D() {
+    async init3D() {
+      const {
+        userInfo,
+        metals,
+        designInfo,
+        partIds,
+        parts,
+        otherGems,
+        metalWeb,
+        metalWebDefault,
+        gemWeb,
+        gemWebDefault,
+        materialWeb,
+        materialWebDefault,
+        webModelPics,
+      } = this.$store.state
+
       // 加载3D第一步：初始化3D场景
       this.my3d = Bavlo.initWeb3D(
         baseUrl,
@@ -45,11 +69,6 @@ export default {
       };
 
       // 加载3D第三步：初始化web材质
-      //this.$store.dispatch("loadMetalWeb");
-      // this.$store.dispatch("loadGemWeb");
-      this.loadMetalWeb()
-      this.loadGemWeb()
-      
       this.my3d.initUserMatInfo(
         metalWebDefault,
         metalWeb,
@@ -58,47 +77,14 @@ export default {
       );
 
       // 加载3D第四步：设置3D场景背景色
-      this.my3d.changeBackground("#ccc");
+      this.my3d.changeBackground('#ccc');
 
       // 加载3D第五步：加载款式3D
-      loadDesignInfo();
-      let partIds = "";
-      let parts = [];
-      designInfo.parts.filter(function (item) {
-        parts.push.apply(parts, item);
-        partIds += item[0].id + ",";
-      });
-      partIds = partIds.substring(0, partIds.length - 1);
-      iframeWindow.console.log(designInfo, designInfo.mainParts[0].id, partIds);
       my3d.loadVarDesign(designInfo, designInfo.mainParts[0].id, partIds);
-
-      //处理配件按类型分组
-      const map = {},
-        dest = [];
-      for (let i = 0; i < parts.length; i++) {
-        let ai = parts[i];
-        if (!map[ai.partType.id]) {
-          dest.push({
-            id: ai.partType.id,
-            name: ai.partType.name,
-            data: [ai],
-          });
-          map[ai.partType.id] = ai;
-        } else {
-          for (let j = 0; j < dest.length; j++) {
-            let dj = dest[j];
-            if (dj.id == ai.partType.id) {
-              dj.data.push(ai);
-              break;
-            }
-          }
-        }
-      }
-      this.partsGroupByType = dest;
-
-      //当前零件ID
-      this.nowPartId = designInfo.mainParts[0].id;
-      setTimeout(loadNormalUI(), 500);
+      
+      setTimeout(() => {
+        this.loadNormalUI()
+      }, 500);
       this.loadLjs(2);
     },
 
@@ -170,212 +156,8 @@ export default {
         });
         $(".cts").hide();
         $(".ljs").html(tjHtml);
-        loadNormalUI();
+        this.loadNormalUI();
       }
-    },
-
-    /**
-     * 获取金属材质列表（用于切换材质）
-     * @param userId
-     */
-    loadMetalList(userId) {
-      $.ajax({
-        url: apiUrl + "app/findUserMetalByUser",
-        type: "POST",
-        data: { userId: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-          data = $.parseJSON(data);
-          if (data.code === 0) {
-            if (data.list.length > 0) {
-              metals = [];
-              data.list.filter(function (item) {
-                metals.push(item.metal);
-              });
-            } else {
-              $.ajax({
-                url: apiUrl + "app/desMetalList",
-                type: "POST",
-                crossDomain: true,
-                async: false,
-                success: function (data) {
-                  data = $.parseJSON(data);
-                  if (data.code === 0) {
-                    metals = data.list;
-                  } else {
-                    myAlert("数据加载失败！", "alert-danger");
-                  }
-                },
-              });
-            }
-          } else {
-            myAlert("数据加载失败！", "alert-danger");
-          }
-        },
-      });
-    },
-
-    /**
-     * 获取宝石材质列表（用于切换材质）
-     * @param userId
-     */
-    loadGemList(userId) {
-      $.ajax({
-        url: apiUrl + "app/findUserGemByUser",
-        type: "POST",
-        data: { userId: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-          data = $.parseJSON(data);
-          if (data.code === 0) {
-            gems = data.list;
-            if (data.list.length > 0) {
-              gems = [];
-              data.list.filter(function (item) {
-                gems.push(item.gem);
-              });
-            } else {
-              $.ajax({
-                url: apiUrl + "app/desGemList",
-                type: "POST",
-                crossDomain: true,
-                async: false,
-                success: function (data) {
-                  data = $.parseJSON(data);
-                  if (data.code === 0) {
-                    gems = data.list;
-                  } else {
-                    myAlert("数据加载失败！", "alert-danger");
-                  }
-                },
-              });
-            }
-          } else {
-            myAlert("数据加载失败！", "alert-danger");
-          }
-        },
-      });
-    },
-
-    /**
-     * 获取其它宝石列表（用于切换材质）
-     */
-    loadOtherGemList() {
-      $.ajax({
-        url: apiUrl + "app/otherGemList",
-        type: "POST",
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-          data = $.parseJSON(data);
-          if (data.code === 0) {
-            otherGems = data.list;
-          } else {
-            myAlert("数据加载失败！", "alert-danger");
-          }
-        },
-      });
-    },
-
-    /**
-     * 获取金属web材质参数（用于渲染）
-     * @param userId
-     */
-    loadMetalWeb(userId) {
-      $.ajax({
-        url: apiUrl + "app/findMetalWebsByUser",
-        type: "POST",
-        data: { userId: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-          data = $.parseJSON(data);
-          if (data.code === 0) {
-            if (userId == 0) {
-              metalWebDefault = data.list;
-            } else {
-              metalWeb = data.list;
-            }
-          } else {
-            myAlert("数据加载失败！", "alert-danger");
-          }
-        },
-      });
-    },
-
-    /**
-     * 获取宝石web材质列表（用于渲染）
-     * @param userId
-     */
-    loadGemWeb(userId) {
-      $.ajax({
-        url: apiUrl + "app/findGemWebsByUser",
-        type: "POST",
-        data: { userId: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-          data = $.parseJSON(data);
-          if (data.code === 0) {
-            if (userId == 0) {
-              gemWebDefault = data.list;
-            } else {
-              gemWeb = data.list;
-            }
-          } else {
-            myAlert("数据加载失败！", "alert-danger");
-          }
-        },
-      });
-    },
-
-    /**
-     * 获取其它材质web材质列表（用于渲染、切换材质）
-     * @param userId
-     */
-    loadMaterialWeb(userId) {
-      $.ajax({
-        url: apiUrl + "app/findMaterialWebsByUserAndType",
-        type: "POST",
-        data: { userId: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-          data = $.parseJSON(data);
-          if (data.code === 0) {
-            if (userId == 0) {
-              materialWebDefault = data.list;
-            } else {
-              materialWeb = data.list;
-            }
-          } else {
-            myAlert("数据加载失败！", "alert-danger");
-          }
-        },
-      });
-    },
-
-    /**
-     * 获取试戴背景图列表
-     */
-    loadModelPicList() {
-      $.ajax({
-        url: apiUrl + "app/webModelPicList",
-        type: "POST",
-        data: { userId: uNo, desTypeId: designInfo.type.id },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-          data = $.parseJSON(data);
-          if (data.code === 0) {
-            webModelPics = data.list;
-          } else {
-            myAlert("数据加载失败！", "alert-danger");
-          }
-        },
-      });
     },
 
     /**
@@ -413,7 +195,7 @@ export default {
         i++;
       });
       $(".ljs").html(tjHtml);
-      loadNormalUI();
+      this.loadNormalUI();
     },
 
     /**
@@ -565,7 +347,8 @@ export default {
           if (item.type == 0) {
             if (metals) {
             } else {
-              this.loadMetalList(uNo);
+              // 获取金属材质列表
+              this.$store.dispatch('loadMetalList')
             }
             metals.filter(function (item1) {
               let classHtml = "";
@@ -592,7 +375,8 @@ export default {
             if (item.ogType === 0) {
               if (gems) {
               } else {
-                this.loadGemList(uNo);
+                // 获取宝石材质列表（用于切换材质）
+                this.$store.dispatch('loadGemList')
               }
               gems.filter(function (item1) {
                 if (item1.faceType == item.gem.faceType) {
@@ -623,7 +407,8 @@ export default {
             } else if (item.ogType === 1) {
               if (otherGems) {
               } else {
-                this.loadOtherGemList();
+                // 获取其它宝石列表（用于切换材质）
+                this.$store.dispatch('loadOtherGemList')
               }
               let otherGemsDetail = otherGems.filter(function (item1) {
                 return item1.id == item.otherGem.gemType.id;
@@ -662,7 +447,8 @@ export default {
           if (item.type >= 2) {
             if (materialWeb) {
             } else {
-              this.loadMaterialWeb(uNo);
+              // 获取其它材质web材质列表（用于渲染、切换材质）
+              this.$store.dispatch('loadMaterialWeb')
             }
             if (materialWeb) {
               materialWeb.filter(function (item1) {
@@ -890,127 +676,7 @@ export default {
       });
     },
 
-    /**
-     * 加载账号信息
-     * @param userId
-     */
-    loadUserInfo(userId) {
-      $.ajax({
-        url: apiUrl + "app/userInfo",
-        type: "POST",
-        data: { id: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-          data = $.parseJSON(data);
-          if (data.code === 0) {
-            userInfo = data.user;
-          } else {
-            console.log("数据加载失败！");
-          }
-        },
-      });
-    },
 
-    /**
-     * 加载款式信息
-     */
-    loadDesignInfo() {
-      let layerInfo = "";
-      $.ajax({
-        url: apiUrl + "app/getVariableDesignLayerInfo",
-        type: "POST",
-        data: { id: desNo },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-          data = $.parseJSON(data);
-          if (data.code === 0) {
-            designInfo = data.info;
-            ring_arm_id = designInfo.mainParts[0].id;
-            flower_head_id = designInfo.parts[0][0].id;
-            second_diamond_id = designInfo.material.id;
-            second_diamond_text = designInfo.material.nameCn;
-          } else {
-            console.log("数据加载失败！");
-          }
-        },
-      });
-    },
-
-    /**
-     * 加载贴图信息UI
-     */
-    loadNormalUI() {
-      let normals;
-      let layerName;
-      if (nowAsType == 1) {
-        designInfo.parts.filter(function (item) {
-          item.filter(function (item1) {
-            if (item1.id == nowPartId) {
-              item1.layers.filter(function (item2) {
-                if (item2.normal.length > 0) {
-                  normals = item2.normal;
-                  layerName = item2.name;
-                }
-              });
-            }
-          });
-        });
-      } else {
-        designInfo.mainParts.filter(function (item) {
-          if (item.id == nowPartId) {
-            item.layers.filter(function (item1) {
-              if (item1.normal.length > 0) {
-                normals = item1.normal;
-                layerName = item1.name;
-              }
-            });
-          }
-        });
-      }
-      if (normals) {
-        let tjHtml = "";
-        normals.filter(function (item) {
-          let imgHtml = "";
-          if (item.onOff && item.mapNames) {
-            let maps = item.mapNames;
-            maps.filter(function (item1) {
-              imgHtml +=
-                '<div nd="' +
-                item.id +
-                '"><img src="' +
-                normalMapUrl +
-                item.id +
-                "/" +
-                item1.imgName +
-                '" crossorigin="anonymous"/></div>\n';
-            });
-            tjHtml += "<div >\n" + imgHtml + "</div>";
-          }
-        });
-        $(".normals").html(tjHtml);
-
-        if (tjHtml) {
-          $(".normals>div div img").click(function () {
-            let nd = $(this).parent().attr("nd");
-            let normal = normals.filter(function (item) {
-              return item.id == nd;
-            })[0];
-            let imgSrc = $(this).attr("src");
-            let defaultMap = imgSrc.substring(imgSrc.lastIndexOf("/") + 1);
-            my3d.updateSubLayerMaterialNormalMap(
-              nowPartId,
-              layerName,
-              normal.id,
-              normal.sort,
-              normal.onOff,
-              defaultMap
-            );
-          });
-        }
-      }
-    },
   },
 };
 </script>

@@ -29,232 +29,33 @@ let ring_print
 let second_diamond_id
 let second_diamond_text
 
-
-var iframe = document.createElement('iframe');
-iframe.setAttribute("src", "yourIframeURL");
-iframe.setAttribute("style", "display:none;");
-document.body.appendChild(iframe);
-let iframeWindow = iframe.contentWindow;
-
 //------------------------------------函数------------------------------------
-/**
- * 获取url参数
- * @param variable
- * @returns {string|boolean}
- */
-function getQueryVariable(variable) {
-    var query = window.location.search.substring(1);
-    var vars = query.split("&");
-    for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split("=");
-        if (pair[0] == variable) { return pair[1]; }
-    }
-    return (false);
-}
+// done 1 加载账号信息
+function loadUserInfo() {}
 
-/**
- * 获取金属材质列表（用于切换材质）
- * @param userId
- */
-function loadMetalList(userId) {
-    $.ajax({
-        url: apiUrl + "app/findUserMetalByUser",
-        type: "POST",
-        data: { userId: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-            data = $.parseJSON(data);
-            if (data.code === 0) {
-                if (data.list.length > 0) {
-                    metals = []
-                    data.list.filter(function (item) {
-                        metals.push(item.metal)
-                    })
-                } else {
-                    $.ajax({
-                        url: apiUrl + "app/desMetalList",
-                        type: "POST",
-                        crossDomain: true,
-                        async: false,
-                        success: function (data) {
-                            data = $.parseJSON(data);
-                            if (data.code === 0) {
-                                metals = data.list
-                            } else {
-                                myAlert('数据加载失败！', 'alert-danger')
-                            }
-                        }
-                    });
-                }
-            } else {
-                myAlert('数据加载失败！', 'alert-danger')
-            }
-        }
-    });
-}
+// done 2 获取金属材质列表（用于切换材质）
+function loadMetalList() {}
 
-/**
- * 获取宝石材质列表（用于切换材质）
- * @param userId
- */
-function loadGemList(userId) {
-    $.ajax({
-        url: apiUrl + "app/findUserGemByUser",
-        type: "POST",
-        data: { userId: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-            data = $.parseJSON(data);
-            if (data.code === 0) {
-                gems = data.list
-                if (data.list.length > 0) {
-                    gems = []
-                    data.list.filter(function (item) {
-                        gems.push(item.gem)
-                    })
-                } else {
-                    $.ajax({
-                        url: apiUrl + "app/desGemList",
-                        type: "POST",
-                        crossDomain: true,
-                        async: false,
-                        success: function (data) {
-                            data = $.parseJSON(data);
-                            if (data.code === 0) {
-                                gems = data.list
-                            } else {
-                                myAlert('数据加载失败！', 'alert-danger')
-                            }
-                        }
-                    });
-                }
-            } else {
-                myAlert('数据加载失败！', 'alert-danger')
-            }
-        }
-    });
-}
+// done 3 加载款式信息
+function loadDesignInfo() {}
 
-/**
- * 获取其它宝石列表（用于切换材质）
- */
-function loadOtherGemList() {
-    $.ajax({
-        url: apiUrl + "app/otherGemList",
-        type: "POST",
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-            data = $.parseJSON(data);
-            if (data.code === 0) {
-                otherGems = data.list
-            } else {
-                myAlert('数据加载失败！', 'alert-danger')
-            }
-        }
-    });
-}
+// done 4 获取宝石材质列表（用于切换材质）
+function loadGemList() {}
 
-/**
- * 获取金属web材质参数（用于渲染）
- * @param userId
- */
-function loadMetalWeb(userId) {
-    $.ajax({
-        url: apiUrl + "app/findMetalWebsByUser",
-        type: "POST",
-        data: { userId: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-            data = $.parseJSON(data);
-            if (data.code === 0) {
-                if (userId == 0) {
-                    metalWebDefault = data.list
-                } else {
-                    metalWeb = data.list
-                }
-            } else {
-                myAlert('数据加载失败！', 'alert-danger')
-            }
-        }
-    });
-}
+// done 5 获取其它宝石列表（用于切换材质）
+function loadOtherGemList() {}
 
-/**
- * 获取宝石web材质列表（用于渲染）
- * @param userId
- */
-function loadGemWeb(userId) {
-    $.ajax({
-        url: apiUrl + "app/findGemWebsByUser",
-        type: "POST",
-        data: { userId: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-            data = $.parseJSON(data);
-            if (data.code === 0) {
-                if (userId == 0) {
-                    gemWebDefault = data.list
-                } else {
-                    gemWeb = data.list
-                }
-            } else {
-                myAlert('数据加载失败！', 'alert-danger')
-            }
-        }
-    });
-}
+// done 6 获取金属web材质参数（用于渲染）
+function loadMetalWeb() {}
 
-/**
- * 获取其它材质web材质列表（用于渲染、切换材质）
- * @param userId
- */
-function loadMaterialWeb(userId) {
-    $.ajax({
-        url: apiUrl + "app/findMaterialWebsByUserAndType",
-        type: "POST",
-        data: { userId: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-            data = $.parseJSON(data);
-            if (data.code === 0) {
-                if (userId == 0) {
-                    materialWebDefault = data.list
-                } else {
-                    materialWeb = data.list
-                }
-            } else {
-                myAlert('数据加载失败！', 'alert-danger')
-            }
-        }
-    });
-}
+// done 7 获取宝石web材质列表（用于渲染）
+function loadGemWeb() {}
 
-/**
- * 获取试戴背景图列表
- */
-function loadModelPicList() {
-    $.ajax({
-        url: apiUrl + "app/webModelPicList",
-        type: "POST",
-        data: { userId: uNo, desTypeId: designInfo.type.id },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-            data = $.parseJSON(data);
-            if (data.code === 0) {
-                webModelPics = data.list
-            } else {
-                myAlert('数据加载失败！', 'alert-danger')
-            }
-        }
-    });
-}
+// done 8 获取其它材质web材质列表（用于渲染、切换材质）
+function loadMaterialWeb() {}
+
+// done 9 获取试戴背景图列表
+function loadModelPicList() {}
 
 /**
  * 加载花头组UI信息
@@ -658,53 +459,6 @@ function loadDiy() {
     })
 }
 
-/**
- * 加载账号信息
- * @param userId
- */
-function loadUserInfo(userId) {
-    $.ajax({
-        url: apiUrl + "app/userInfo",
-        type: "POST",
-        data: { id: userId },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-            data = $.parseJSON(data);
-            if (data.code === 0) {
-                userInfo = data.user;
-            } else {
-                console.log("数据加载失败！");
-            }
-        }
-    });
-}
-
-/**
- * 加载款式信息
- */
-function loadDesignInfo() {
-    let layerInfo = '';
-    $.ajax({
-        url: apiUrl + "app/getVariableDesignLayerInfo",
-        type: "POST",
-        data: { id: desNo },
-        crossDomain: true,
-        async: false,
-        success: function (data) {
-            data = $.parseJSON(data);
-            if (data.code === 0) {
-                designInfo = data.info;
-                ring_arm_id = designInfo.mainParts[0].id
-                flower_head_id = designInfo.parts[0][0].id
-                second_diamond_id = designInfo.material.id
-                second_diamond_text = designInfo.material.nameCn
-            } else {
-                console.log("数据加载失败！");
-            }
-        }
-    });
-}
 
 /**
  * 加载贴图信息UI
@@ -768,16 +522,9 @@ function loadNormalUI() {
 
 //------------------------------------页面初始化------------------------------------
 //获取ID信息
-uNo = getQueryVariable("userNo");
 uNo = 20230;
-desNo = getQueryVariable("desNo");
 desNo = 30163;
-
 loadUserInfo(uNo)
-document.getElementsByTagName("title")[0].innerText = userInfo.name;
-$('.top div:eq(0) text:eq(0)').html(userInfo.name);
-$('.top div:eq(1)').html(userInfo.brand.xcxIndexTitle);//+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系人&nbsp;：'+userInfo.realName
-$('.footer').html(userInfo.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电话&nbsp;：' + userInfo.contactPhone)
 
 //初始化
 $(document).ready(function () {
@@ -839,9 +586,6 @@ $(document).ready(function () {
 });
 
 
-window.onresize = function () {
-    my3d.onWindowResize(2)
-}
 
 //------------------------------------事件处理------------------------------------
 //操作提示展示
@@ -1035,43 +779,4 @@ $('.bag-list__btn--buy').click(function () {
     } else {
         a = !a
     }
-    // let query = encodeURI('?'
-    //     + `ring_arm_id=${ring_arm_id||0}` // 戒臂id
-    //     + `&flower_head_id=${flower_head_id||0}` // 花头Id
-    //     + `&texture_id=${texture_id||2}` // 材质id
-    //     + `&texture_text=${texture_text||'18K白'}` // 材质文本
-    //     + `&ring_print=${ring_print||''}` // 刻字
-    //     + `&second_diamond_id=${second_diamond_id||1}` // 辅钻id
-    //     + `&second_diamond_text=${second_diamond_text||''}` // 辅钻文本
-    // )
-    // window.location.href = './order' + query
-    // $.ajax({
-    //     // url: apiUrl + "api/design/saveDesign",
-    //     url: 'https://yapi.kyy1996.com/mock/29/api/design/saveDesign',
-    //     type: "POST",
-    //     crossDomain: true,
-    //     async: false,
-    //     data: {
-    //         flower_head_id: '',
-    //         ring_arm_id: '',
-    //         diamond_id: '',
-    //         ring_print: '',
-    //         texture_id: '',
-    //         title: '',
-    //         ring_size: '',
-    //         good_type: '',
-    //         member_id: '',
-    //         preview_image: '',
-    //         second_diamond_id: '',
-    //     },
-    //     success: function (data) {
-    //         // data = $.parseJSON(data);
-    //         if(data.code === 0){
-    //             console.log(data)
-    //             window.location.href = './order?bn='+data.data.custId
-    //         }else{
-    //             myAlert('保存数据失败', 'alert-danger')
-    //         }
-    //     }
-    // });
 })
