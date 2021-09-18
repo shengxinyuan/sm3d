@@ -1,5 +1,5 @@
 <template>
-  <div class="diamondsList">
+  <div class="diamond-list">
     <div>
       <div class="diamonds-count">
         <span class="num">864590颗钻石供您挑选</span>
@@ -64,7 +64,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.diamondsList {
+.diamond-list {
   height: 100%;
   background-color: rgb(60, 60, 68);
   color: #fff;

@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import App from './index.vue'
-import { Toast } from 'vant'
+import { Toast, Icon, Popup, Picker } from 'vant'
 import store from './store'
 
 Vue.use(Toast)
+Vue.use(Icon)
+Vue.use(Popup)
+Vue.use(Picker)
 
 Vue.config.productionTip = false
 

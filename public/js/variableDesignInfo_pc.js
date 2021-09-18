@@ -588,39 +588,22 @@ $(document).ready(function () {
 
 
 //------------------------------------事件处理------------------------------------
-//操作提示展示
-$('.topBtn img:eq(0)').click(function () {
-    $('.helpDetail').show();
-})
+
 //关闭操作提示
 $('.helpDetail div:last').click(function () {
     $('.helpDetail').hide();
 })
 
 //款式复位
-$('.topBtn img:eq(2)').click(function () {
+$().click(function () {
     my3d.postureReset();
 })
 //款式自转设置
-let rotate = true;
 $('.topBtn img:eq(3)').click(function () {
     rotate = !rotate;
     my3d.setRotationState(rotate);
-    if (rotate) {
-        $('.topBtn img:eq(3)').attr('src', 'img/stop.png');
-    } else {
-        $('.topBtn img:eq(3)').attr('src', 'img/play.png');
-    }
 })
-//跳转首页
-$('.topBtn img:eq(4)').click(function () {
-    /*let hcid = localStorage.getItem('userInfo');
-    if(hcid){
-        window.close();
-    }else {*/
-    window.location.href = 'index_pc.html?l=1&v=' + usNo;
-    //}
-})
+
 
 //加载主体UI
 $('.btns div:eq(0)').click(function () {
@@ -663,25 +646,7 @@ $('.btns div:eq(3)').click(function () {
         $('.ky').show()
     }
 })
-$('.ky input').bind('keyup', function (event) {
-    if (event.keyCode == "13") {
-        //回车执行查询
-        $('.ky button').click();
-    }
-});
-$('.ky button').click(function () {
-    let kyText = $('.ky input').val()
-    if (kyText.length <= 16) {
-        // 刻字
-        ring_print = kyText
-        my3d.printUserTextOfLayer(nowLayer.id, kyText)
-        rotate = false;
-        my3d.setRotationState(rotate);
-        $('.topBtn img:eq(3)').attr('src', 'img/play.png');
-    } else {
-        alert('刻字内容不可超过16个字符！')
-    }
-})
+
 //图片试戴
 $('.btns div:eq(4)').click(function () {
     if (webModelPics) { } else {
@@ -715,9 +680,7 @@ $('.btns div:eq(4)').click(function () {
     }
     //alert("模特试戴即将开放！");
 })
-$('.tbbts input').bind('input propertychange', function () {
-    my3d.zoomCamera($('.tbbts input').val());
-});
+
 
 //定位到底部信息部分
 $('.btns div:eq(5)').click(function () {
@@ -768,11 +731,6 @@ $('.rotate button').click(function () {
 let a = false
 
 $('.bag-list__btn--buy').click(function () {
-    // 输出当前的图片
-    iframeWindow.console.log(my3d.getDesignImage());
-    // 输出当前的配置信息
-    iframeWindow.console.log(my3d.getUserDiyInfo());
-    // 配合上面的boolean a实现每两次记载一下设计信息
     if (a) {
         my3d.loadVarDesign(designInfo, ring_arm_id, flower_head_id);
         a = !a

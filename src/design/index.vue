@@ -1,17 +1,124 @@
 <template>
   <div class="design">
-    {{ $store.state }}
+    <div class="cts"></div>
+    <div class="ljs"></div>
+    <div class="czs"></div>
+    <div class="layers"></div>
+    <div class="partTypes"></div>
+
+    <section class="page-footer" v-if="footerId === 'design'">
+      <div class="design-tabs-title">
+        <div class="back" @click="() => footerId = 'default'"><van-icon name="arrow-left" />返回</div>
+        <a :class="designTab === 1 ? 'active' : ''" @click="() => designTab = 1">花头款式</a>
+        <a :class="designTab === 2 ? 'active' : ''" class="" @click="() => designTab = 2">戒托款式</a>
+        <a :class="designTab === 3 ? 'active' : ''" class="" @click="() => designTab = 3">戒托材质</a>
+      </div>
+      <div class="design-tabs-cont">
+        <div class="list" v-if="designTab === 1">
+          <div :class="$store.state.partId === v.id ? 'active' : ''" class="item" v-for="(v, i) in $store.state.parts" :key="i" @click="() => {changePartId(v.id)}">
+            <div class="img-box">
+              <i class="img-border" />
+              <i class="parts-img img" :style="{'backgroundImage': 'url(' + 'https://design.bavlo.com/PartRes/webImg/' + v.defaultImg + '!600)'}"></i>
+            </div>
+            <div class="txt">花头{{i | formatIndex}}</div>
+          </div>
+        </div>
+        <div class="list" v-if="designTab === 2">
+          <div :class="$store.state.mainPartId === v.id ? 'active' : ''" class="item" v-for="(v, i) in $store.state.mainParts" :key="i" @click="() => {changeMainPartId(v.id)}">
+            <div class="img-box">
+              <i class="img-border" />
+              <i class="main-parts-img img" :style="{'backgroundImage': 'url(' + 'https://design.bavlo.com/PartRes/webImg/' + v.defaultImg + '!600)'}"></i>
+            </div>
+            <div class="txt">戒托{{i | formatIndex}}</div>
+          </div>
+        </div>
+        <div class="list" v-if="designTab === 3">
+          <div :class="$store.state.metalId === v.id ? 'active' : ''" class="item" v-for="(v, i) in $store.state.metals" :key="i" @click="() => {changeMetalId(v.id)}">
+            <div class="img-box">
+              <i class="img-border" />
+              <i class="metals-img img" :style="{'backgroundImage':  'url(' + 'https://design.bavlo.com/IconRes/RoundMetalIcons/' + v.id + '.png)'}"></i>
+            </div>
+            <div class="txt">{{v.nameCn}}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-footer" v-else-if="footerId === 'mark'">
+      <div class="design-tabs-title">
+        <div class="back" @click="() => footerId = 'default'"><van-icon name="arrow-left" />返回</div>
+        <a class="active">文字印记</a>
+      </div>
+      <div class="design-tabs-cont">
+        <div class="mark-cont">
+          <input class="mark-input" type="text" maxlength="15" v-model="mark" placeholder="印刻彼此名字或誓言(15字内)" />
+          <a class="mark-btn" @click="() => footerId = 'default'">刻印</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-footer" v-else>
+      <div class="btns-group">
+        <a class="option" @click="() => footerId = 'design'">
+          <i class="icon-design"></i>
+          <span class="txt">设计</span>
+        </a>
+        <a class="option" @click="selectDiamond">
+          <i class="icon-diamond"></i>
+          <span class="txt">选钻</span>
+        </a>
+        <a class="option" @click="() => footerId = 'mark'">
+          <i class="icon-mark"></i>
+          <span class="txt">印记</span>
+        </a>
+        <a class="option" @click="() => handPicker = true">
+          <i class="icon-try"></i>
+          <span class="txt">手寸</span>
+        </a>
+      </div>
+      <div class="buy-group">
+        <div class="cost">¥ 22000</div>
+        <div class="buy-btn">确认设计</div>
+      </div>
+    </section>
+
+    
+
+    <van-popup v-model="handPicker" round position="bottom">
+      <van-picker
+        show-toolbar
+        default-index="8"
+        :columns="handInch"
+        @cancel="handPicker = false"
+        @confirm="changeHandInch"
+      />
+    </van-popup>
+    
   </div>
 </template>
 
 <script>
-import { resourceDomainName, normalMapUrl, baseUrl } from './const'
+import { resourceDomainName, normalMapUrl, baseUrl, handInch } from './const'
 
 export default {
   components: {},
   props: [],
   data() {
-    return {};
+    return {
+      // 手寸
+      handInch,
+      handPicker: false,
+      currentHandInch: '14',
+
+      // 印记
+      mark: '',
+      
+      footerId: 'default',
+      designTab: 1,
+
+      nowAsType: '',
+
+    };
   },
   computed: {},
   created() {
@@ -24,15 +131,23 @@ export default {
 
     // 加载账号信息
     this.$store.dispatch('loadUserInfo')
-    
+
     // 请求：材质、宝石、设计数据
     this.$store.dispatch('loadMetalWeb')
     this.$store.dispatch('loadGemWeb')
     this.$store.dispatch('loadDesignInfo')
+    this.$store.dispatch('loadMetalList')
+    this.$store.dispatch('loadGemList')
   },
   mounted() {
     this.iframeWindow.console.log(this.$store);
     // this.init3D();
+  },
+  filters: {
+    formatIndex(num) {
+      num = num + 1
+      return num < 10 ? '0' + num : num
+    }
   },
   methods: {
     // 初始化3D
@@ -41,7 +156,7 @@ export default {
         userInfo,
         metals,
         designInfo,
-        partIds,
+        partId,
         parts,
         otherGems,
         metalWeb,
@@ -80,7 +195,7 @@ export default {
       this.my3d.changeBackground('#ccc');
 
       // 加载3D第五步：加载款式3D
-      my3d.loadVarDesign(designInfo, designInfo.mainParts[0].id, partIds);
+      my3d.loadVarDesign(designInfo, designInfo.mainParts[0].id, partId);
       
       setTimeout(() => {
         this.loadNormalUI()
@@ -88,12 +203,56 @@ export default {
       this.loadLjs(2);
     },
 
+    design() {},
+    selectDiamond() {
+      location.href = '/diamondList'
+    },
+    tryOn() {},
+
+    /**
+     * 切换手寸
+     * @param handInch
+     */
+    changeHandInch(handInch) {
+      this.currentHandInch = handInch
+      this.handPicker = false
+    },
+
+    /**
+     * 切换花头
+     * @param partId
+     */
+    changePartId(partId) {
+      this.$store.commit('setState', {
+        partId
+      })
+    },
+
+    /**
+     * 切换戒臂
+     * @param mainPartId
+     */
+    changeMainPartId(mainPartId) {
+      this.$store.commit('setState', {
+        mainPartId
+      })
+    },
+    /**
+     * 切换材料
+     * @param metalId
+     */
+    changeMetalId(metalId) {
+      this.$store.commit('setState', {
+        metalId
+      })
+    },
+
     /**
      * 加载主件UI或配件类型UI
      * @param asType
      */
     loadLjs(asType) {
-      nowAsType = asType;
+      this.nowAsType = asType;
       let tjHtml = "";
       if (asType == 1) {
         let i = 0;
@@ -335,7 +494,7 @@ export default {
     },
 
     /**
-     * 记载材质UI
+     * 加载材质UI
      * @param layerId
      */
     loadCzs(layerId) {
@@ -348,7 +507,7 @@ export default {
             if (metals) {
             } else {
               // 获取金属材质列表
-              this.$store.dispatch('loadMetalList')
+              
             }
             metals.filter(function (item1) {
               let classHtml = "";
@@ -376,7 +535,7 @@ export default {
               if (gems) {
               } else {
                 // 获取宝石材质列表（用于切换材质）
-                this.$store.dispatch('loadGemList')
+                
               }
               gems.filter(function (item1) {
                 if (item1.faceType == item.gem.faceType) {
@@ -682,4 +841,212 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.design {
+  height: 100vh;
+  color: #fff;
+  background: rgb(44, 44, 44);
+}
+.page-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  .btns-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    .option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      flex: 1;
+      font-size: 12px;
+      color: rgb(193, 177, 138);
+      .icon-design {
+        display: block;
+        height: 32px;
+        width: 32px;
+        background: url('../assets/design/design.png') no-repeat center/100%;
+      }
+      .icon-diamond {
+        display: block;
+        height: 32px;
+        width: 32px;
+        background: url('../assets/design/diamond.png') no-repeat center/100%;
+      }
+      .icon-mark {
+        display: block;
+        height: 32px;
+        width: 32px;
+        background: url('../assets/design/mark.png') no-repeat center/100%;
+      }
+      .icon-try {
+        display: block;
+        height: 32px;
+        width: 32px;
+        background: url('../assets/design/try.png') no-repeat center/100%;
+      }
+      .txt {
+        margin: 4px 0 10px;
+        display: block;
+      }
+    }
+  }
+  .buy-group {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 15px 40px;
+    background-color: rgb(72, 72, 79);
+    .cost {
+      flex: 1;
+      color: rgb(193, 177, 138);
+      height: 40px;
+      line-height: 40px;
+    }
+    .buy-btn {
+      width: 150px;
+      height: 40px;
+      line-height: 40px;
+      border-radius: 20px;
+      background-color: rgb(193, 177, 138);
+      color: rgb(52, 52, 60);
+      text-align: center;
+    }
+  }
+  .design-tabs-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    background: rgb(72, 72, 79);
+    color: rgb(157, 157, 157);
+    font-size: 12px;
+    .back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      color: rgb(157, 157, 157);
+      background-color: rgb(84, 84, 91);
+      height: 50px;
+    }
+    & > a {
+      flex: 1;
+      text-align: center;
+    }
+    .active {
+      color: rgb(193, 177, 138);
+      font-size: 14px;
+    }
+  }
+  .design-tabs-cont {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    background: #3c3c44;
+    .mark-cont {
+      display: flex;
+      box-sizing: border-box;
+      padding: 15px;
+      width: 100%;
+      .mark-input {
+        flex: 1;
+        display: block;
+        height: 30px;
+        border-radius: 15px;
+        background-color: #48484f;
+        color: #fff;
+        padding: 2px 8px;
+        border: none;
+      }
+      .mark-btn {
+        width: 100px;
+        display: block;
+        width: 60px;
+        color: rgb(0, 0, 0);
+        font-size: 16px;
+        background-color: rgb(193, 177, 138);
+        text-align: center;
+        margin-left: 15px;
+        height: 36px;
+        line-height: 36px;
+        border-radius: 18px;
+      }
+    }
+    .list {
+      display: flex;
+      align-items: center;
+      overflow-x: scroll;
+      width: 100%;
+      height: 120px;
+      font-size: 12px;
+      color: rgb(157, 157, 157);
+      padding: 0 10px;
+      .item.active {
+        .img-border {
+          border: 2px solid #f9b308;
+        }
+        .txt {
+          color: rgb(193, 177, 138);
+          font-size: 12px;
+        }
+      }
+      .item {
+        width: 60px;
+        margin: 0 10px;
+        .img-box {
+          display: block;
+          width: 60px;
+          height: 60px;
+          border-radius: 30px;
+          position: relative;
+        }
+        .img-border {
+          position: absolute;
+          left: 0;
+          top: 0;
+          display: block;
+          width: 60px;
+          height: 60px;
+          border-radius: 30px;
+          z-index: 2;
+          box-sizing: border-box;
+        }
+        .img {
+          position: absolute;
+          left: 0;
+          top: 0;
+          display: block;
+          width: 60px;
+          height: 60px;
+          border-radius: 30px;
+          background-repeat: no-repeat;
+          background-position: center;
+        }
+        .parts-img {
+          background-size: 180% 180%;
+        }
+        .main-parts-img {
+          background-size: 160% 120%;
+        }
+        .metals-img {
+          background-size: 120% 120%;
+        }
+        .txt {
+          width: 60px;
+          height: 20px;
+          line-height: 20px;
+          margin-top: 4px;
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+
 </style>

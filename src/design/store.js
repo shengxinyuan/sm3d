@@ -12,12 +12,18 @@ export default new Vuex.Store({
     userNo: 20230,
     desNo: 30163,
     userInfo: {},
-    metals: [],
+    // all信息
     designInfo: {},
-    partIds: '',
+    // 花头
+    partId: '',
     parts: [],
-    partsGroupByType: [],
-    nowPartId: '',
+    // 戒臂
+    mainParts: [],
+    mainPartId: '',
+    // 材质
+    metals: [],
+    metalId: '',
+
     otherGems: [],
     metalWeb: [],
     metalWebDefault: [],
@@ -67,15 +73,20 @@ export default new Vuex.Store({
         if (data.code === 0) {
           if (data.list.length > 0) {
             metals = data.list.map(item => item.metal)
-            commit('setState', { metals })
-            metals
+            commit('setState', {
+              metals,
+              metalId: metals[0].id
+            })
           } else {
             post({
               url: apiUrl + 'app/desMetalList',
             }).then((data) => {
               if (data.code === 0) {
                 metals = data.list
-                commit('setState', { metals })
+                commit('setState', {
+                  metals,
+                  metalId: metals[0].id
+                })
               } else {
                 myAlert('数据加载失败！', 'alert-danger')
               }
@@ -98,45 +109,19 @@ export default new Vuex.Store({
       }).then((data) => {
         if (data.code === 0) {
           const designInfo = data.info
-
-          let partIds = ''
-          let parts = []
-          const map = {}
-          const partsGroupByType = []
-          //当前零件ID
-          const nowPartId = designInfo.mainParts[0].id;
-
-          designInfo.parts.forEach(item => {
-            parts.push.apply(parts, item)
-            partIds += item[0].id + ","
-          })
-          partIds = partIds.substring(0, partIds.length - 1)
-
-          for (let i = 0; i < parts.length; i++) {
-            let ai = parts[i]
-            if (!map[ai.partType.id]) {
-              partsGroupByType.push({
-                id: ai.partType.id,
-                name: ai.partType.name,
-                data: [ai],
-              })
-              map[ai.partType.id] = ai
-            } else {
-              for (let j = 0; j < partsGroupByType.length; j++) {
-                let dj = partsGroupByType[j]
-                if (dj.id == ai.partType.id) {
-                  dj.data.push(ai)
-                  break
-                }
-              }
-            }
-          }
+          const { mainParts } = designInfo
+          // 当前戒臂ID （主part ID）
+          const mainPartId = designInfo.mainParts[0].id
+          // 花头ID列表
+          const parts = designInfo.parts && designInfo.parts[0] || []
+          // 当前花头ID
+          const partId = parts[0] ? parts[0].id : ''
 
           commit('setState', {
-            partsGroupByType,
             designInfo,
-            nowPartId,
-            partIds,
+            mainParts,
+            mainPartId,
+            partId,
             parts
           })
 
@@ -161,7 +146,6 @@ export default new Vuex.Store({
           if (data.list.length > 0) {
             gems = data.list.map(item => item.gem)
             commit('setState', { gems })
-
           } else {
             post({
               url: apiUrl + 'app/desGemList',
