@@ -310,7 +310,7 @@ export default new Vuex.Store({
         currentHandInch
       } = state
       return post({
-        url: apiUrl + '/api/design/saveDesign',
+        url:'/api/3d/saveDesign',
         data: {
           flower_head_id: partId,
           ring_arm_id: mainPartId,

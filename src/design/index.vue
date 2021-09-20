@@ -210,12 +210,12 @@ export default {
      
       setTimeout(() => {
         this.imgUrl = this.my3d.getDesignImage()
-        this.iframeWindow.console.log(this.imgUrl)
-
+        // this.iframeWindow.console.log(this.imgUrl)
         this.$store.dispatch('submitDesign', {
           image: this.imgUrl
-        }).then((res) => {
-          location.href = '/order'
+        }).then(({ data }) => {
+          this.iframeWindow.console.log(data)
+          location.href = `/order?bn=${data}`
         })
       }, 300)
       
