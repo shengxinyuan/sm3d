@@ -1,14 +1,14 @@
 <template>
   <div class="home">
     <a href="/design.html"><div class="home-banner"></div></a>
-    <div class="home-text"></div>
-    <div class="home-tag"></div>
+    <!-- <div class="home-text"></div> -->
+    <a href="/design.html"><div class="home-tag"></div></a>
     <a href="/design.html"><div class="home-design"></div></a>
-    <router-link to="/mydesign">
+    <!-- <router-link to="/mydesign">
       <div class="home-mydesign"></div>
-    </router-link>
-    <div class="home-se"></div>
-    <div class="home-img"></div>
+    </router-link> -->
+    <a href="/design.html"><div class="home-se"></div></a>
+    <a href="/design.html"><div class="home-img"></div></a>
   </div>
 </template>
 

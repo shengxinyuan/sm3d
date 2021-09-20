@@ -8,7 +8,7 @@
       :safe-area-inset-top="true"
       class="bag-bar"
     />
-    <div class="order-header">
+    <div class="order-header" style="margin-top:50px;">
       <img src="https://admin.zbird.com/storage/uploads/images/2021/09/01/8UrCONYnQH4OlRt99NUL6rh7qkCHra0YeEMluwEt.png" width="300px" height="300px">
     </div>
     <p class="order-tip">3D定制效果仅供参考，商品以实物为准</p>
@@ -252,7 +252,7 @@ export default {
     },
     buy () {
       this.$post({
-        url: '/api/design/saveDesign',
+        url: 'api/design/saveDesign',
         data: {
           flower_head_id: this.ksInfo.ht,
           ring_arm_id: this.ksInfo.jb,
@@ -432,6 +432,8 @@ export default {
     padding-right: 16px;
   }
   .bag-bar {
+    position: fixed;
+    width: 100%;
     .van-icon {
       color: #000 !important;
     }

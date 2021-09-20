@@ -1,6 +1,14 @@
 <template>
   <div class="order-confirm">
-    <section class="order-info-item">
+    <van-nav-bar
+      title="确认订单"
+      left-text=""
+      left-arrow
+      @click-left="onClickLeft"
+      :safe-area-inset-top="true"
+      class="bag-bar"
+    />
+    <section class="order-info-item" style="margin-top:50px;">
       <div class="flex order-title-cont">
         <van-icon name="location-o icon-style" />
         <div class="title">
@@ -8,14 +16,13 @@
         </div>
       </div>
       <div class="order-info-cont flex">
-        <div class="flex1">
-          <p><span>李明</span><span class="phone-num">18323992100</span></p>
-          <p class="address">上海市浦东新区碧波路690号</p>
+        <div class="flex1" @click="changeAddress">
+          <p><span>{{$store.state.OrderConfirm.currtAddress.name || '请选择收货地址'}}</span><span class="phone-num">{{$store.state.OrderConfirm.currtAddress.tel || ''}}</span></p>
+          <p class="address">{{$store.state.OrderConfirm.currtAddress.address || ''}}</p>
         </div>
         <van-icon name="arrow" />
       </div>
     </section>
-   
     <section class="order-info-item">
       <div class="flex order-title-cont">
         <van-icon name="completed icon-style" />
@@ -54,10 +61,9 @@
       </div>
       <div class="cont-info-more">
         <label class="remark-label" for="remark">订单备注</label>
-        <input id="remark" type="text" class="remark" placeholder="请填写">
+        <input id="remark" type="text" class="remark" placeholder="请填写" v-model="comment" />
       </div>
     </section>
-
 
     <section class="order-info-item">
       <div class="flex order-title-cont">
@@ -83,9 +89,8 @@
       </div>
     </section>
 
-
     <div class="btns-box">
-      <a class="btn">立即购买</a>
+      <a class="btn" @click="buy">立即购买</a>
     </div>
   </div>
 </template>
@@ -94,8 +99,10 @@
 export default {
   components: {
   },
-  data() {
+  data () {
     return {
+      designId: this.$route.query.id,
+      comment: '',
       ksInfo: {
         sc: {
           value: '12 51.2mm',
@@ -118,17 +125,82 @@ export default {
         pg: 'EX',
         qg: 'VG',
         dc: 'EX'
-      },
-    };
+      }
+    }
+  },
+  created () {
+    this.onLoad()
   },
   computed: {},
   methods: {
-    onLoad() {},
-  },
-};
+    onLoad () {
+      Promise.all([
+        this.$get({
+          url: 'api/design/design_detail',
+          data: {
+            design_bn: this.designId
+          }
+        }),
+        this.$get({
+          url: 'api/3d/order',
+          data: {
+            design_id: this.designId
+          }
+        })
+      ])
+        .then((res) => {
+          const [designInfo, orderInfo] = res
+        }).catch(() => {})
+    },
+    buy () {
+      this.$post({
+        url: '',
+        data: {
+          design_id: this.designId,
+          coupon_id: 0,
+          comment: this.comment,
+          address_id: this.$store.state.OrderConfirm.currtAddress.id,
+          vip: 0
+        }
+      }).then(() => {
+
+      }).catch(() => {})
+    },
+    onClickLeft () {
+      this.$router.back()
+    },
+    changeAddress () {
+      this.$router.push('/address')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
+::v-deep {
+  .bag-bar {
+    position: fixed !important;
+    width: 100%;
+    .van-icon {
+      color: #000 !important;
+    }
+    .van-nav-bar__content {
+      height: 50px;
+    }
+    .van-nav-bar__title {
+      line-height: 50px;
+      font-size: 16px;
+      font-weight: 700 !important;
+      color: #000;
+    }
+    .van-nav-bar__arrow {
+      font-size: 24px;
+    }
+    .van-nav-bar__left, .van-nav-bar__right {
+      padding: 16px;
+    }
+  }
+}
 .order-confirm {
   height: 100%;
   background-color: rgb(60, 60, 68);
@@ -137,7 +209,7 @@ export default {
   flex-direction: column;
   text-align: left;
   overflow: scroll;
-  padding-bottom: 75px;
+  padding-bottom: 105px;
   .flex {
     display: flex;
     align-items: center;
@@ -192,7 +264,7 @@ export default {
       margin-bottom: 4px;
       margin-right: 10px;
     }
-    
+
   }
   .btns-box {
     display: flex;
@@ -200,8 +272,9 @@ export default {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 55px;
+    height: 95px;
     background-color: rgb(72, 72, 79);
+    padding-bottom: 40px;
     .btn {
       display: flex;
       align-items: center;

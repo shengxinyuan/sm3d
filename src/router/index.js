@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import DebugList from '../views/DebugList.vue'
 import OrderConfirm from '../views/OrderConfirm/index.vue'
+import Address from '../views/Address.vue'
 
 Vue.use(VueRouter)
 
@@ -36,6 +37,11 @@ export const routes = [
     path: '/orderConfirm',
     name: 'OrderConfirm',
     component: OrderConfirm // 上一个页面一定是vue,不需要懒加载
+  },
+  {
+    path: '/address',
+    name: 'Address',
+    component: Address
   },
   {
     path: '*',

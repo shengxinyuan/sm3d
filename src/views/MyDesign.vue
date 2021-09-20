@@ -15,7 +15,7 @@
             <van-row v-if="isEmpty">
               <van-col span="24" class="bag-empty__height"></van-col>
               <van-col span="24" class="bag-empty__img">
-                <img src="https://h5.zbird.com/static/icons/design-empty.png" width="25px" height="66px">
+                <img src="https://h5.zbird.com/static/icons/design-empty.png" width="50px" height="66px">
               </van-col>
               <van-col span="24">
                 <van-row span="24" class="bag-empty__p">
@@ -23,13 +23,13 @@
                 </van-row>
               </van-col>
               <van-col span="24">
-                <router-link to="/design">
+                <a href="/design.html">
                   <van-button type="primary" class="button">去智能定制</van-button>
-                </router-link>
+                </a>
               </van-col>
             </van-row>
             <van-row v-else class="bag-list">
-              <van-swipe class="my-swipe" :show-indicators="false" :loop="true">
+              <van-swipe class="my-swipe" :show-indicators="false" :loop="true" @change="onChange">
                 <van-swipe-item v-for="(item, index) in list" :key="index">
                   <van-col span="24" class="bag-list__img">
                     <van-col span="24" class="bag-empty__height"></van-col>
@@ -47,7 +47,7 @@
                 <van-button type="primary" class="button bag-list__btn--right">加载此方案</van-button>
               </van-col>
               <van-col span="24" class="bag-list__buy" v-else>
-                <van-button type="primary" class="button bag-list__btn--buy">下单购买</van-button>
+                <van-button type="primary" class="button bag-list__btn--buy" @click="jumpOrderConfirm">下单购买</van-button>
               </van-col>
             </van-row>
           </van-tab>
@@ -72,25 +72,25 @@
         </van-tabs>
       </van-col>
       <van-col span="12">
-        <div class="bag-tab__right">1/2</div>
+        <div class="bag-tab__right">{{swiperIndex || 0 + 1}}/{{list.length}}</div>
       </van-col>
       <van-col span="24">
       </van-col>
     </van-row>
     <van-row class="bag-btns">
-      <van-col class="bag-btns__btn bag-btns__delete">
+      <van-col class="bag-btns__btn bag-btns__delete" @click="deleteDesign">
         <van-row><van-icon name="delete-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>删除</van-row>
       </van-col>
-      <van-col class="bag-btns__btn bag-btns__service">
+      <!-- <van-col class="bag-btns__btn bag-btns__service">
         <van-row><van-icon name="service-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>客服</van-row>
-      </van-col>
+      </van-col> -->
       <van-col class="bag-btns__btn bag-btns__share">
         <van-row><van-icon name="share-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>分享</van-row>
       </van-col>
-      <van-col class="bag-btns__btn bag-btns__share">
+      <van-col class="bag-btns__btn bag-btns__share" @click="jumpDesign">
         <van-row><van-icon name="edit" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>修改</van-row>
       </van-col>
@@ -109,6 +109,8 @@ export default {
       active: 2,
       bottomActive: 0,
       isEmpty: false,
+      swiperIndex: 0,
+      currtId: 0,
       list: [{
         id: 123,
         image: 'https://admin.zbird.com/storage/uploads/images/2021/08/29/xAHHnQtOcPRj1hGNyXRCbqwjVIgn0wCH54f14Fo8.png',
@@ -137,20 +139,39 @@ export default {
     }
   },
   created () {
-    ;
+
   },
   methods: {
     loadList () {
       this.$get({
         url: 'api/design/getMyDesign'
-
-      }).then(() => {
-
+      }).then((res) => {
+        this.list = res.data
+        this.currtId = this.list.length ? this.list[0].id : 0
       })
-      // r/
     },
     onClickLeft () {
       this.$router.back()
+    },
+    onChange (index) {
+      this.swiperIndex = index
+      this.currtId = this.list[index].id
+    },
+    deleteDesign () {
+      this.$post({
+        url: 'api/design/deleteDesign',
+        data: {
+          id: this.currtId
+        }
+      }).then(() => {
+        this.loadList()
+      }).catch(() => {})
+    },
+    jumpDesign () {
+      window.location.href = window.location.origin + `/design.html?id=${this.currtId}`
+    },
+    jumpOrderConfirm () {
+      this.$router.push(`./orderConfirm?custId=${this.currtId}`)
     }
   }
 }
@@ -225,7 +246,7 @@ export default {
       border-radius: 50px;
     }
     .bag-empty__height {
-      height: 200px;
+      height: 100px;
     }
     .bag-empty__p {
       color: #999;
@@ -237,8 +258,9 @@ export default {
     }
   }
   .button {
-    width: 366px;
-    height: 86px;
+    width: 300px;
+    margin: 16px;
+    height: 43px;
     line-height: 86px;
     margin-top: 25px;
     background-color: rgb(193, 177, 138);
