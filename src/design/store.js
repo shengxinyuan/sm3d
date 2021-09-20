@@ -23,6 +23,12 @@ export default new Vuex.Store({
     // 材质
     metals: [],
     metalId: '',
+    // 刻印
+    mark: '',
+    // 当前手寸
+    currentHandInch: '',
+    // 当前钻石
+    diamondId: '32414',
 
     otherGems: [],
     metalWeb: [],
@@ -72,20 +78,39 @@ export default new Vuex.Store({
       }).then((data) => {
         if (data.code === 0) {
           if (data.list.length > 0) {
-            metals = data.list.map(item => item.metal)
+            let metalId = ''
+            metals = data.list.map(item => {
+              console.log(item.metal);
+              if (item.metal && item.metal.nameCn && item.metal.nameCn === '铂金') {
+                metalId = item.metal.id
+              }
+              return item.metal
+            })
+
+            metalId = metalId || metals[0].id
+
             commit('setState', {
               metals,
-              metalId: metals[0].id
+              metalId,
             })
           } else {
             post({
               url: apiUrl + 'app/desMetalList',
             }).then((data) => {
               if (data.code === 0) {
+                let metalId = ''
                 metals = data.list
+                metals.forEach(item => {
+                  if (item && item.nameCn && item.nameCn === '铂金') {
+                    metalId = item.id
+                  }
+                });
+
+                metalId = metalId || metals[0].id
+
                 commit('setState', {
                   metals,
-                  metalId: metals[0].id
+                  metalId
                 })
               } else {
                 myAlert('数据加载失败！', 'alert-danger')
@@ -100,7 +125,7 @@ export default new Vuex.Store({
     /**
      * 3 加载款式信息
      */
-    loadDesignInfo({ commit, state }, products) {
+    loadDesignInfo({ commit, state }) {
       return post({
         url: apiUrl + 'app/getVariableDesignLayerInfo',
         data: {
@@ -134,7 +159,7 @@ export default new Vuex.Store({
     /**
      * 4 获取宝石材质列表（用于切换材质）
      */
-    loadGemList({ commit, state }, products) {
+    loadGemList({ commit, state }) {
       return post({
         url: apiUrl + 'app/findUserGemByUser',
         data: {
@@ -167,7 +192,7 @@ export default new Vuex.Store({
     /**
      * 5 获取其它宝石列表（用于切换材质）
      */
-    loadOtherGemList({ commit, state }, products) {
+    loadOtherGemList({ commit, state }) {
       post({
         url: apiUrl + 'app/otherGemList',
       }).then((data) => {
@@ -184,7 +209,7 @@ export default new Vuex.Store({
      * 6 获取金属web材质参数（用于渲染）
      * @param userId
      */
-    loadMetalWeb({ commit, state }, products) {
+    loadMetalWeb({ commit, state }) {
       post({
         url: apiUrl + 'app/findMetalWebsByUser',
         data: {
@@ -208,7 +233,7 @@ export default new Vuex.Store({
      * 7 获取宝石web材质列表（用于渲染）
      * @param userId
      */
-    loadGemWeb({ commit, state }, products) {
+    loadGemWeb({ commit, state }) {
       post({
         url: apiUrl + 'app/findGemWebsByUser',
         data: {
@@ -232,7 +257,7 @@ export default new Vuex.Store({
      * 8 获取其它材质web材质列表（用于渲染、切换材质）
      * @param userId
      */
-    loadMaterialWeb({ commit, state }, products) {
+    loadMaterialWeb({ commit, state }) {
       post({
         url: apiUrl + 'app/findMaterialWebsByUserAndType',
         data: {
@@ -255,7 +280,7 @@ export default new Vuex.Store({
     /**
      * 9 获取试戴背景图列表
      */
-    loadModelPicList({ commit, state }, products) {
+    loadModelPicList({ commit, state }) {
       post({
         url: apiUrl + 'app/webModelPicList',
         data: {
@@ -269,6 +294,36 @@ export default new Vuex.Store({
         } else {
           myAlert('数据加载失败！', 'alert-danger')
         }
+      })
+    },
+
+    /**
+     * 10 提交设计
+     */
+    submitDesign({ commit, state }, { image }) {
+      const {
+        mark,
+        mainPartId,
+        partId,
+        metalId,
+        diamondId,
+        currentHandInch
+      } = state
+      return post({
+        url: apiUrl + '/api/design/saveDesign',
+        data: {
+          flower_head_id: partId,
+          ring_arm_id: mainPartId,
+          diamond_id: diamondId,
+          ring_print: mark,
+          texture_id: metalId,
+          ring_size: currentHandInch,
+          good_type: 1,
+          title: '', 
+          preview_image: image,
+        }
+      }).then((data) => {
+        return data
       })
     },
 
