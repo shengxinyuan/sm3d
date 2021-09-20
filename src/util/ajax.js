@@ -1,13 +1,15 @@
 import axios from 'axios'
 import { stringify } from 'qs'
 
-const baseUrl = 'http://zhuanshi.nxm.wanheweb.com/'
+// const baseUrl = 'http://192.168.147.141:8000/'
+const baseUrl = '/'
 
 const getRequest = method => {
   return ({ url, data, options = {}, isForm = true }) => {
     return axios({
-      method,
+      baseUrl,
       url: baseUrl + url,
+      method,
       ...(method === 'POST'
         ? { data: isForm ? stringify(data) : data }
         : { }),

@@ -215,10 +215,17 @@ export default {
     }
   },
   created () {
-    this.getQuery()
+    this.loadDesign()
   },
   methods: {
-    getQuery () {
+    loadDesign () {
+      this.$get({
+        url: 'api/design/design_detail',
+        data: {
+          design_bn: this.$route.bn || '202109120121'
+        }
+      }).then((res) => {
+      })
       if (window.location.search.split('?')[1]) {
         const queryList = decodeURI(window.location.search).split('?')[1].split('&')
         queryList.forEach((i) => {

@@ -24,20 +24,7 @@ export default {
   data () {
     return {
       chosenAddressId: 0,
-      list: [
-        {
-          id: 1,
-          name: '张三',
-          tel: '13000000000',
-          address: '浙江省杭州市西湖区文三路 138 号东方通信大厦 7 楼 501 室'
-        },
-        {
-          id: 2,
-          name: '李四',
-          tel: '1310000000',
-          address: '浙江省杭州市拱墅区莫干山路 50 号'
-        }
-      ]
+      list: []
     }
   },
   created () {
@@ -49,7 +36,10 @@ export default {
         url: 'api/address'
       }).then((res) => {
         this.list = res.data
-        this.chosenAddressId = this.list[0].id
+        this.list.map((i) => {
+          i.name = i.contact
+          i.tel = i.mobile
+        })
       }).catch(() => {})
     },
     onClickLeft () {

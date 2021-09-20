@@ -33,12 +33,12 @@
                 <van-swipe-item v-for="(item, index) in list" :key="index">
                   <van-col span="24" class="bag-list__img">
                     <van-col span="24" class="bag-empty__height"></van-col>
-                    <img :src="item.image" width="250px" height="250px">
+                    <img :src="item.preview_image" width="250px" height="250px">
                   </van-col>
                   <van-col span="24" class="bag-list__p">
-                    <p class="bag-list__p--top">{{item.desc}}</p>
-                    <p class="bag-list__p--middle">{{item.tag}}</p>
-                    <p class="bag-list__p--bottom">{{item.money}}</p>
+                    <p class="bag-list__p--top">{{item.title}}</p>
+                    <p class="bag-list__p--middle">{{item.ring_print}}</p>
+                    <!-- <p class="bag-list__p--bottom">{{item.money}}</p> -->
                   </van-col>
                 </van-swipe-item>
               </van-swipe>
@@ -110,44 +110,20 @@ export default {
       bottomActive: 0,
       isEmpty: false,
       swiperIndex: 0,
-      currtId: 0,
-      list: [{
-        id: 123,
-        image: 'https://admin.zbird.com/storage/uploads/images/2021/08/29/xAHHnQtOcPRj1hGNyXRCbqwjVIgn0wCH54f14Fo8.png',
-        desc: '我的设计-08291408',
-        tag: '18k白',
-        money: '13577'
-      }, {
-        id: 123,
-        image: 'https://admin.zbird.com/storage/uploads/images/2021/08/29/xAHHnQtOcPRj1hGNyXRCbqwjVIgn0wCH54f14Fo8.png',
-        desc: '我的设计-08291408',
-        tag: '18k白',
-        money: '13577'
-      }, {
-        id: 123,
-        image: 'https://admin.zbird.com/storage/uploads/images/2021/08/29/xAHHnQtOcPRj1hGNyXRCbqwjVIgn0wCH54f14Fo8.png',
-        desc: '我的设计-08291408',
-        tag: '18k白',
-        money: '13577'
-      }, {
-        id: 123,
-        image: 'https://admin.zbird.com/storage/uploads/images/2021/08/29/xAHHnQtOcPRj1hGNyXRCbqwjVIgn0wCH54f14Fo8.png',
-        desc: '我的设计-08291408',
-        tag: '18k白',
-        money: '13577'
-      }]
+      currtBn: 0,
+      list: []
     }
   },
   created () {
-
+    this.loadList()
   },
   methods: {
     loadList () {
       this.$get({
-        url: 'api/design/getMyDesign'
+        url: 'api/3d/getMyDesign'
       }).then((res) => {
         this.list = res.data
-        this.currtId = this.list.length ? this.list[0].id : 0
+        this.currtBn = this.list.length ? this.list[0].bn : 0
       })
     },
     onClickLeft () {
@@ -155,23 +131,23 @@ export default {
     },
     onChange (index) {
       this.swiperIndex = index
-      this.currtId = this.list[index].id
+      this.currtBn = this.list[index].bn
     },
     deleteDesign () {
       this.$post({
         url: 'api/design/deleteDesign',
         data: {
-          id: this.currtId
+          id: this.currtBn
         }
       }).then(() => {
         this.loadList()
       }).catch(() => {})
     },
     jumpDesign () {
-      window.location.href = window.location.origin + `/design.html?id=${this.currtId}`
+      window.location.href = window.location.origin + `/design.html?bn=${this.currtBn}`
     },
     jumpOrderConfirm () {
-      this.$router.push(`./orderConfirm?custId=${this.currtId}`)
+      this.$router.push(`./orderConfirm?bn=${this.currtBn}`)
     }
   }
 }
