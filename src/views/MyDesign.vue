@@ -124,6 +124,8 @@ export default {
       }).then((res) => {
         this.list = res.data
         this.currtBn = this.list.length ? this.list[0].bn : 0
+      }).catch(() => {
+        this.$toast.fail('获取数据失败，请稍后重试')
       })
     },
     onClickLeft () {
@@ -141,7 +143,10 @@ export default {
         }
       }).then(() => {
         this.loadList()
-      }).catch(() => {})
+        this.$toast.success('删除成功')
+      }).catch(() => {
+        this.$toast.fail('删除失败')
+      })
     },
     jumpDesign () {
       window.location.href = window.location.origin + `/design.html?bn=${this.currtBn}`

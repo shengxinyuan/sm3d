@@ -32,7 +32,7 @@
       </div>
       <div class="order-info-cont">
         <div>
-          <img src="../../assets/diamond-list/diamond-view.png" width="100%">
+          <img :src="preview_image" width="100%">
         </div>
         <div class="order-cell">
           <span class="order-cell__label">款式：</span>
@@ -42,10 +42,10 @@
           <span class="order-cell__label">材质：</span>
           <span class="order-cell__value">{{ksInfo.cz}}</span>
         </div>
-        <div class="order-cell">
+        <!-- <div class="order-cell">
           <span class="order-cell__label">工艺：</span>
           <span class="order-cell__value">{{ksInfo.gy}}</span>
-        </div>
+        </div> -->
         <div class="order-cell">
           <span class="order-cell__label">戒臂：</span>
           <span class="order-cell__value">{{ksInfo.jb}}</span>
@@ -54,10 +54,10 @@
           <span class="order-cell__label">花头：</span>
           <span class="order-cell__value">{{ksInfo.ht}}</span>
         </div>
-        <div class="order-cell">
+        <!-- <div class="order-cell">
           <span class="order-cell__label">辅石：</span>
           <span class="order-cell__value">{{ksInfo.fs}}</span>
-        </div>
+        </div> -->
       </div>
       <div class="cont-info-more">
         <label class="remark-label" for="remark">订单备注</label>
@@ -69,22 +69,27 @@
       <div class="flex order-title-cont">
         <van-icon name="gold-coin-o icon-style" />
         <div class="title flex1">
-          订单金额
+          商品总金额
         </div>
         <div class="title yellow">
-          ¥ 12150
+          ¥{{ddInfo.cost}}
         </div>
       </div>
       <div class="order-info-cont">
         <div class="flex">
           <van-icon name="cash-back-record icon-style" />
-          <div class="flex1">商品金额</div>
-          <div>¥ 12150</div>
+          <div class="flex1">定金</div>
+          <div>¥ {{ddInfo.deposit || 0}}</div>
         </div>
         <div class="flex pt10">
           <van-icon name="coupon-o icon-style" />
-          <div class="flex1">优惠券</div>
-          <div>¥ -0</div>
+          <div class="flex1">定金比例</div>
+          <div>{{ddInfo.deposit_ratio || 0}}%</div>
+        </div>
+        <div class="flex pt10">
+          <van-icon name="balance-list-o icon-style" />
+          <div class="flex1">尾款</div>
+          <div>¥ {{ddInfo.cost || 0 - ddInfo.deposit || 0}}</div>
         </div>
       </div>
     </section>
@@ -101,18 +106,18 @@ export default {
   },
   data () {
     return {
-      designId: this.$route.query.id,
+      bn: this.$route.query.bn,
       comment: '',
+      preview_image: '',
       ksInfo: {
         sc: {
           value: '12 51.2mm',
           index: '12'
         },
         ks: '圆款钻石定制',
-        cz: '18K白',
-        gy: '抛光',
-        jb: 'BH116',
-        ht: 'AH007',
+        cz: '',
+        jb: '',
+        ht: '',
         fs: '天然钻石(白)'
       },
       zsInfo: {
@@ -125,6 +130,11 @@ export default {
         pg: 'EX',
         qg: 'VG',
         dc: 'EX'
+      },
+      ddInfo: {
+        cost: 0,
+        deposit: 0,
+        deposit_ratio: 0
       }
     }
   },
@@ -138,33 +148,58 @@ export default {
         this.$get({
           url: 'api/design/design_detail',
           data: {
-            design_bn: this.designId
+            design_bn: this.bn
           }
         }),
         this.$get({
           url: 'api/3d/order',
           data: {
-            design_id: this.designId
+            design_bn: this.bn
           }
         })
       ])
         .then((res) => {
-          const [designInfo, orderInfo] = res
-        }).catch(() => {})
+          const { data } = res[0]
+          const { ddData } = res[1]
+          this.preview_image = data.preview_image
+          if (this.preview_image && this.preview_image.startsWith('uploads')) {
+            this.preview_image = '' + this.preview_image
+          }
+          if (data.title) {
+            this.name = data.title
+          }
+          this.ksInfo.sc = data.ring_size
+          this.ksInfo.kz = data.ring_print
+          this.ksInfo.ht = data.flower_head_id
+          this.ksInfo.jb = data.ring_arm_id
+          this.ksInfo.cz = data.texture_id
+          this.zsInfo.zs = data.diamond_id
+          this.zsInfo.zs = data.diamond_id
+          this.ddInfo.cost = ddData.cost
+          this.ddInfo.deposit = ddData.deposit
+          this.ddInfo.deposit_ratio = ddData.deposit_ratio
+        }).catch(() => {
+          this.$toast.fail('获取数据失败')
+        })
     },
     buy () {
-      this.$post({
-        url: '',
-        data: {
-          design_id: this.designId,
-          coupon_id: 0,
-          comment: this.comment,
-          address_id: this.$store.state.OrderConfirm.currtAddress.id,
-          vip: 0
-        }
-      }).then(() => {
-
-      }).catch(() => {})
+      if (this.$store.state.OrderConfirm.currtAddress.id) {
+        this.$post({
+          url: 'api/3d/order',
+          data: {
+            design_bn: this.$route.query.bn,
+            coupon_id: 0,
+            comment: this.comment,
+            address_id: this.$store.state.OrderConfirm.currtAddress.id,
+            vip: 0
+          }
+        }).then(() => {
+        }).catch(() => {
+          this.$toast.fail('提交订单失败')
+        })
+      } else {
+        this.$toast('请先选择收货地址')
+      }
     },
     onClickLeft () {
       this.$router.back()

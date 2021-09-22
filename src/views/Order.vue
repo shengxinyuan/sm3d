@@ -9,7 +9,7 @@
       class="bag-bar"
     />
     <div class="order-header" style="margin-top:50px;">
-      <img src="https://admin.zbird.com/storage/uploads/images/2021/09/01/8UrCONYnQH4OlRt99NUL6rh7qkCHra0YeEMluwEt.png" width="300px" height="300px">
+      <img :src="preview_image" width="300px" height="300px">
     </div>
     <p class="order-tip">3D定制效果仅供参考，商品以实物为准</p>
     <div class="order-name">
@@ -22,19 +22,7 @@
           <div class="order-ks">
             <div class="order-cell order-cell__picker">
               <span class="order-cell__label">手寸</span>
-              <div is-link class="order-cell__value">
-                <span @click="showScPopup">{{ksInfo.sc.value}}</span>
-                <van-popup v-model="showSc" position="bottom">
-                  <van-picker
-                    title=""
-                    default-index=5
-                    show-toolbar
-                    :columns="columns"
-                    @confirm="onConfirm"
-                    @cancel="onCancel"
-                  />
-                </van-popup>
-              </div>
+              <span class="order-cell__value">{{ksInfo.sc}}</span>
               <van-icon name="question-o" size="24px" class="order-cell__picker-icon" @click="showHelpPopup"/>
               <van-popup v-model="showHelp" closeable>
                 <div class="order-help">
@@ -64,10 +52,10 @@
               <span class="order-cell__label">材质</span>
               <span class="order-cell__value">{{ksInfo.cz}}</span>
             </div>
-            <div class="order-cell">
+            <!-- <div class="order-cell">
               <span class="order-cell__label">工艺</span>
               <span class="order-cell__value">{{ksInfo.gy}}</span>
-            </div>
+            </div> -->
             <div class="order-cell">
               <span class="order-cell__label">戒臂</span>
               <span class="order-cell__value">{{ksInfo.jb}}</span>
@@ -77,21 +65,21 @@
               <span class="order-cell__value">{{ksInfo.ht}}</span>
             </div>
             <div class="order-cell">
-              <span class="order-cell__label">辅石</span>
-              <span class="order-cell__value">{{ksInfo.fs}}</span>
+              <span class="order-cell__label">刻字</span>
+              <span class="order-cell__value">{{ksInfo.kz}}</span>
             </div>
           </div>
         </van-tab>
         <van-tab title="钻石参数">
           <div class="order-ks">
             <div class="order-cell">
-              <span class="order-cell__label">证书</span>
+              <span class="order-cell__label">钻石</span>
               <span class="order-cell__value">{{zsInfo.zs}}</span>
             </div>
-            <div class="order-cell">
+            <!-- <div class="order-cell">
               <span class="order-cell__label">钻重</span>
               <span class="order-cell__value">{{zsInfo.zz}}</span>
-            </div>
+            </div> -->
             <div class="order-cell">
               <span class="order-cell__label">形状</span>
               <span class="order-cell__value">{{zsInfo.xz}}</span>
@@ -131,6 +119,9 @@
             <van-row><van-icon name="bag-o" color="rgb(193, 177, 138)" size="25"/></van-row>
           </van-col>
         </router-link>
+        <van-col class="bag-btns__btn bag-btns__share">
+          <van-button type="primary" class="button bag-list__btn--save" @click="saveDesign">保存设计</van-button>
+        </van-col>
         <van-col style="flex:1;"></van-col>
         <van-col class="bag-btns__btn bag-btns__share">
           <van-button type="primary" class="button bag-list__btn--buy" @click="buy">确认购买</van-button>
@@ -156,51 +147,21 @@ Vue.use(Tabs)
 export default {
   data () {
     return {
-      custId: '',
-      query: {},
+      bn: this.$route.query.bn || 0,
       active: 2,
       name: '我的设计' + Date.now(),
-      columns: [
-        // '5 43.6mm',
-        // '6 44.6mm',
-        // '7 45.8mm',
-        '8 46.7mm',
-        '9 47.7mm',
-        '10 49.0mm',
-        '11 50.2mm',
-        '12 51.2mm',
-        '13 52.4mm',
-        '14 53.4mm',
-        '15 54.4mm',
-        '16 55.6mm',
-        '17 56.8mm',
-        '18 58.1mm',
-        '19 59.0mm'
-        // '20 60.0mm',
-        // '21 61.2mm',
-        // '22 62.2mm',
-        // '24 63.4mm',
-        // '25 65.6mm',
-        // '26 66.6mm',
-        // '27 67.8mm',
-        // '28 69.0mm'
-      ],
+      preview_image: '',
       ksInfo: {
-        sc: {
-          value: '12 51.2mm',
-          index: '12'
-        },
-        cz: '18K白',
+        sc: 0,
+        cz: '',
         cz_id: 2,
-        gy: '抛光',
         jb: '',
         ht: '',
         fs: '',
-        fs_id: 1,
         kz: ''
       },
       zsInfo: {
-        zs: 'GIA 232813821738',
+        zs: '',
         zz: '0.30ct',
         xz: '圆形',
         ys: 'K',
@@ -222,23 +183,27 @@ export default {
       this.$get({
         url: 'api/design/design_detail',
         data: {
-          design_bn: this.$route.bn || '202109120121'
+          design_bn: this.bn
         }
       }).then((res) => {
+        const { data } = res
+        this.preview_image = data.preview_image
+        if (this.preview_image && this.preview_image.startsWith('uploads')) {
+          this.preview_image = '' + this.preview_image
+        }
+        if (data.title) {
+          this.name = data.title
+        }
+        this.ksInfo.sc = data.ring_size
+        this.ksInfo.kz = data.ring_print
+        this.ksInfo.ht = data.flower_head_id
+        this.ksInfo.jb = data.ring_arm_id
+        this.ksInfo.cz = data.texture_id
+        this.zsInfo.zs = data.diamond_id
+        this.zsInfo.zs = data.diamond_id
+      }).catch(() => {
+        this.$toast.fail('获取数据失败，请稍后重试')
       })
-      if (window.location.search.split('?')[1]) {
-        const queryList = decodeURI(window.location.search).split('?')[1].split('&')
-        queryList.forEach((i) => {
-          this.query[i.split('=')[0]] = i.split('=')[1]
-        })
-        this.ksInfo.ht = this.query.flower_head_id
-        this.ksInfo.jb = this.query.ring_arm_id
-        this.ksInfo.kz = this.query.ring_print
-        this.ksInfo.cz = this.query.texture_text
-        this.ksInfo.cz_id = this.query.texture_id
-        this.ksInfo.fs = this.query.second_diamond_text
-        this.ksInfo.fs_id = this.query.second_diamond_id
-      }
     },
     showScPopup () {
       this.showSc = true
@@ -257,9 +222,9 @@ export default {
     onClickLeft () {
       this.$router.back()
     },
-    buy () {
+    saveDesign () {
       this.$post({
-        url: 'api/design/saveDesign',
+        url: 'api/3d/saveDesign',
         data: {
           flower_head_id: this.ksInfo.ht,
           ring_arm_id: this.ksInfo.jb,
@@ -269,16 +234,34 @@ export default {
           title: this.name,
           ring_size: this.ksInfo.sc.index,
           good_type: 1,
-          member_id: 0,
-          preview_image: '',
-          second_diamond_id: this.ksInfo.fs_id
+          preview_image: this.preview_image
         }
       }).then((res) => {
-        this.custId = res.data.custId
-        this.$router.push(`./orderConfirm?custId=${this.custId}`)
+        this.bn = res.data.custId
+        this.$router.push('./mydesign')
       }).catch(() => {
-        this.custId = 123
-        this.$router.push(`./orderConfirm?custId=${this.custId}`)
+        this.$toast.fail('保存失败')
+      })
+    },
+    buy () {
+      this.$post({
+        url: 'api/3d/saveDesign',
+        data: {
+          flower_head_id: this.ksInfo.ht,
+          ring_arm_id: this.ksInfo.jb,
+          diamond_id: this.zsInfo.zs,
+          ring_print: this.ksInfo.kz,
+          texture_id: this.ksInfo.cz_id,
+          title: this.name,
+          ring_size: this.ksInfo.sc.index,
+          good_type: 1,
+          preview_image: this.preview_image
+        }
+      }).then((res) => {
+        this.bn = res.data.custId
+        this.$router.push(`./orderConfirm?bn=${this.bn}`)
+      }).catch(() => {
+        this.$toast.fail('保存失败')
       })
     }
   }
@@ -384,18 +367,22 @@ export default {
       }
     }
     .order-cell__picker {
-      height: 60px;
+      // height: 60px;
+      // .order-cell__value {
+      //   height: 26px;
+      //   display: flex;
+      //   align-items: center;
+      //   justify-content: center;
+      //   line-height: 26px;
+      //   text-align: right;
+      //   width: 120px;
+      //   margin-left: 20px;
+      //   background-color: rgb(84, 84, 91);
+      //   border-radius: 10px;
+      // }
       .order-cell__value {
-        height: 26px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 26px;
-        text-align: right;
-        width: 120px;
-        margin-left: 20px;
-        background-color: rgb(84, 84, 91);
-        border-radius: 10px;
+        padding-right: 20px;
+        margin-right: -10px;
       }
       .order-cell__picker-icon {
         color: rgb(193, 177, 138);
@@ -461,14 +448,18 @@ export default {
     }
   }
   .button {
-    width: 160px;
-    height: 30px;
-    line-height: 43px;
-    background-color: rgb(193, 177, 138);
-    color: rgb(60, 60, 68);
+    width: 130px;
+    height: 40px;
+    line-height: 40px;
     border: unset;
-    border-radius: 50px;
-    font-size: 16px;
+    border-radius: 20px;
+    background-color: rgb(193, 177, 138);
+    color: rgb(52, 52, 60);
+    text-align: center;
+  }
+  .button.bag-list__btn--save {
+    background-color: rgb(84, 84, 91);
+    color: rgb(193, 177, 138);
   }
 }
 </style>

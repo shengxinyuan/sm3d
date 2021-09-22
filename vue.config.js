@@ -5,10 +5,16 @@ module.exports = {
     index: 'src/main.js'
   },
   devServer: {
+    open: true,
+    overlay: {
+      warnings: false,
+      errors: true
+    },
     proxy: {
       '/api': {
-        target: 'http://192.168.147.141:8000',
-        changeOrigin: true
+        target: 'http://zhuanshi.nxm.wanheweb.com/',
+        changeOrigin: true // 如果接口跨域，需要进行这个参数配置
+        // pathRewrite: { "^/dev-api": "" }
       }
     }
   }

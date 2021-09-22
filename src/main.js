@@ -27,6 +27,7 @@ Vue.use(Popup)
 Vue.config.productionTip = false
 Vue.prototype.$get = get
 Vue.prototype.$post = post
+Vue.prototype.$toast = Toast
 new Vue({
   router,
   store,
