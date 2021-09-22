@@ -3,5 +3,13 @@ module.exports = {
   pages: {
     design: 'src/design/index.js',
     index: 'src/main.js'
+  },
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://192.168.147.141:8000',
+        changeOrigin: true
+      }
+    }
   }
 }

@@ -31,7 +31,12 @@ export const routes = [
   {
     path: '/diamondList',
     name: 'DiamondList',
-    component: () => import('../views/Diamond/index.vue')
+    component: () => import('../views/Diamond/List.vue')
+  },
+  {
+    path: '/diamondDetail',
+    name: 'diamondDetail',
+    component: () => import('../views/Diamond/Detail.vue')
   },
   {
     path: '/orderConfirm',

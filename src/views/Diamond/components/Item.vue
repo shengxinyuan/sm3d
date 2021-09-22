@@ -1,5 +1,5 @@
 <template>
-  <div class="diamond-item">
+  <div class="diamond-item" @click="() => {detail(32414)}">
     <div class="diamond-item-img-box">
       <img class="diamond-item-img" src="../../../assets/diamond-list/diamond.webp" alt="">
       <div class="diamond-img-tip"></div>
@@ -39,6 +39,11 @@
       </div>
     </div>
 
+    <div class="buy-group">
+      <div class="cost">¥ 22000</div>
+      <div class="buy-btn" @click="confirmDesign">确认设计</div>
+    </div>
+
   </div>
 </template>
 
@@ -48,24 +53,14 @@ export default {
   components: {},
   data() {
     return {
-      list: [],
       loading: false,
       finished: false,
     };
   },
   computed: {},
   methods: {
-    onLoad() {
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1);
-        }
-        this.loading = false;
-
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 1000);
+    detail(id) {
+      this.$router.push(`/diamondDetail?id=${id}`)
     },
   },
 };

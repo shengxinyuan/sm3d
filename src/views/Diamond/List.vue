@@ -47,7 +47,14 @@ export default {
   },
   computed: {},
   created() {
-    // this.$get('')
+    this.$get({
+      url: 'api/3d/get_all_diamonds',
+      data: {
+        id: this.$route.query.id
+      }
+    }).then((res) => {
+      console.log(res);
+    })
   },
   methods: {
     filter() {
