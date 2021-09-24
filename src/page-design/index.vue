@@ -18,7 +18,6 @@
     <img class="img2" src="../assets/diamond-list/bg.png" alt="" />
     <div class="web3d-cont">
       <div id="web3d" style="70vh"></div>
-      <img :src="imgUrl" alt="" />
     </div>
 
     <section class="page-footer" v-if="footerTabId === 'design'">
@@ -304,6 +303,10 @@ export default {
       mainPartId && this.$store.commit("setState", { mainPartId });
       const metalId = getUrlParam("metalId");
       metalId && this.$store.commit("setState", { metalId });
+      const mark = getUrlParam("mark");
+      mark && this.$store.commit("setState", { mark });
+      const currentHandInch = getUrlParam("currentHandInch");
+      currentHandInch && this.$store.commit("setState", { currentHandInch });
 
       this.init3D();
     });
@@ -597,11 +600,12 @@ export default {
   bottom: 0;
   left: 0;
   width: 100%;
+  background: rgb(37, 37, 42);
   .btns-group {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 80px;
+    height: 81px;
     .option {
       display: flex;
       align-items: center;

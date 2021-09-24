@@ -1,7 +1,8 @@
 module.exports = {
   lintOnSave: false, // eslint-loader 是否在保存的时候检查
   pages: {
-    design: 'src/design/index.js',
+    design: 'src/page-design/index.js',
+    share: 'src/page-share/index.js',
     index: 'src/main.js'
   },
   devServer: {

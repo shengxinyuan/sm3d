@@ -4,6 +4,7 @@
       {{v.name}}
     </router-link>
     <a href="/design.html">design.html</a>
+    <a href="/share.html">share.html</a>
   </div>
 </template>
 
