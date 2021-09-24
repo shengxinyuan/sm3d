@@ -38,16 +38,12 @@
         <div class="desc-btn">查看GIA证书</div>
       </div>
     </div>
-
-    <div class="buy-group">
-      <div class="cost">¥ 22000</div>
-      <div class="buy-btn" @click="confirmDesign">确认设计</div>
-    </div>
-
   </div>
 </template>
 
 <script>
+import { getUrlParam } from '../../../util/index'
+
 export default {
   name: 'diamondItem',
   components: {},
@@ -60,7 +56,7 @@ export default {
   computed: {},
   methods: {
     detail(id) {
-      this.$router.push(`/diamondDetail?id=${id}`)
+      location.href = `/diamondDetail?backUrl=${encodeURIComponent(getUrlParam('backUrl'))}&id=${id}`
     },
   },
 };

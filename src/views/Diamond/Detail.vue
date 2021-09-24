@@ -1,6 +1,6 @@
 <template>
   <div class="diamond-detail">
-    <img src="../../assets/diamond-list/diamond.webp" width="100%" alt="" />
+    <img src="../../assets/diamond-list/diamond-detail-img.png" width="100%" alt="" />
     <div class="item-title-cont">
       <div class="flex1">
         <span span class="text-ABC text-white text-24"
@@ -52,47 +52,54 @@
          
           class="td"
           style="color: rgb(193, 177, 138)"
-          ><span>0.30ct</span></span
+          ><span>{{ info.size }}</span></span
         ><span
          
           class="td"
           style="color: rgb(193, 177, 138)"
-          ><span>K</span></span
+          ><span>{{ info.color }}</span></span
         ><span
          
           class="td"
           style="color: rgb(193, 177, 138)"
-          ><span>SI2</span></span
+          ><span>{{ info.clarity }}</span></span
         ><span
          
           class="td"
           style="color: rgb(193, 177, 138)"
-          ><span>EX</span></span
+          ><span>{{ info.cut }}</span></span
         ><span
          
           class="td"
           style="color: rgb(193, 177, 138)"
-          ><span>VG</span></span
+          ><span>{{info.symmetry}}</span></span
         ><span
          
           class="td"
           style="color: rgb(193, 177, 138)"
-          ><span>EX</span></span
+          ><span>{{info.polish}}</span></span
         ><span
          
           class="td"
           style="color: rgb(193, 177, 138)"
-          ><span>Faint</span></span
+          ><span>{{info.flr_intensity}}</span></span
         ></div
       ></div
     >
 
     <img src="../../assets/diamond-list/detail.png" width="100%" alt="" />
+
+    <div class="buy-group">
+      <div class="cost">售价 ¥ {{info.price}}</div>
+      <div class="buy-btn" @click="confirm">选定钻石</div>
+    </div>
     
   </div>
 </template>
 
 <script>
+import { urlParse } from '../../util/index'
+
 export default {
   components: {},
   data() {
@@ -103,7 +110,7 @@ export default {
   computed: {},
   created() {
     this.$get({
-      url: "api/3d/get_diamond",
+      url: 'api/3d/get_diamond',
       data: {
         id: this.$route.query.id,
       },
@@ -112,14 +119,16 @@ export default {
     });
   },
   methods: {
-    filter() {
-      this.filterStatus = true;
-    },
-    close() {
-      this.filterStatus = false;
-    },
-    onLoad() {
-      this.finished = true;
+    confirm() {
+      const backUrl = decodeURIComponent(this.$route.query.backUrl)
+      const queryObj = urlParse(backUrl)
+      queryObj.diamondId = this.$route.query.id
+      let url = ''
+      for(let key in queryObj) {
+        url += key + '=' + queryObj[key] + '&'
+      }
+      url = url.slice(0,url.length-1)
+      location.href = backUrl.split('?')[0] + '?' + url
     },
   },
 };
@@ -128,6 +137,7 @@ export default {
 <style lang="scss" scoped>
 .diamond-detail {
   height: 100%;
+  padding-bottom: 100px;
   background-color: rgb(60, 60, 68);
   color: #fff;
   display: flex;
@@ -160,6 +170,34 @@ export default {
   .td {
     font-size: 12px;
     flex: 1;
+  }
+
+  .buy-group {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 15px 40px;
+    background-color: rgb(72, 72, 79);
+    .cost {
+      flex: 1;
+      color: rgb(193, 177, 138);
+      height: 40px;
+      line-height: 40px;
+      font-size: 20px;
+    }
+    .buy-btn {
+      width: 150px;
+      height: 40px;
+      line-height: 40px;
+      border-radius: 20px;
+      background-color: rgb(193, 177, 138);
+      color: rgb(52, 52, 60);
+      text-align: center;
+    }
   }
 }
 </style>

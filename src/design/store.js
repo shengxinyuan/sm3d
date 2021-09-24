@@ -28,7 +28,8 @@ export default new Vuex.Store({
     // 当前手寸
     currentHandInch: '',
     // 当前钻石
-    diamondId: '32414',
+    diamondId: '',
+    diamondInfo: {},
 
     otherGems: [],
     metalWeb: [],
@@ -38,6 +39,7 @@ export default new Vuex.Store({
     materialWeb: [],
     materialWebDefault: [],
     webModelPics: [],
+    
   },
   mutations: {
     setState(state, payload) {
@@ -286,7 +288,8 @@ export default new Vuex.Store({
         data: {
           userId: state.userNo,
           desTypeId: state.designInfo.type.id
-        }
+        },
+        isForm: false
       }).then((data) => {
         if (data.code === 0) {
           const webModelPics = data.list
@@ -296,6 +299,7 @@ export default new Vuex.Store({
         }
       })
     },
+    
 
     /**
      * 10 提交设计
@@ -324,6 +328,24 @@ export default new Vuex.Store({
         }
       }).then((data) => {
         return data
+      })
+    },
+
+    /**
+     * 11 获取钻石信息
+     */
+     getDiamondInfo({ commit, state }, { id }) {
+      get({
+        url: 'api/3d/get_diamond',
+        data: {
+          id
+        }
+      }).then((data) => {
+        if (data.status === 1) {
+          const diamondInfo = data.data
+          diamondInfo.detail = `${diamondInfo.color}色 ${diamondInfo.clarity} ${diamondInfo.cut} ${diamondInfo.symmetry} ${diamondInfo.polish} ${diamondInfo.flr_intensity}`
+          commit('setState', { diamondInfo })
+        }
       })
     },
 
