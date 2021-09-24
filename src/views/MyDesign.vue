@@ -141,9 +141,11 @@ export default {
         data: {
           id: this.currtBn
         }
-      }).then(() => {
-        this.loadList()
-        this.$toast.success('删除成功')
+      }).then((res) => {
+        if (res.status == '1') {
+          this.loadList()
+          this.$toast.success('删除成功')
+        }
       }).catch(() => {
         this.$toast.fail('删除失败')
       })

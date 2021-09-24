@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import 'vant/lib/index.css'
-import { Tab, Tabs, Toast, NavBar, Col, Row, Button, Swipe, SwipeItem, Tabbar, TabbarItem, Icon, Divider, List, Picker, Popup, AddressList } from 'vant'
+import { Tab, Tabs, Toast, NavBar, Col, Row, Button, Swipe, SwipeItem, Tabbar, TabbarItem, Icon, Divider, List, Picker, Popup, AddressList, Dialog } from 'vant'
 import { get, post } from '../src/util/ajax'
 
 Vue.use(AddressList)
@@ -23,7 +23,7 @@ Vue.use(Toast)
 Vue.use(List)
 Vue.use(Picker)
 Vue.use(Popup)
-
+Vue.use(Dialog)
 Vue.config.productionTip = false
 Vue.prototype.$get = get
 Vue.prototype.$post = post

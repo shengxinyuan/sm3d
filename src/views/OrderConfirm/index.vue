@@ -193,8 +193,10 @@ export default {
             address_id: this.$store.state.OrderConfirm.currtAddress.id,
             vip: 0
           }
-        }).then(() => {
-          this.$toast.success('提交订单成功')
+        }).then((res) => {
+          if (res.status == 1) {
+            this.$toast.success('提交订单成功')
+          }
         }).catch(() => {
           this.$toast.fail('提交订单失败')
         })

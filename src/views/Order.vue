@@ -12,9 +12,11 @@
       <img :src="preview_image" height="300px">
     </div>
     <p class="order-tip">3D定制效果仅供参考，商品以实物为准</p>
-    <div class="order-name">
-      <van-field v-model="name" label="设计名称：" placeholder="" clearable clear-trigger="always">
-      </van-field>
+    <div class="order-name" @click="toggleShow">
+      <span style="line-height: 24px;">设计名称：</span>
+      <span class="order-title">{{title || '点击修改设计名称'}}</span>
+      <!-- <van-field v-model="title" label="设计名称：" placeholder="" clearable clear-trigger="always">
+      </van-field> -->
     </div>
     <div class="order-tab">
       <van-tabs v-model="active" class="order-tabs">
@@ -128,6 +130,9 @@
         </van-col>
       </van-row>
     </van-row>
+    <van-dialog v-model="show" title="设计名称" show-cancel-button @open="handleOpen" @confirm="handleConfirm" @close="handleClose">
+      <van-field v-model="curTitle" label="" ref="inputRef" autofocus class="title-input" />
+    </van-dialog>
   </div>
 </template>
 
@@ -149,8 +154,10 @@ export default {
     return {
       bn: this.$route.query.bn || 0,
       active: 2,
-      name: '我的设计' + Date.now(),
+      title: '',
+      curTitle: '',
       preview_image: '',
+      show: false,
       ksInfo: {
         sc: 0,
         cz: '',
@@ -192,7 +199,7 @@ export default {
           this.preview_image = '' + this.preview_image
         }
         if (data.title) {
-          this.name = data.title
+          this.title = data.title
         }
         this.ksInfo.sc = data.ring_size
         this.ksInfo.kz = data.ring_print
@@ -223,6 +230,10 @@ export default {
       this.$router.back()
     },
     saveDesign () {
+      if (!this.title) {
+        this.toggleShow()
+        return
+      }
       this.$post({
         url: 'api/3d/saveDesign',
         data: {
@@ -232,7 +243,7 @@ export default {
           diamond_id: this.zsInfo.zs,
           ring_print: this.ksInfo.kz,
           texture_id: this.ksInfo.cz_id,
-          title: this.name,
+          title: this.title,
           ring_size: this.ksInfo.sc.index,
           good_type: 1,
           preview_image: this.preview_image
@@ -243,7 +254,14 @@ export default {
         this.$toast.fail('保存失败')
       })
     },
+    toggleShow () {
+      this.show = !this.show
+    },
     buy () {
+      if (!this.title) {
+        this.toggleShow()
+        return
+      }
       this.$post({
         url: 'api/3d/saveDesign',
         data: {
@@ -253,7 +271,7 @@ export default {
           diamond_id: this.zsInfo.zs,
           ring_print: this.ksInfo.kz,
           texture_id: this.ksInfo.cz_id,
-          title: this.name,
+          title: this.title,
           ring_size: this.ksInfo.sc.index,
           good_type: 1,
           preview_image: this.preview_image
@@ -264,6 +282,16 @@ export default {
       }).catch(() => {
         this.$toast.fail('保存失败')
       })
+    },
+    handleOpen () {
+      this.curTitle = this.title
+    },
+    handleConfirm () {
+      console.log(this.curTitle)
+      this.title = this.curTitle
+    },
+    handleClose () {
+      this.curTitle = ''
     }
   }
 }
@@ -462,6 +490,25 @@ export default {
   }
   .button.bag-list__btn--save {
     background-color: rgb(84, 84, 91);
+    color: rgb(193, 177, 138);
+  }
+  .order-title {
+    background: #eee;
+    color: #333;
+    border-radius: 8px;
+    width: 250px;
+    padding: 4px 4px 4px 16px;
+    text-align: left;
+  }
+  .title-input {
+    background: #eee;
+    color: #333;
+    border-radius: 8px;
+    border: 1px solid #000;
+    margin: 12px;
+    width: 290px;
+  }
+  .van-dialog__confirm {
     color: rgb(193, 177, 138);
   }
 }
