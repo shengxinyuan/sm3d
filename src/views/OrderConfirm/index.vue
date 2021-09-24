@@ -160,7 +160,7 @@ export default {
       ])
         .then((res) => {
           const { data } = res[0]
-          const { ddData } = res[1]
+          const { data: ddData } = res[1]
           this.preview_image = data.preview_image
           if (this.preview_image && this.preview_image.startsWith('uploads')) {
             this.preview_image = '' + this.preview_image
@@ -178,7 +178,7 @@ export default {
           this.ddInfo.cost = ddData.cost
           this.ddInfo.deposit = ddData.deposit
           this.ddInfo.deposit_ratio = ddData.deposit_ratio
-        }).catch(() => {
+        }).catch((res) => {
           this.$toast.fail('获取数据失败')
         })
     },
@@ -194,6 +194,7 @@ export default {
             vip: 0
           }
         }).then(() => {
+          this.$toast.success('提交订单成功')
         }).catch(() => {
           this.$toast.fail('提交订单失败')
         })

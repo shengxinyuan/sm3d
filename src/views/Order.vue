@@ -9,7 +9,7 @@
       class="bag-bar"
     />
     <div class="order-header" style="margin-top:50px;">
-      <img :src="preview_image" width="300px" height="300px">
+      <img :src="preview_image" height="300px">
     </div>
     <p class="order-tip">3D定制效果仅供参考，商品以实物为准</p>
     <div class="order-name">
@@ -226,6 +226,7 @@ export default {
       this.$post({
         url: 'api/3d/saveDesign',
         data: {
+          bn: this.bn,
           flower_head_id: this.ksInfo.ht,
           ring_arm_id: this.ksInfo.jb,
           diamond_id: this.zsInfo.zs,
@@ -237,7 +238,6 @@ export default {
           preview_image: this.preview_image
         }
       }).then((res) => {
-        this.bn = res.data.custId
         this.$router.push('./mydesign')
       }).catch(() => {
         this.$toast.fail('保存失败')
@@ -247,6 +247,7 @@ export default {
       this.$post({
         url: 'api/3d/saveDesign',
         data: {
+          bn: this.bn,
           flower_head_id: this.ksInfo.ht,
           ring_arm_id: this.ksInfo.jb,
           diamond_id: this.zsInfo.zs,
@@ -258,7 +259,7 @@ export default {
           preview_image: this.preview_image
         }
       }).then((res) => {
-        this.bn = res.data.custId
+        this.bn = res.data
         this.$router.push(`./orderConfirm?bn=${this.bn}`)
       }).catch(() => {
         this.$toast.fail('保存失败')
@@ -283,11 +284,13 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #2c2c2c;
   }
   .order-tip {
+    background: #2c2c2c;
     color: rgb(204, 204, 204);
     font-size: 12px;
-    margin: 8px;
+    padding: 8px;
   }
   .order-name {
     display: flex;

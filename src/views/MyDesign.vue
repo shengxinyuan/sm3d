@@ -86,7 +86,7 @@
         <van-row><van-icon name="service-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>客服</van-row>
       </van-col> -->
-      <van-col class="bag-btns__btn bag-btns__share">
+      <van-col class="bag-btns__btn bag-btns__share" @click="share">
         <van-row><van-icon name="share-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>分享</van-row>
       </van-col>
@@ -150,6 +150,9 @@ export default {
     },
     jumpDesign () {
       window.location.href = window.location.origin + `/design.html?bn=${this.currtBn}`
+    },
+    share () {
+      window.location.href = window.location.origin + `/share.html?bn=${this.currtBn}`
     },
     jumpOrderConfirm () {
       this.$router.push(`./orderConfirm?bn=${this.currtBn}`)
