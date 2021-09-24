@@ -304,7 +304,7 @@ export default new Vuex.Store({
     /**
      * 10 提交设计
      */
-    async submitDesign({ commit, state }, { image }) {
+    async submitDesign({ commit, state }, { image, bn }) {
       const { data } = await post({
         url:'/api/3d/design/upload_image',
         data: {
@@ -321,19 +321,25 @@ export default new Vuex.Store({
         currentHandInch
       } = state
 
+      const query = {
+        flower_head_id: partId,
+        ring_arm_id: mainPartId,
+        diamond_id: diamondId,
+        ring_print: mark,
+        texture_id: metalId,
+        ring_size: currentHandInch,
+        good_type: 1,
+        title: '', 
+        preview_image,
+      }
+
+      if (bn) {
+        query.bn = bn
+      }
+
       return post({
         url:'/api/3d/saveDesign',
-        data: {
-          flower_head_id: partId,
-          ring_arm_id: mainPartId,
-          diamond_id: diamondId,
-          ring_print: mark,
-          texture_id: metalId,
-          ring_size: currentHandInch,
-          good_type: 1,
-          title: '', 
-          preview_image,
-        }
+        data: query
       }).then((data) => {
         return data
       })

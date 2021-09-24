@@ -265,6 +265,7 @@ export default {
 
       // 保存的设计信息
       saveDesignInfo: null,
+      design_bn: '',
     };
   },
   computed: {},
@@ -280,14 +281,9 @@ export default {
     this.$store.dispatch("loadUserInfo");
 
     const diamondId = getUrlParam("diamondId");
-
-    if (diamondId) {
-      this.$store.dispatch("getDiamondInfo", { id: diamondId });
-      this.$store.commit("setState", {
-        diamondId,
-      });
-      this.footerTabId = "diamond";
-    }
+    this.getDiamond(diamondId, true)
+    
+    
   },
   mounted() {
     // 请求：材质、宝石、设计数据
@@ -306,13 +302,32 @@ export default {
       const metalId = getUrlParam("metalId");
       const mark = getUrlParam("mark");
       const currentHandInch = getUrlParam("currentHandInch");
+      const diamondId = getUrlParam("diamondId");
 
       if (design_bn) {
         this.$store.dispatch("getDesignInfo", { design_bn }).then((res) => {
           this.saveDesignInfo = res.data
-          this.iframeWindow.console.log(res);
+          this.design_bn = design_bn
+          const {
+            ring_size,
+            diamond_id,
+            ring_arm_id,
+            flower_head_id,
+            texture_id,
+            ring_print,
+          } = res.data
 
-          this.setRenderParams()
+          this.getDiamond(diamond_id)
+
+          this.setRenderParams({
+            partId: partId || flower_head_id,
+            mainPartId: mainPartId || ring_arm_id,
+            metalId: metalId || texture_id,
+            mark: mark || ring_print,
+            currentHandInch: currentHandInch || ring_size,
+            diamondId: diamondId || diamond_id
+          })
+          
         });
       } else {
         this.setRenderParams({
@@ -330,11 +345,29 @@ export default {
     // 设置参数
     setRenderParams(obj) {
       for(let key in obj) {
-        if (obj[key]) {
-          this.$store.commit("setState", { key: obj[key] });
+        if (!obj[key]) {
+          delete obj[key]
         }
       }
-      this.init3D();
+
+      this.$store.commit("setState", obj);
+      setTimeout(() => {
+        this.init3D();
+      }, 0)
+    },
+
+    // 获取钻石信息
+    getDiamond(diamondId, openTab) {
+      if (diamondId) {
+        this.$store.dispatch("getDiamondInfo", { id: diamondId });
+        this.$store.commit("setState", {
+          diamondId,
+        });
+
+        if (openTab) {
+          this.footerTabId = "diamond";
+        }
+      }
     },
     // 初始化3D
     async init3D() {
@@ -349,7 +382,7 @@ export default {
         metalId,
       } = this.$store.state;
 
-      this.iframeWindow.console.log("mainPartId", partId, mainPartId);
+      this.iframeWindow.console.log("partId", partId);
 
       // 加载3D第一步：初始化3D场景
       this.my3d = Bavlo.initWeb3D(
@@ -419,7 +452,9 @@ export default {
           });
         return;
       }
+      this.loading = true;
 
+      
       this.my3d.changeCameraPos(false, -45, 85, -65);
 
       setTimeout(() => {
@@ -427,6 +462,7 @@ export default {
         this.$store
           .dispatch("submitDesign", {
             image: this.imgUrl,
+            bn: this.design_bn
           })
           .then(({ data }) => {
             this.iframeWindow.console.log(data);
@@ -439,8 +475,7 @@ export default {
      * 钻石选择页
      */
     selectDiamond() {
-      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch } =
-        this.$store.state;
+      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch } = this.$store.state;
       const queryObj = {};
 
       queryObj.mark = mark;
@@ -449,6 +484,7 @@ export default {
       queryObj.metalId = metalId;
       queryObj.diamondId = diamondId;
       queryObj.currentHandInch = currentHandInch;
+      queryObj.bn = this.design_bn;
 
       this.iframeWindow.console.log(queryObj);
       let url = "//" + location.host + location.pathname + "?";
