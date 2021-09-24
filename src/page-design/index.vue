@@ -262,6 +262,9 @@ export default {
 
       //loading
       loading: true,
+
+      // 保存的设计信息
+      saveDesignInfo: null,
     };
   },
   computed: {},
@@ -297,22 +300,42 @@ export default {
     ]).then(() => {
       this.iframeWindow.console.log("mounted -> data loaded -> init3D");
 
+      const design_bn = getUrlParam("bn");
       const partId = getUrlParam("partId");
-      partId && this.$store.commit("setState", { partId });
       const mainPartId = getUrlParam("mainPartId");
-      mainPartId && this.$store.commit("setState", { mainPartId });
       const metalId = getUrlParam("metalId");
-      metalId && this.$store.commit("setState", { metalId });
       const mark = getUrlParam("mark");
-      mark && this.$store.commit("setState", { mark });
       const currentHandInch = getUrlParam("currentHandInch");
-      currentHandInch && this.$store.commit("setState", { currentHandInch });
 
-      this.init3D();
+      if (design_bn) {
+        this.$store.dispatch("getDesignInfo", { design_bn }).then((res) => {
+          this.saveDesignInfo = res.data
+          this.iframeWindow.console.log(res);
+
+          this.setRenderParams()
+        });
+      } else {
+        this.setRenderParams({
+          partId,
+          mainPartId,
+          metalId,
+          mark,
+          currentHandInch,
+        })
+      }
     });
   },
 
   methods: {
+    // 设置参数
+    setRenderParams(obj) {
+      for(let key in obj) {
+        if (obj[key]) {
+          this.$store.commit("setState", { key: obj[key] });
+        }
+      }
+      this.init3D();
+    },
     // 初始化3D
     async init3D() {
       const {

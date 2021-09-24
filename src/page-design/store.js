@@ -304,7 +304,14 @@ export default new Vuex.Store({
     /**
      * 10 提交设计
      */
-    submitDesign({ commit, state }, { image }) {
+    async submitDesign({ commit, state }, { image }) {
+      const { data } = await post({
+        url:'/api/3d/design/upload_image',
+        data: {
+          base64: image
+        }
+      })
+      const preview_image = data.url
       const {
         mark,
         mainPartId,
@@ -313,6 +320,7 @@ export default new Vuex.Store({
         diamondId,
         currentHandInch
       } = state
+
       return post({
         url:'/api/3d/saveDesign',
         data: {
@@ -324,7 +332,7 @@ export default new Vuex.Store({
           ring_size: currentHandInch,
           good_type: 1,
           title: '', 
-          preview_image: image,
+          preview_image,
         }
       }).then((data) => {
         return data
@@ -334,7 +342,7 @@ export default new Vuex.Store({
     /**
      * 11 获取钻石信息
      */
-     getDiamondInfo({ commit, state }, { id }) {
+    getDiamondInfo({ commit, state }, { id }) {
       get({
         url: 'api/3d/get_diamond',
         data: {
@@ -346,6 +354,20 @@ export default new Vuex.Store({
           diamondInfo.detail = `${diamondInfo.color}色 ${diamondInfo.clarity} ${diamondInfo.cut} ${diamondInfo.symmetry} ${diamondInfo.polish} ${diamondInfo.flr_intensity}`
           commit('setState', { diamondInfo })
         }
+      })
+    },
+
+    /**
+     * 12 获取设计信息
+     */
+    getDesignInfo(_, { design_bn }) {
+      return get({
+        url: 'api/design/design_detail',
+        data: {
+          design_bn
+        }
+      }).then((data) => {
+        return data
       })
     },
 

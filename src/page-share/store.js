@@ -238,7 +238,7 @@ export default new Vuex.Store({
     /**
      * 11 获取设计信息
      */
-     getDesignInfo(_, { design_bn }) {
+    getDesignInfo(_, { design_bn }) {
       return get({
         url: 'api/design/design_detail',
         data: {
