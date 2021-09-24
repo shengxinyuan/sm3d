@@ -179,7 +179,7 @@
 
     <section class="page-footer" v-else-if="footerTabId === 'mark'">
       <div class="design-tabs-title">
-        <div class="back" @click="() => (footerTabId = 'default')">
+        <div class="back" @click="markBack">
           <van-icon name="arrow-left" />返回
         </div>
         <a class="active">文字印记</a>
@@ -448,10 +448,19 @@ export default {
      * 保存刻印
      */
     saveMark() {
-
       this.$store.commit("setState", {
         mark: this.mark,
       });
+      
+      this.my3d.printUserTextOfLayer(940, this.mark)
+      this.my3d.changeCameraPos(false, 0, 80, -60)
+      
+    },
+
+    // 刻印返回
+    markBack() {
+      this.footerTabId = 'default'
+      this.my3d.setRotationState(true);
     },
 
     onKeyup(e) {

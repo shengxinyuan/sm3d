@@ -1,40 +1,40 @@
 <template>
-  <div class="diamond-item" @click="() => {detail(32414)}">
+  <div class="diamond-item" @click="() => {detail(info.id)}">
     <div class="diamond-item-img-box">
       <img class="diamond-item-img" src="../../../assets/diamond-list/diamond.webp" alt="">
       <div class="diamond-img-tip"></div>
-      <div class="diamond-ct">0.30ct</div>
-      <div class="diamond-count">￥1,230</div>
+      <div class="diamond-ct">{{info.size || '-'}}</div>
+      <div class="diamond-count">￥{{info.price || '-'}}</div>
     </div>
     <div class="info-box">
       <div class="info-item">
         <div class="info-item-cont">
           <span class="label">颜色</span>
-          <span class="value">A</span>
+          <span class="value">{{info.color}}</span>
         </div>
         <div class="info-item-cont">
           <span class="label">净度</span>
-          <span class="value">A</span>
+          <span class="value">{{ info.clarity }}</span>
         </div>
         <div class="info-item-cont">
           <span class="label">切工</span>
-          <span class="value">A</span>
+          <span class="value">{{ info.cut }}</span>
         </div>
         <div class="info-item-cont">
           <span class="label">对称</span>
-          <span class="value">A</span>
+          <span class="value">{{info.symmetry}}</span>
         </div>
         <div class="info-item-cont">
           <span class="label">抛光</span>
-          <span class="value">A</span>
+          <span class="value">{{info.polish}}</span>
         </div>
         <div class="info-item-cont">
           <span class="label">荧光</span>
-          <span class="value">A</span>
+          <span class="value">{{info.flr_intensity}}</span>
         </div>
       </div>
       <div class="info-item-GIA">
-        <div class="num">GIA2386635530</div>
+        <div class="num">{{info.cert_num}}</div>
         <div class="desc-btn">查看GIA证书</div>
       </div>
     </div>
@@ -46,6 +46,7 @@ import { getUrlParam } from '../../../util/index'
 
 export default {
   name: 'diamondItem',
+  props: ['info'],
   components: {},
   data() {
     return {

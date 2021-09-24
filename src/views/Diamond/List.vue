@@ -2,7 +2,7 @@
   <div class="diamond-list">
     <div>
       <div class="diamonds-count">
-        <span class="num">864590颗钻石供您挑选</span>
+        <span class="num">{{total}}颗钻石供您挑选</span>
         <span class="filter-btn" @click="filter">筛选</span>
       </div>
       <div class="diamond-weight-list">
@@ -21,7 +21,7 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <D-Item v-for="item in list" :key="item" :title="item" />
+      <D-Item v-for="item in list" :key="item.id" :info="item" />
     </van-list>
 
     <D-Filter v-show="filterStatus" @close="close" />
@@ -42,7 +42,8 @@ export default {
       list: [1, 2, 3, 4, 5, 6, 7],
       loading: false,
       finished: false,
-      filterStatus: false
+      filterStatus: false,
+      total: '-',
     };
   },
   computed: {},
@@ -54,6 +55,11 @@ export default {
       }
     }).then((res) => {
       console.log(res);
+      if (res.status === 1) {
+        this.total = res.data.total
+        this.list = res.data.data
+      }
+      
     })
   },
   methods: {

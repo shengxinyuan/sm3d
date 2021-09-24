@@ -933,7 +933,9 @@ $('.ky button').click(function () {
     if (kyText.length <= 16) {
         // 刻字
         ring_print = kyText
-        my3d.printUserTextOfLayer(nowLayer.id, kyText)
+
+        iframeWindow.console.log(nowLayer.id, kyText)
+        
         rotate = false;
         my3d.setRotationState(rotate);
         $('.topBtn img:eq(3)').attr('src', 'img/play.png');
