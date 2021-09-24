@@ -23,10 +23,6 @@ export default new Vuex.Store({
     // 材质
     metals: [],
     metalId: '',
-    // 刻印
-    mark: '',
-    // 当前手寸
-    currentHandInch: '',
     // 当前钻石
     diamondId: '',
     diamondInfo: {},

@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { resourceDomainName, normalMapUrl, baseUrl, handInch } from "./const";
+import { resourceDomainName, baseUrl } from "./const";
 import { getUrlParam } from "../util/index";
 
 export default {
@@ -59,23 +59,6 @@ export default {
   props: [],
   data() {
     return {
-      // 手寸
-      handInch,
-      handPicker: false,
-
-      // v-model 印记
-      mark: "",
-
-      footerTabId: "default",
-      designTab: 1,
-
-      // 1: 花头 2:戒臂
-      edit3dPartType: 1,
-
-      // 截图图片地址
-      imgUrl: "",
-
-      //loading
       loading: true,
       ksInfo: {},
     };
@@ -169,12 +152,6 @@ export default {
     },
   },
 
-  filters: {
-    formatIndex(num) {
-      num = num + 1;
-      return num < 10 ? "0" + num : num;
-    },
-  },
 };
 </script>
 
