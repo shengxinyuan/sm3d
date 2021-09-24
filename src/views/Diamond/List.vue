@@ -59,7 +59,6 @@ export default {
         this.total = res.data.total
         this.list = res.data.data
       }
-      
     })
   },
   methods: {

@@ -33,7 +33,7 @@
                 <van-swipe-item v-for="(item, index) in list" :key="index">
                   <van-col span="24" class="bag-list__img">
                     <van-col span="24" class="bag-empty__height"></van-col>
-                    <img :src="item.preview_image" width="250px" height="250px">
+                    <div class="design-img" :style="{ backgroundImage: 'url(' + item.preview_image +'',}"></div>
                   </van-col>
                   <van-col span="24" class="bag-list__p">
                     <p class="bag-list__p--top">{{item.title}}</p>

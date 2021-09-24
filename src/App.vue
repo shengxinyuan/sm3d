@@ -46,4 +46,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.design-img {
+  width: 250px;
+  height: 320px;
+  background-repeat: no-repeat;
+  margin: 0 auto;
+  background-size: 100%;
+  background-position: center;
+}
 </style>
