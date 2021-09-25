@@ -49,7 +49,7 @@
 
 .design-img {
   width: 250px;
-  height: 320px;
+  height: 350px;
   background-repeat: no-repeat;
   margin: 0 auto;
   background-size: 100%;

@@ -453,8 +453,7 @@ export default {
         return;
       }
       this.loading = true;
-
-      
+      this.my3d.changeBackground('72,72,79');
       this.my3d.changeCameraPos(false, -45, 85, -65);
 
       setTimeout(() => {

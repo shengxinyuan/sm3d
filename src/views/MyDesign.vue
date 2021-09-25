@@ -194,14 +194,14 @@ export default {
   .bag-tab {
     position: relative;
     flex: 1;
-    background-color: #3c3c44 !important;
+    background-color: #48484f !important;
     .van-tabs__wrap {
       height: 50px;
       margin-bottom: 6px;
       width: 50%;
     }
     .van-tabs__nav {
-      background-color: #3c3c44 !important;
+      background-color: #48484f !important;
     }
     .van-tab {
       color: #fff;
@@ -256,7 +256,7 @@ export default {
     font-size: 16px;
   }
   .van-tabs__content {
-    background-color: #3c3c44;
+    background-color: #48484f;
   }
   .bag-list {
     .bag-list__p {

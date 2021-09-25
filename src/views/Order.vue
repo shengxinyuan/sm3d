@@ -9,14 +9,14 @@
       class="bag-bar"
     />
     <div class="order-header" style="margin-top:50px;">
-      <img :src="preview_image" height="300px">
+      <div class="design-img" :style="{ backgroundImage: 'url(' + preview_image +'',}"></div>
+      <p class="order-tip">3D定制效果仅供参考，商品以实物为准</p>
     </div>
-    <p class="order-tip">3D定制效果仅供参考，商品以实物为准</p>
-    <div class="order-name" @click="toggleShow">
+    
+    <div class="order-name" @click="toggleShow" v-if="title">
       <span style="line-height: 24px;">设计名称：</span>
-      <span class="order-title">{{title || '点击修改设计名称'}}</span>
-      <!-- <van-field v-model="title" label="设计名称：" placeholder="" clearable clear-trigger="always">
-      </van-field> -->
+      <span class="order-title">{{title}}</span>
+      <span class="tip-icon"><van-icon name="edit" /></span>
     </div>
     <div class="order-tab">
       <van-tabs v-model="active" class="order-tabs">
@@ -122,7 +122,7 @@
           </van-col>
         </router-link>
         <van-col class="bag-btns__btn bag-btns__share">
-          <van-button type="primary" class="button bag-list__btn--save" @click="saveDesign">保存设计</van-button>
+          <van-button type="primary" class="button bag-list__btn--save" @click="toggleShow">保存设计</van-button>
         </van-col>
         <van-col style="flex:1;"></van-col>
         <van-col class="bag-btns__btn bag-btns__share">
@@ -130,8 +130,8 @@
         </van-col>
       </van-row>
     </van-row>
-    <van-dialog v-model="show" title="设计名称" show-cancel-button @open="handleOpen" @confirm="handleConfirm" @close="handleClose">
-      <van-field v-model="curTitle" label="" ref="inputRef" autofocus class="title-input" />
+    <van-dialog class="dialog" v-model="show" title="设计名称" show-cancel-button @open="handleOpen" @confirm="handleConfirm" @close="handleClose">
+      <van-field v-model="curTitle" label="" ref="inputRef"  placeholder="请填写设计名称" autofocus class="title-input" />
     </van-dialog>
   </div>
 </template>
@@ -229,59 +229,11 @@ export default {
     onClickLeft () {
       this.$router.back()
     },
-    saveDesign () {
-      if (!this.title) {
-        this.toggleShow()
-        return
-      }
-      this.$post({
-        url: 'api/3d/saveDesign',
-        data: {
-          bn: this.bn,
-          flower_head_id: this.ksInfo.ht,
-          ring_arm_id: this.ksInfo.jb,
-          diamond_id: this.zsInfo.zs,
-          ring_print: this.ksInfo.kz,
-          texture_id: this.ksInfo.cz_id,
-          title: this.title,
-          ring_size: this.ksInfo.sc.index,
-          good_type: 1,
-          preview_image: this.preview_image
-        }
-      }).then((res) => {
-        this.$router.push('./mydesign')
-      }).catch(() => {
-        this.$toast.fail('保存失败')
-      })
-    },
     toggleShow () {
       this.show = !this.show
     },
     buy () {
-      if (!this.title) {
-        this.toggleShow()
-        return
-      }
-      this.$post({
-        url: 'api/3d/saveDesign',
-        data: {
-          bn: this.bn,
-          flower_head_id: this.ksInfo.ht,
-          ring_arm_id: this.ksInfo.jb,
-          diamond_id: this.zsInfo.zs,
-          ring_print: this.ksInfo.kz,
-          texture_id: this.ksInfo.cz_id,
-          title: this.title,
-          ring_size: this.ksInfo.sc.index,
-          good_type: 1,
-          preview_image: this.preview_image
-        }
-      }).then((res) => {
-        this.bn = res.data
-        this.$router.push(`./orderConfirm?bn=${this.bn}`)
-      }).catch(() => {
-        this.$toast.fail('保存失败')
-      })
+      this.$router.push(`./orderConfirm?bn=${this.bn}`)
     },
     handleOpen () {
       this.curTitle = this.title
@@ -289,6 +241,26 @@ export default {
     handleConfirm () {
       console.log(this.curTitle)
       this.title = this.curTitle
+      this.$post({
+        url: 'api/3d/saveDesign',
+        data: {
+          bn: this.bn,
+          flower_head_id: this.ksInfo.ht,
+          ring_arm_id: this.ksInfo.jb,
+          diamond_id: this.zsInfo.zs,
+          ring_print: this.ksInfo.kz,
+          texture_id: this.ksInfo.cz_id,
+          title: this.title,
+          ring_size: this.ksInfo.sc.index,
+          good_type: 1,
+          preview_image: this.preview_image
+        }
+      }).then((res) => {
+        this.$toast.fail('保存成功')
+        // this.$router.push('./mydesign')
+      }).catch(() => {
+        this.$toast.fail('保存失败')
+      })
     },
     handleClose () {
       this.curTitle = ''
@@ -312,20 +284,24 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #2c2c2c;
+    background-color: #48484f;
+    position: relative;
+    flex-direction: column;
   }
   .order-tip {
-    background: #2c2c2c;
     color: rgb(204, 204, 204);
     font-size: 12px;
     padding: 8px;
+    text-align: center;
+    width: 100%;
   }
   .order-name {
     display: flex;
     align-items: flex-start;
     padding: 12px 16px 12px 32px;
     color: #fff;
-    background: rgb(72, 72, 79);
+    background: #3C3C44;
+    border-bottom: 1px solid #5f5f5f;
     .van-cell.van-field {
       background-color: #3c3c44;
       height: 25px;
@@ -493,23 +469,26 @@ export default {
     color: rgb(193, 177, 138);
   }
   .order-title {
-    background: #eee;
-    color: #333;
-    border-radius: 8px;
-    width: 250px;
     padding: 4px 4px 4px 16px;
     text-align: left;
+  }
+  .tip-icon {
+    padding: 4px 4px 4px 16px;
   }
   .title-input {
     background: #eee;
     color: #333;
     border-radius: 8px;
-    border: 1px solid #000;
+    
     margin: 12px;
     width: 290px;
   }
   .van-dialog__confirm {
     color: rgb(193, 177, 138);
   }
+}
+
+.dialog {
+  background: #fff;
 }
 </style>

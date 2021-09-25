@@ -8,7 +8,7 @@
       :safe-area-inset-top="true"
       class="bag-bar"
     />
-    <section class="order-info-item" style="margin-top:50px;">
+    <section class="order-info-item" style="margin-top:60px;">
       <div class="flex order-title-cont">
         <van-icon name="location-o icon-style" />
         <div class="title">
@@ -32,7 +32,7 @@
       </div>
       <div class="order-info-cont">
         <div>
-          <img :src="preview_image" width="100%">
+          <div class="design-img" :style="{ backgroundImage: 'url(' + preview_image +'',}"></div>
         </div>
         <div class="order-cell">
           <span class="order-cell__label">款式：</span>
@@ -261,6 +261,7 @@ export default {
   .pt10 {
     padding-top: 10px;
   }
+
   .order-info-item {
     background: rgb(72, 72, 79);
     border-radius: 10px;
