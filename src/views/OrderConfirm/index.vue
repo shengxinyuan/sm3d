@@ -42,10 +42,10 @@
           <span class="order-cell__label">材质：</span>
           <span class="order-cell__value">{{ksInfo.cz}}</span>
         </div>
-        <!-- <div class="order-cell">
-          <span class="order-cell__label">工艺：</span>
-          <span class="order-cell__value">{{ksInfo.gy}}</span>
-        </div> -->
+        <div class="order-cell" v-if="ksInfo.kz">
+          <span class="order-cell__label">刻字：</span>
+          <span class="order-cell__value">{{ksInfo.kz}}</span>
+        </div>
         <div class="order-cell">
           <span class="order-cell__label">戒臂：</span>
           <span class="order-cell__value">{{ksInfo.jb}}</span>
@@ -101,6 +101,8 @@
 </template>
 
 <script>
+import { colorList } from '../../page-design/const'
+
 export default {
   components: {
   },
@@ -172,12 +174,16 @@ export default {
           this.ksInfo.kz = data.ring_print
           this.ksInfo.ht = data.flower_head_id
           this.ksInfo.jb = data.ring_arm_id
-          this.ksInfo.cz = data.texture_id
-          this.zsInfo.zs = data.diamond_id
           this.zsInfo.zs = data.diamond_id
           this.ddInfo.cost = ddData.cost
           this.ddInfo.deposit = ddData.deposit
           this.ddInfo.deposit_ratio = ddData.deposit_ratio
+          
+          colorList.forEach(item => {
+          if (item.id === data.texture_id) {
+            this.ksInfo.cz = item.nameCn
+          }
+        });
         }).catch((res) => {
           this.$toast.fail('获取数据失败')
         })

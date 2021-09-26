@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-import { apiUrl } from './const'
+import { apiUrl, colorList } from './const'
 import { get, post } from './ajax'
 
 
@@ -101,7 +101,9 @@ export default new Vuex.Store({
             }).then((data) => {
               if (data.code === 0) {
                 let metalId = ''
-                metals = data.list
+                // metals = data.list
+                metals = colorList
+
                 metals.forEach(item => {
                   if (item && item.nameCn && item.nameCn === '铂金') {
                     metalId = item.id

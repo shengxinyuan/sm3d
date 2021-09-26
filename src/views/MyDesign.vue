@@ -1,7 +1,7 @@
 <template>
   <div class="bag">
     <van-nav-bar
-      title="方案袋"
+      title="我的设计"
       left-text=""
       left-arrow
       @click-left="onClickLeft"
@@ -72,7 +72,7 @@
         </van-tabs>
       </van-col>
       <van-col span="12">
-        <div class="bag-tab__right">{{swiperIndex || 0 + 1}}/{{list.length}}</div>
+        <div class="bag-tab__right">{{swiperIndex || 0 + 1}}/{{list && list.length || '0'}}</div>
       </van-col>
       <van-col span="24">
       </van-col>
@@ -82,10 +82,6 @@
         <van-row><van-icon name="delete-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>删除</van-row>
       </van-col>
-      <!-- <van-col class="bag-btns__btn bag-btns__service">
-        <van-row><van-icon name="service-o" color="rgb(193, 177, 138)" size="25"/></van-row>
-        <van-row>客服</van-row>
-      </van-col> -->
       <van-col class="bag-btns__btn bag-btns__share" @click="share">
         <van-row><van-icon name="share-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>分享</van-row>
@@ -136,19 +132,26 @@ export default {
       this.currtBn = this.list[index].bn
     },
     deleteDesign () {
-      this.$post({
-        url: 'api/design/deleteDesign',
-        data: {
-          id: this.currtBn
-        }
-      }).then((res) => {
-        if (res.status == '1') {
-          this.loadList()
-          this.$toast.success('删除成功')
-        }
-      }).catch(() => {
-        this.$toast.fail('删除失败')
-      })
+      this.$dialog
+        .confirm({
+          title: "提示",
+          message: "请确认是否要删除当前设计",
+        })
+        .then(() => {
+          this.$post({
+            url: 'api/design/deleteDesign',
+            data: {
+              id: this.currtBn
+            }
+          }).then((res) => {
+            if (res.status == '1') {
+              this.loadList()
+              this.$toast.success('删除成功')
+            }
+          }).catch(() => {
+            this.$toast.fail('删除失败')
+          })
+        });
     },
     jumpDesign () {
       window.location.href = window.location.origin + `/design.html?bn=${this.currtBn}`
@@ -211,7 +214,8 @@ export default {
     .van-tab--active {
       line-height: 40px;
       color: rgb(193, 177, 138);
-      font-size: 18px;
+      font-size: 14px;
+      background-color: #3c3c44;
     }
     .van-tabs__line {
       background-color: rgb(193, 177, 138);
@@ -259,6 +263,11 @@ export default {
     background-color: #48484f;
   }
   .bag-list {
+
+
+
+
+
     .bag-list__p {
       text-align: center;
       padding-top: 10px;
@@ -303,7 +312,7 @@ export default {
       margin: 30px 10px;
     }
     .bag-list__btn--buy {
-      width: 60vw;
+      width: calc(100% - 30px);
       height: 45px;
       line-height: 45px;
       margin: 10px auto auto;
@@ -316,20 +325,31 @@ export default {
   }
   .van-tabbar {
     height: 4px;
-    background-color: #48484f;
+    background-color: #3c3c44;
+  }
+  .bag-tabs {
+    background-color: #3c3c44;
   }
   .bag-btns {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     height: 60px;
     color: rgb(193, 177, 138);
-    background-color: #48484f;
+    background-color: #3c3c44;
     display: flex;
     align-items: center;
-    padding-left: 32px;
     justify-content: space-between;
+    font-size: 12px;
     .bag-btns__delete {
-      margin-left: 16px;
+      // margin-left: 16px;
+    }
+    .bag-btns__btn {
+      width: 30%;
     }
   }
+  
 }
 
 </style>

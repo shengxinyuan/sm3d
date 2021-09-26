@@ -4,6 +4,7 @@
     <!-- <div class="home-text"></div> -->
     <a href="/design.html"><div class="home-tag"></div></a>
     <a href="/design.html"><div class="home-design"></div></a>
+    <a href="/mydesign"><div class="home-design">我的设计</div></a>
     <!-- <router-link to="/mydesign">
       <div class="home-mydesign"></div>
     </router-link> -->
@@ -56,6 +57,7 @@ export default {
     background-repeat: no-repeat;
     width: 100vw;
     height: 26vw;
+    line-height: 26vw;
   }
   .home-mydesign {
     background-image: url("https://imgcdn.zbird.com/storage/uploads/images/2021_01_24/WEEipXbENhpRqr2eZBOi4bvr8d3yXaTXtyJLTTuQ.jpeg");

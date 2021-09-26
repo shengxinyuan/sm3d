@@ -46,10 +46,7 @@
                 </div>
               </van-popup>
             </div>
-            <!-- <div class="order-cell">
-              <span class="order-cell__label">款式</span>
-              <span class="order-cell__value">{{ksInfo.ks}}</span>
-            </div> -->
+            
             <div class="order-cell">
               <span class="order-cell__label">材质</span>
               <span class="order-cell__value">{{ksInfo.cz}}</span>
@@ -75,8 +72,8 @@
         <van-tab title="钻石参数">
           <div class="order-ks">
             <div class="order-cell">
-              <span class="order-cell__label">钻石</span>
-              <span class="order-cell__value">{{zsInfo.zs}}</span>
+              <span class="order-cell__label">钻石价格</span>
+              <span class="order-cell__value">¥{{zsInfo.price || "1500"}}</span>
             </div>
             <!-- <div class="order-cell">
               <span class="order-cell__label">钻重</span>
@@ -114,22 +111,39 @@
         </van-tab>
       </van-tabs>
     </div>
-    <van-row class="order-bottom">
-      <van-row class="bag-btns">
+    
+    <div class="bag-btns">
+      <div class="price">¥ 12000</div>
+      <div class="btns">
+        <van-icon name="bag-o" color="rgb(193, 177, 138)" size="25" class="icon-my-design" @click="() => {$router.push('/mydesign')}"/>
+        <div>
+          <van-button type="primary" class="button bag-list__btn--save" @click="toggleShow">保存设计</van-button>
+        </div>
+        <div class="flex1"></div>
+        <div>
+          <van-button type="primary" class="button bag-list__btn--buy" @click="buy">确认购买</van-button>
+        </div>
+      </div>
+    </div>
+    <!-- <van-col class="bag-btns">
+      <van-col class="bag-price"> </van-col>
+      <van-col>
         <router-link to="/mydesign">
           <van-col class="bag-btns__btn bag-btns__mydesign">
             <van-row><van-icon name="bag-o" color="rgb(193, 177, 138)" size="25"/></van-row>
           </van-col>
         </router-link>
         <van-col class="bag-btns__btn bag-btns__share">
-          <van-button type="primary" class="button bag-list__btn--save" @click="toggleShow">保存设计</van-button>
+          
         </van-col>
         <van-col style="flex:1;"></van-col>
         <van-col class="bag-btns__btn bag-btns__share">
-          <van-button type="primary" class="button bag-list__btn--buy" @click="buy">确认购买</van-button>
+          
         </van-col>
-      </van-row>
-    </van-row>
+      </van-col>
+    </van-col> -->
+
+
     <van-dialog class="dialog" v-model="show" title="设计名称" show-cancel-button @open="handleOpen" @confirm="handleConfirm" @close="handleClose">
       <van-field v-model="curTitle" label="" ref="inputRef"  placeholder="请填写设计名称" autofocus class="title-input" />
     </van-dialog>
@@ -139,6 +153,7 @@
 <script>
 import Vue from 'vue'
 import { Tab, Tabs, Icon, Field, Popup, Picker, Swipe, SwipeItem } from 'vant'
+import { colorList } from '../page-design/const'
 
 Vue.use(Swipe)
 Vue.use(SwipeItem)
@@ -205,9 +220,13 @@ export default {
         this.ksInfo.kz = data.ring_print
         this.ksInfo.ht = data.flower_head_id
         this.ksInfo.jb = data.ring_arm_id
-        this.ksInfo.cz = data.texture_id
         this.zsInfo.zs = data.diamond_id
         this.zsInfo.zs = data.diamond_id
+        colorList.forEach(item => {
+          if (item.id === data.texture_id) {
+            this.ksInfo.cz = item.nameCn
+          }
+        });
       }).catch(() => {
         this.$toast.fail('获取数据失败，请稍后重试')
       })
@@ -342,7 +361,7 @@ export default {
     }
     .van-tab--active {
       color: rgb(193, 177, 138);
-      font-size: 18px;
+      font-size: 16px;
       line-height: 20px;
     }
     .van-tabs__line {
@@ -352,7 +371,7 @@ export default {
     }
   }
   .order-ks {
-    background: rgb(72, 72, 79);
+    background: #4b4b50;
     margin: 16px;
     border-radius: 10px;
     color: rgb(255, 255, 255);
@@ -364,8 +383,10 @@ export default {
       padding: 8px;
       align-items: center;
       .order-cell__label {
+        width: 50%;
         padding-left: 30px;
-        padding-right: 80px;
+        padding-right: 20px;
+        text-align: left;
       }
       .order-cell__value {
         width: 140px;
@@ -427,10 +448,30 @@ export default {
     width: 100vw;
     bottom: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     background: #48484f;
-    height: 70px;
-    padding-right: 16px;
+    height: 100px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    .price {
+      font-size: 14px;
+      line-height: 1;
+      margin-bottom: 10px;
+      text-align: right;
+      width: 100%;
+      padding: 0 20px;
+      color: rgb(193, 177, 138);
+    }
+    .btns {
+      width: 100%;
+      display: flex;
+    }
+    .icon-my-design {
+      display: block;
+      padding: 5px 10px 0 0;
+    }
   }
   .bag-bar {
     position: fixed;
@@ -479,7 +520,6 @@ export default {
     background: #eee;
     color: #333;
     border-radius: 8px;
-    
     margin: 12px;
     width: 290px;
   }
@@ -490,5 +530,9 @@ export default {
 
 .dialog {
   background: #fff;
+}
+
+.flex1 {
+  flex: 1;
 }
 </style>

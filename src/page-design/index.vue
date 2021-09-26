@@ -12,7 +12,7 @@
         <span></span>
         <span></span>
       </div>
-      <div>没有一枚钻戒，比亲手设计更有价值和意义。</div>
+      <div class="tips">没有一枚钻戒，比亲手设计更有价值和意义。</div>
     </div>
 
     <img class="img2" src="../assets/diamond-list/bg.png" alt="" />
@@ -318,7 +318,16 @@ export default {
           } = res.data
 
           this.getDiamond(diamond_id)
-
+          this.iframeWindow.console.log({
+            partId: partId || flower_head_id,
+            mainPartId: mainPartId || ring_arm_id,
+            metalId: metalId || texture_id,
+            mark: mark || ring_print,
+            currentHandInch: currentHandInch || ring_size,
+            diamondId: diamondId || diamond_id
+          })
+          this.mark = mark || ring_print || ''
+          
           this.setRenderParams({
             partId: partId || flower_head_id,
             mainPartId: mainPartId || ring_arm_id,
@@ -420,7 +429,7 @@ export default {
         // 设置角度
         this.my3d.changeCameraPos(false, -45, 85, -65);
         
-      }, 1000);
+      }, 3000);
     },
 
     /**
@@ -457,11 +466,13 @@ export default {
       this.my3d.changeCameraPos(false, -45, 85, -65);
 
       setTimeout(() => {
-        this.imgUrl = this.my3d.getDesignImage();
+        const canvas = document.querySelector('#mainCanvas')
+        this.imgUrl = this.my3d.getDesignImage(canvas.offsetWidth * 2, canvas.offsetHeight * 2);
         this.$store
           .dispatch("submitDesign", {
             image: this.imgUrl,
-            bn: this.design_bn
+            bn: this.design_bn,
+
           })
           .then(({ data }) => {
             this.iframeWindow.console.log(data);
@@ -624,6 +635,10 @@ export default {
     justify-content: center;
     flex-direction: column;
     z-index: 999;
+    .tips {
+      margin-top: 16px;
+      font-size: 12px;
+    }
   }
   .img2 {
     position: absolute;
@@ -719,7 +734,7 @@ export default {
       width: 150px;
       height: 40px;
       line-height: 40px;
-      border-radius: 20px;
+      border-radius: 16px;
       background-color: rgb(193, 177, 138);
       color: rgb(52, 52, 60);
       text-align: center;
@@ -891,8 +906,8 @@ export default {
         }
         .txt {
           width: 60px;
-          height: 20px;
-          line-height: 20px;
+          height: 16px;
+          line-height: 16px;
           margin-top: 4px;
           text-align: center;
         }
@@ -903,70 +918,71 @@ export default {
 
 // loading
 .loadEffect {
-    width: 100px;
-    height: 100px;
-    position: relative;
-    margin-bottom: 20px;
+  width: 100px;
+  height: 100px;
+  position: relative;
+  margin-bottom: 16px;
+  transform: scale(50%, 50%);
+}
+.loadEffect span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(193, 177, 138);
+  position: absolute;
+  animation: load 1.04s ease infinite;
+}
+@keyframes load {
+  0% {
+    opacity: 1;
   }
-  .loadEffect span {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: rgb(193, 177, 138);
-    position: absolute;
-    animation: load 1.04s ease infinite;
+  100% {
+    opacity: 0.2;
   }
-  @keyframes load {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0.2;
-    }
-  }
-  .loadEffect span:nth-child(1) {
-    left: 0;
-    top: 50%;
-    margin-top: -8px;
-    animation-delay: 0.13s;
-  }
-  .loadEffect span:nth-child(2) {
-    left: 14px;
-    top: 14px;
-    animation-delay: 0.26s;
-  }
-  .loadEffect span:nth-child(3) {
-    left: 50%;
-    top: 0;
-    margin-left: -8px;
-    animation-delay: 0.39s;
-  }
-  .loadEffect span:nth-child(4) {
-    top: 14px;
-    right: 14px;
-    animation-delay: 0.52s;
-  }
-  .loadEffect span:nth-child(5) {
-    right: 0;
-    top: 50%;
-    margin-top: -8px;
-    animation-delay: 0.65s;
-  }
-  .loadEffect span:nth-child(6) {
-    right: 14px;
-    bottom: 14px;
-    animation-delay: 0.78s;
-  }
-  .loadEffect span:nth-child(7) {
-    bottom: 0;
-    left: 50%;
-    margin-left: -8px;
-    animation-delay: 0.91s;
-  }
-  .loadEffect span:nth-child(8) {
-    bottom: 14px;
-    left: 14px;
-    animation-delay: 1.04s;
-  }
+}
+.loadEffect span:nth-child(1) {
+  left: 0;
+  top: 50%;
+  margin-top: -4px;
+  animation-delay: 0.13s;
+}
+.loadEffect span:nth-child(2) {
+  left: 16px;
+  top: 16px;
+  animation-delay: 0.26s;
+}
+.loadEffect span:nth-child(3) {
+  left: 50%;
+  top: 0;
+  margin-left: -4px;
+  animation-delay: 0.39s;
+}
+.loadEffect span:nth-child(4) {
+  top: 16px;
+  right: 16px;
+  animation-delay: 0.52s;
+}
+.loadEffect span:nth-child(5) {
+  right: 0;
+  top: 50%;
+  margin-top: -4px;
+  animation-delay: 0.65s;
+}
+.loadEffect span:nth-child(6) {
+  right: 16px;
+  bottom: 16px;
+  animation-delay: 0.78s;
+}
+.loadEffect span:nth-child(7) {
+  bottom: 0;
+  left: 50%;
+  margin-left: -4px;
+  animation-delay: 0.91s;
+}
+.loadEffect span:nth-child(8) {
+  bottom: 16px;
+  left: 16px;
+  animation-delay: 1.04s;
+}
 </style>
