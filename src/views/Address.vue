@@ -46,6 +46,11 @@ export default {
       this.$router.back()
     },
     onAdd () {
+      if (window.uni) {
+        window.uni.navigateTo({
+          url: '../my/addAddress?is_mine=undefined&onShow=0'
+        })
+      }
     },
     select (item, index) {
       this.$store.commit('setState', {

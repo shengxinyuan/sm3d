@@ -17,8 +17,8 @@
       </div>
       <div class="order-info-cont flex">
         <div class="flex1" @click="changeAddress">
-          <p><span>{{$store.state.OrderConfirm.currtAddress.name || '请选择收货地址'}}</span><span class="phone-num">{{$store.state.OrderConfirm.currtAddress.tel || ''}}</span></p>
-          <p class="address">{{$store.state.OrderConfirm.currtAddress.address || ''}}</p>
+          <p><span>{{$store.state.orderConfirm.currtAddress.name || '请选择收货地址'}}</span><span class="phone-num">{{$store.state.orderConfirm.currtAddress.tel || ''}}</span></p>
+          <p class="address">{{$store.state.orderConfirm.currtAddress.address || ''}}</p>
         </div>
         <van-icon name="arrow" />
       </div>
@@ -189,19 +189,30 @@ export default {
         })
     },
     buy () {
-      if (this.$store.state.OrderConfirm.currtAddress.id) {
+      if (this.$store.state.orderConfirm.currtAddress.id) {
         this.$post({
           url: '/api/3d/order',
           data: {
             design_bn: this.$route.query.bn,
             coupon_id: 0,
             comment: this.comment,
-            address_id: this.$store.state.OrderConfirm.currtAddress.id,
+            address_id: this.$store.state.orderConfirm.currtAddress.id,
             vip: 0
           }
         }).then((res) => {
           if (res.status == 1) {
             this.$toast.success('提交订单成功')
+            if (window.uni) {
+              const payment_data = {
+                vip: 0,
+                menber_price: 3000,
+                shop_price: +ddInfo.cost
+              }
+              ddInfo.cost
+              window.uni.navigateTo({
+                url: `../my/payments?data=${+res.data.bn}&shop=${JSON.stringify(payment_data)}`
+              })
+            }
           }
         }).catch(() => {
           this.$toast.fail('提交订单失败')
@@ -317,7 +328,6 @@ export default {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 95px;
     background-color: rgb(72, 72, 79);
     padding-bottom: 40px;
     .btn {

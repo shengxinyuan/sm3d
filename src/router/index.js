@@ -66,6 +66,11 @@ export const routes = [
     component: () => import('../views/MyOrderList/List.vue')
   },
   {
+    path: '/OrderDetail',
+    name: 'OrderDetail',
+    component: () => import('../views/OrderDetail')
+  },
+  {
     path: '*',
     name: '404',
     component: Home
