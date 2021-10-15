@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '/dist/', // 静态资源publicPath
+  // publicPath: '/dist/', // 静态资源publicPath
   lintOnSave: false, // eslint-loader 是否在保存的时候检查
   devServer: {
     open: true,

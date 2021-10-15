@@ -74,7 +74,7 @@ export const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  base: '/dist/',
+  // base: '/dist/',
   routes
 })
 
