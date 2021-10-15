@@ -1,10 +1,8 @@
 import axios from 'axios'
 import { stringify } from 'qs'
 
-// const baseUrl = 'http://192.168.147.141:8000/'
-
 const getRequest = method => {
-  return ({ baseUrl, url, data, options = {}, isForm = true }) => {
+  return ({ baseUrl = 'http://zhuanshi.nxm.wanheweb.com/', url, data, options = {}, isForm = true }) => {
     return axios({
       baseUrl,
       url,
