@@ -1,10 +1,6 @@
 module.exports = {
+  publicPath: '/dist/', // 静态资源publicPath
   lintOnSave: false, // eslint-loader 是否在保存的时候检查
-  // pages: {
-  //   design: 'src/page-design/index.js',
-  //   share: 'src/page-share/index.js',
-  //   index: 'src/main.js'
-  // },
   devServer: {
     open: true,
     overlay: {
