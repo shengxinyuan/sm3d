@@ -2,13 +2,12 @@ import axios from 'axios'
 import { stringify } from 'qs'
 
 // const baseUrl = 'http://192.168.147.141:8000/'
-const baseUrl = '/'
 
 const getRequest = method => {
-  return ({ url, data, options = {}, isForm = true }) => {
+  return ({ baseUrl, url, data, options = {}, isForm = true }) => {
     return axios({
       baseUrl,
-      url: baseUrl + url,
+      url,
       method,
       ...(method === 'POST'
         ? { data: isForm ? stringify(data) : data }

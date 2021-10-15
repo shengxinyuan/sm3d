@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import { colorList } from '../../page-design/const'
+import { colorList } from '../../const/design'
 
 export default {
   components: {
@@ -148,13 +148,13 @@ export default {
     onLoad () {
       Promise.all([
         this.$get({
-          url: 'api/design/design_detail',
+          url: '/api/design/design_detail',
           data: {
             design_bn: this.bn
           }
         }),
         this.$get({
-          url: 'api/3d/order',
+          url: '/api/3d/order',
           data: {
             design_bn: this.bn
           }
@@ -191,7 +191,7 @@ export default {
     buy () {
       if (this.$store.state.OrderConfirm.currtAddress.id) {
         this.$post({
-          url: 'api/3d/order',
+          url: '/api/3d/order',
           data: {
             design_bn: this.$route.query.bn,
             coupon_id: 0,

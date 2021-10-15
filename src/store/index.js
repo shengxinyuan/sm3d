@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import DiamondsList from './DiamondsList'
-import OrderConfirm from './OrderConfirm'
+import design from './design'
+import common from './common'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    DiamondsList,
-    OrderConfirm
+    common,
+    design,
   }
 })

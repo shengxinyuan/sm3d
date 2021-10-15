@@ -4,6 +4,8 @@ import Home from '../views/Home.vue'
 import DebugList from '../views/DebugList.vue'
 import OrderConfirm from '../views/OrderConfirm/index.vue'
 import Address from '../views/Address.vue'
+import Design from '../views/Design/index.vue'
+import Share from '../views/Share/index.vue'
 
 Vue.use(VueRouter)
 
@@ -17,6 +19,16 @@ export const routes = [
     path: '/home',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/design',
+    name: 'Design',
+    component: Design
+  },
+  {
+    path: '/share',
+    name: 'Share',
+    component: Share
   },
   {
     path: '/mydesign',
@@ -62,7 +74,6 @@ export const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
   routes
 })
 

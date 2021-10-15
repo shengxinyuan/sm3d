@@ -24,10 +24,13 @@ Vue.use(List)
 Vue.use(Picker)
 Vue.use(Popup)
 Vue.use(Dialog)
-Vue.config.productionTip = false
+
 Vue.prototype.$get = get
 Vue.prototype.$post = post
 Vue.prototype.$toast = Toast
+
+Vue.config.productionTip = false
+
 new Vue({
   router,
   store,

@@ -116,7 +116,7 @@ export default {
   methods: {
     loadList () {
       this.$get({
-        url: 'api/3d/getMyDesign'
+        url: '/api/3d/getMyDesign'
       }).then((res) => {
         this.list = res.data
         this.currtBn = this.list.length ? this.list[0].bn : 0
@@ -139,7 +139,7 @@ export default {
         })
         .then(() => {
           this.$post({
-            url: 'api/design/deleteDesign',
+            url: '/api/design/deleteDesign',
             data: {
               id: this.currtBn
             }

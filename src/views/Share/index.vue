@@ -1,26 +1,13 @@
 <template>
   <div class="share">
 
+    <Loading v-if="loading" />
+
     <div class="page-header">
       用户186-XXXX-2206 给您分享了他设计的钻戒
     </div>
-    
-    <div class="loading-cont" v-if="loading">
-      <div class="loadEffect">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <div>没有一枚钻戒，比亲手设计更有价值和意义。</div>
-      <div>来奢美饰界APP，体验智能3D定制！</div>
-    </div>
 
-    <img class="img2" src="../assets/diamond-list/bg.png" alt="" />
+    <img class="img2" src="../../assets/diamond-list/bg.png" alt="" />
     <div class="web3d-cont">
       <div id="web3d" style="70vh"></div>
     </div>
@@ -41,21 +28,23 @@
         </div>
       </div>
       <div class="buy-group">
-        <img class="qr-code" src="../assets/diamond-list/QRcode.png" alt="" />
+        <img class="qr-code" src="../../assets/diamond-list/QRcode.png" alt="" />
         <div class="tip" >下载奢美饰界APP，设计你的钻戒！</div>
       </div>
     </section>
-
     
   </div>
 </template>
 
 <script>
-import { resourceDomainName, baseUrl } from "./const";
-import { getUrlParam } from "../util/index";
+import Loading from '../../components/3DLoading'
+import { resourceDomainName, baseUrl } from '../../const/design';
+import { getUrlParam } from '../../util/index';
 
 export default {
-  components: {},
+  components: {
+    Loading
+  },
   props: [],
   data() {
     return {
@@ -65,21 +54,15 @@ export default {
   },
   computed: {},
   created() {
-    // iframe console
-    const iframe = document.createElement("iframe");
-    iframe.setAttribute("style", "display:none;");
-    document.body.appendChild(iframe);
-    this.iframeWindow = iframe.contentWindow;
-    // end iframe
 
     // 加载账号信息
-    this.$store.dispatch("loadUserInfo");
+    this.$store.dispatch('loadUserInfo');
 
-    const design_bn = getUrlParam("bn");
+    const design_bn = getUrlParam('bn');
 
-    this.$store.dispatch("getDesignInfo", { design_bn }).then((res) => {
+    this.$store.dispatch('getDesignInfo', { design_bn }).then((res) => {
       this.ksInfo = res.data
-      this.iframeWindow.console.log(res);
+      console.log(res);
       this.ksInfo.price = '12000'
     });
     
@@ -87,13 +70,13 @@ export default {
   mounted() {
     // 请求：材质、宝石、设计数据
     Promise.all([
-      this.$store.dispatch("loadDesignInfo"),
-      this.$store.dispatch("loadMetalList"),
-      this.$store.dispatch("loadMetalWeb"),
-      this.$store.dispatch("loadGemList"),
-      this.$store.dispatch("loadGemWeb"),
+      this.$store.dispatch('loadDesignInfo'),
+      this.$store.dispatch('loadMetalList'),
+      this.$store.dispatch('loadMetalWeb'),
+      this.$store.dispatch('loadGemList'),
+      this.$store.dispatch('loadGemWeb'),
     ]).then(() => {
-      this.iframeWindow.console.log("mounted -> data loaded -> init3D");
+      console.log('mounted -> data loaded -> init3D');
       this.init3D();
     });
   },
@@ -112,12 +95,12 @@ export default {
         metalId,
       } = this.$store.state;
 
-      this.iframeWindow.console.log("mainPartId", partId, mainPartId);
+      console.log('mainPartId', partId, mainPartId);
 
       // 加载3D第一步：初始化3D场景
       this.my3d = Bavlo.initWeb3D(
         baseUrl,
-        "web3d",
+        'web3d',
         true,
         resourceDomainName,
         false
@@ -138,7 +121,7 @@ export default {
       );
 
       // 加载3D第四步：设置3D场景背景色
-      this.my3d.changeBackground("37,37,42");
+      this.my3d.changeBackground('37,37,42');
 
       // 加载3D第五步：加载款式3D
       this.my3d.loadVarDesign(designInfo, mainPartId, partId.toString());
@@ -163,20 +146,6 @@ export default {
   overflow: hidden;
   color: #fff;
   background: rgb(37, 37, 42);
-  .loading-cont {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    color: #fff;
-    background: rgb(37, 37, 42);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    z-index: 999;
-  }
   .img2 {
     position: absolute;
     left: 0;
@@ -256,72 +225,4 @@ export default {
   }
 }
 
-// loading
-.loadEffect {
-    width: 100px;
-    height: 100px;
-    position: relative;
-    margin-bottom: 20px;
-  }
-  .loadEffect span {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: rgb(193, 177, 138);
-    position: absolute;
-    animation: load 1.04s ease infinite;
-  }
-  @keyframes load {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0.2;
-    }
-  }
-  .loadEffect span:nth-child(1) {
-    left: 0;
-    top: 50%;
-    margin-top: -8px;
-    animation-delay: 0.13s;
-  }
-  .loadEffect span:nth-child(2) {
-    left: 14px;
-    top: 14px;
-    animation-delay: 0.26s;
-  }
-  .loadEffect span:nth-child(3) {
-    left: 50%;
-    top: 0;
-    margin-left: -8px;
-    animation-delay: 0.39s;
-  }
-  .loadEffect span:nth-child(4) {
-    top: 14px;
-    right: 14px;
-    animation-delay: 0.52s;
-  }
-  .loadEffect span:nth-child(5) {
-    right: 0;
-    top: 50%;
-    margin-top: -8px;
-    animation-delay: 0.65s;
-  }
-  .loadEffect span:nth-child(6) {
-    right: 14px;
-    bottom: 14px;
-    animation-delay: 0.78s;
-  }
-  .loadEffect span:nth-child(7) {
-    bottom: 0;
-    left: 50%;
-    margin-left: -8px;
-    animation-delay: 0.91s;
-  }
-  .loadEffect span:nth-child(8) {
-    bottom: 14px;
-    left: 14px;
-    animation-delay: 1.04s;
-  }
 </style>

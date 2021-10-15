@@ -1,21 +1,9 @@
 <template>
   <div class="design">
     
-    <div class="loading-cont" v-if="loading">
-      <div class="loadEffect">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <div class="tips">没有一枚钻戒，比亲手设计更有价值和意义。</div>
-    </div>
+    <Loading v-if="loading" />
 
-    <img class="img2" src="../assets/diamond-list/bg.png" alt="" />
+    <img class="img2" src="../../assets/diamond-list/bg.png" alt="" />
     <div class="web3d-cont">
       <div id="web3d" style="70vh"></div>
     </div>
@@ -150,8 +138,8 @@
       </div>
       <div class="design-tabs-cont">
         <img
-          v-if="!this.$store.state.diamondId"
-          src="../assets/diamond-list/add-diamond.png"
+          v-if="!this.$store.state.design.diamondId"
+          src="../../assets/diamond-list/add-diamond.png"
           @click="selectDiamond"
           alt=""
           width="100%"
@@ -160,7 +148,7 @@
           <div class="diamond-info-cont">
             <img
               class="diamond-img"
-              src="../assets/diamond-list/diamond.webp"
+              src="../../assets/diamond-list/diamond.webp"
               alt=""
             />
             <div class="diamond-info">
@@ -236,11 +224,14 @@
 </template>
 
 <script>
-import { resourceDomainName, normalMapUrl, baseUrl, handInch } from "./const";
-import { getUrlParam } from "../util/index";
+import Loading from '../../components/3DLoading'
+import { resourceDomainName, baseUrl, handInch } from '../../const/design';
+import { getUrlParam } from '../../util/index';
 
 export default {
-  components: {},
+  components: {
+    Loading
+  },
   props: [],
   data() {
     return {
@@ -249,16 +240,16 @@ export default {
       handPicker: false,
 
       // v-model 印记
-      mark: "",
+      mark: '',
 
-      footerTabId: "default",
+      footerTabId: 'default',
       designTab: 1,
 
       // 1: 花头 2:戒臂
       edit3dPartType: 1,
 
       // 截图图片地址
-      imgUrl: "",
+      imgUrl: '',
 
       //loading
       loading: true,
@@ -270,43 +261,32 @@ export default {
   },
   computed: {},
   created() {
-    console.log('--------console test');
-    // iframe console
-    const iframe = document.createElement("iframe");
-    iframe.setAttribute("style", "display:none;");
-    document.body.appendChild(iframe);
-    this.iframeWindow = iframe.contentWindow;
-    // end iframe
-
     // 加载账号信息
-    this.$store.dispatch("loadUserInfo");
-
-    const diamondId = getUrlParam("diamondId");
+    this.$store.dispatch('loadUserInfo');
+    const diamondId = getUrlParam('diamondId');
     this.getDiamond(diamondId, true)
-    
-    
   },
   mounted() {
     // 请求：材质、宝石、设计数据
     Promise.all([
-      this.$store.dispatch("loadDesignInfo"),
-      this.$store.dispatch("loadMetalList"),
-      this.$store.dispatch("loadMetalWeb"),
-      this.$store.dispatch("loadGemList"),
-      this.$store.dispatch("loadGemWeb"),
+      this.$store.dispatch('loadDesignInfo'),
+      this.$store.dispatch('loadMetalList'),
+      this.$store.dispatch('loadMetalWeb'),
+      this.$store.dispatch('loadGemList'),
+      this.$store.dispatch('loadGemWeb'),
     ]).then(() => {
-      this.iframeWindow.console.log("mounted -> data loaded -> init3D");
+      console.log('mounted -> data loaded -> init3D');
 
-      const design_bn = getUrlParam("bn");
-      const partId = getUrlParam("partId");
-      const mainPartId = getUrlParam("mainPartId");
-      const metalId = getUrlParam("metalId");
-      const mark = getUrlParam("mark");
-      const currentHandInch = getUrlParam("currentHandInch");
-      const diamondId = getUrlParam("diamondId");
+      const design_bn = getUrlParam('bn');
+      const partId = getUrlParam('partId');
+      const mainPartId = getUrlParam('mainPartId');
+      const metalId = getUrlParam('metalId');
+      const mark = getUrlParam('mark');
+      const currentHandInch = getUrlParam('currentHandInch');
+      const diamondId = getUrlParam('diamondId');
 
       if (design_bn) {
-        this.$store.dispatch("getDesignInfo", { design_bn }).then((res) => {
+        this.$store.dispatch('getDesignInfo', { design_bn }).then((res) => {
           this.saveDesignInfo = res.data
           this.design_bn = design_bn
           const {
@@ -319,7 +299,7 @@ export default {
           } = res.data
 
           this.getDiamond(diamond_id)
-          this.iframeWindow.console.log({
+          console.log({
             partId: partId || flower_head_id,
             mainPartId: mainPartId || ring_arm_id,
             metalId: metalId || texture_id,
@@ -360,7 +340,7 @@ export default {
         }
       }
 
-      this.$store.commit("setState", obj);
+      this.$store.commit('setState', obj);
       setTimeout(() => {
         this.init3D();
       }, 0)
@@ -369,13 +349,13 @@ export default {
     // 获取钻石信息
     getDiamond(diamondId, openTab) {
       if (diamondId) {
-        this.$store.dispatch("getDiamondInfo", { id: diamondId });
-        this.$store.commit("setState", {
+        this.$store.dispatch('getDiamondInfo', { id: diamondId });
+        this.$store.commit('setState', {
           diamondId,
         });
 
         if (openTab) {
-          this.footerTabId = "diamond";
+          this.footerTabId = 'diamond';
         }
       }
     },
@@ -390,14 +370,14 @@ export default {
         gemWeb,
         gemWebDefault,
         metalId,
-      } = this.$store.state;
+      } = this.$store.state.design;
 
-      this.iframeWindow.console.log("partId", partId);
+      console.log('partId', partId);
 
       // 加载3D第一步：初始化3D场景
       this.my3d = Bavlo.initWeb3D(
         baseUrl,
-        "web3d",
+        'web3d',
         false,
         resourceDomainName,
         false
@@ -418,7 +398,7 @@ export default {
       );
 
       // 加载3D第四步：设置3D场景背景色
-      this.my3d.changeBackground("37,37,42");
+      this.my3d.changeBackground('37,37,42');
 
       // 加载3D第五步：加载款式3D
       this.my3d.loadVarDesign(designInfo, mainPartId, partId.toString());
@@ -437,13 +417,13 @@ export default {
      * 确认设计
      */
     confirmDesign() {
-      const { currentHandInch, diamondId } = this.$store.state;
+      const { currentHandInch, diamondId } = this.$store.state.design;
 
       if (!currentHandInch) {
         this.$dialog
           .alert({
-            title: "请选择手寸",
-            message: "您未选择手寸，请选择戒指手寸大小",
+            title: '请选择手寸',
+            message: '您未选择手寸，请选择戒指手寸大小',
           })
           .then(() => {
             this.handPicker = true;
@@ -454,11 +434,11 @@ export default {
       if (!diamondId) {
         this.$dialog
           .alert({
-            title: "请选择钻石",
-            message: "您未选择钻石，请选择钻石",
+            title: '请选择钻石',
+            message: '您未选择钻石，请选择钻石',
           })
           .then(() => {
-            this.footerTabId = "diamond";
+            this.footerTabId = 'diamond';
           });
         return;
       }
@@ -470,13 +450,13 @@ export default {
         const canvas = document.querySelector('#mainCanvas')
         this.imgUrl = this.my3d.getDesignImage(canvas.offsetWidth * 2, canvas.offsetHeight * 2);
         this.$store
-          .dispatch("submitDesign", {
+          .dispatch('submitDesign', {
             image: this.imgUrl,
             bn: this.design_bn,
 
           })
           .then(({ data }) => {
-            this.iframeWindow.console.log(data);
+            console.log(data);
             location.href = `/order?bn=${data}`;
           });
       }, 300);
@@ -486,7 +466,7 @@ export default {
      * 钻石选择页
      */
     selectDiamond() {
-      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch } = this.$store.state;
+      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch } = this.$store.state.design;
       const queryObj = {};
 
       queryObj.mark = mark;
@@ -497,16 +477,16 @@ export default {
       queryObj.currentHandInch = currentHandInch;
       queryObj.bn = this.design_bn;
 
-      this.iframeWindow.console.log(queryObj);
-      let url = "//" + location.host + location.pathname + "?";
+      console.log(queryObj);
+      let url = '//' + location.host + location.pathname + '?';
       for (let key in queryObj) {
         if (queryObj[key]) {
-          url += key + "=" + queryObj[key] + "&";
+          url += key + '=' + queryObj[key] + '&';
         }
       }
       url = url.slice(0, url.length - 1);
 
-      this.iframeWindow.console.log(
+      console.log(
         `/diamondList?backUrl=${encodeURIComponent(url)}`
       );
       location.href = `/diamondList?backUrl=${encodeURIComponent(url)}`;
@@ -521,7 +501,7 @@ export default {
      * 保存刻印
      */
     saveMark() {
-      this.$store.commit("setState", {
+      this.$store.commit('setState', {
         mark: this.mark,
       });
       
@@ -537,7 +517,7 @@ export default {
     },
 
     onKeyup(e) {
-      if (e.keyCode == "13") {
+      if (e.keyCode == '13') {
         //回车执行查询
         this.saveMark()
       }
@@ -548,7 +528,7 @@ export default {
      * @param handInch
      */
     changeHandInch(handInch) {
-      this.$store.commit("setState", {
+      this.$store.commit('setState', {
         currentHandInch: handInch,
       });
       this.handPicker = false;
@@ -559,11 +539,11 @@ export default {
      * @param partId
      */
     changePartId(partId) {
-      this.iframeWindow.console.log("partId", partId);
+      console.log('partId', partId);
       let loadState = this.my3d.getLoadModelState();
       if (loadState == 2) {
         this.my3d.switchPart(this.edit3dPartType, Number(partId));
-        this.$store.commit("setState", {
+        this.$store.commit('setState', {
           partId,
         });
       }
@@ -574,11 +554,11 @@ export default {
      * @param mainPartId
      */
     changeMainPartId(mainPartId) {
-      this.iframeWindow.console.log("mainPartId", mainPartId);
+      console.log('mainPartId', mainPartId);
       let loadState = this.my3d.getLoadModelState();
       if (loadState == 2) {
         this.my3d.switchPart(this.edit3dPartType, Number(mainPartId));
-        this.$store.commit("setState", {
+        this.$store.commit('setState', {
           mainPartId,
         });
       }
@@ -588,7 +568,7 @@ export default {
      * @param metalId
      */
     changeMetalId(metalId) {
-      const { metals } = this.$store.state;
+      const { metals } = this.$store.state.design;
       let material;
       metals.forEach((item) => {
         if (+item.id === +metalId) {
@@ -596,20 +576,20 @@ export default {
         }
       });
 
-      this.iframeWindow.console.log("changeMetalId", metalId, material);
+      console.log('changeMetalId', metalId, material);
 
-      this.$store.commit("setState", {
+      this.$store.commit('setState', {
         metalId,
       });
       // 金属图层
-      material && this.my3d.customizeMetalClass("金属图层", material);
+      material && this.my3d.customizeMetalClass('金属图层', material);
     },
   },
 
   filters: {
     formatIndex(num) {
       num = num + 1;
-      return num < 10 ? "0" + num : num;
+      return num < 10 ? '0' + num : num;
     },
   },
 };
@@ -623,24 +603,7 @@ export default {
   overflow: hidden;
   color: #fff;
   background: rgb(37, 37, 42);
-  .loading-cont {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    color: #fff;
-    background: rgb(37, 37, 42);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    z-index: 999;
-    .tips {
-      margin-top: 16px;
-      font-size: 12px;
-    }
-  }
+  
   .img2 {
     position: absolute;
     left: 0;
@@ -692,25 +655,25 @@ export default {
         display: block;
         height: 32px;
         width: 32px;
-        background: url("../assets/design/design.png") no-repeat center/100%;
+        background: url("../../assets/design/design.png") no-repeat center/100%;
       }
       .icon-diamond {
         display: block;
         height: 32px;
         width: 32px;
-        background: url("../assets/design/diamond.png") no-repeat center/100%;
+        background: url("../../assets/design/diamond.png") no-repeat center/100%;
       }
       .icon-mark {
         display: block;
         height: 32px;
         width: 32px;
-        background: url("../assets/design/mark.png") no-repeat center/100%;
+        background: url("../../assets/design/mark.png") no-repeat center/100%;
       }
       .icon-try {
         display: block;
         height: 32px;
         width: 32px;
-        background: url("../assets/design/try.png") no-repeat center/100%;
+        background: url("../../assets/design/try.png") no-repeat center/100%;
       }
       .txt {
         margin: 4px 0 10px;
@@ -917,73 +880,4 @@ export default {
   }
 }
 
-// loading
-.loadEffect {
-  width: 100px;
-  height: 100px;
-  position: relative;
-  margin-bottom: 16px;
-  transform: scale(50%, 50%);
-}
-.loadEffect span {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgb(193, 177, 138);
-  position: absolute;
-  animation: load 1.04s ease infinite;
-}
-@keyframes load {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.2;
-  }
-}
-.loadEffect span:nth-child(1) {
-  left: 0;
-  top: 50%;
-  margin-top: -4px;
-  animation-delay: 0.13s;
-}
-.loadEffect span:nth-child(2) {
-  left: 16px;
-  top: 16px;
-  animation-delay: 0.26s;
-}
-.loadEffect span:nth-child(3) {
-  left: 50%;
-  top: 0;
-  margin-left: -4px;
-  animation-delay: 0.39s;
-}
-.loadEffect span:nth-child(4) {
-  top: 16px;
-  right: 16px;
-  animation-delay: 0.52s;
-}
-.loadEffect span:nth-child(5) {
-  right: 0;
-  top: 50%;
-  margin-top: -4px;
-  animation-delay: 0.65s;
-}
-.loadEffect span:nth-child(6) {
-  right: 16px;
-  bottom: 16px;
-  animation-delay: 0.78s;
-}
-.loadEffect span:nth-child(7) {
-  bottom: 0;
-  left: 50%;
-  margin-left: -4px;
-  animation-delay: 0.91s;
-}
-.loadEffect span:nth-child(8) {
-  bottom: 16px;
-  left: 16px;
-  animation-delay: 1.04s;
-}
 </style>

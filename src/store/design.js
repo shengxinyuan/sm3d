@@ -1,13 +1,7 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { apiUrl, colorList } from '../const/design'
+import { get, post } from '../util/ajax'
 
-Vue.use(Vuex)
-
-import { apiUrl, colorList } from './const'
-import { get, post } from './ajax'
-
-
-export default new Vuex.Store({
+export default {
   state: {
     userNo: 20230,
     desNo: 30163,
@@ -39,7 +33,6 @@ export default new Vuex.Store({
     materialWeb: [],
     materialWebDefault: [],
     webModelPics: [],
-    
   },
   mutations: {
     setState(state, payload) {
@@ -380,4 +373,4 @@ export default new Vuex.Store({
     },
 
   }
-})
+}

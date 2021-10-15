@@ -110,7 +110,7 @@ export default {
   computed: {},
   created() {
     this.$get({
-      url: 'api/3d/get_diamond',
+      url: '/api/3d/get_diamond',
       data: {
         id: this.$route.query.id,
       },

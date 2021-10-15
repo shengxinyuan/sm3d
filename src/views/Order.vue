@@ -151,18 +151,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import { Tab, Tabs, Icon, Field, Popup, Picker, Swipe, SwipeItem } from 'vant'
-import { colorList } from '../page-design/const'
-
-Vue.use(Swipe)
-Vue.use(SwipeItem)
-Vue.use(Popup)
-Vue.use(Picker)
-Vue.use(Field)
-Vue.use(Icon)
-Vue.use(Tab)
-Vue.use(Tabs)
+import { colorList } from '../const/design'
 
 export default {
   data () {
@@ -203,7 +192,7 @@ export default {
   methods: {
     loadDesign () {
       this.$get({
-        url: 'api/design/design_detail',
+        url: '/api/design/design_detail',
         data: {
           design_bn: this.bn
         }
@@ -261,7 +250,7 @@ export default {
       console.log(this.curTitle)
       this.title = this.curTitle
       this.$post({
-        url: 'api/3d/saveDesign',
+        url: '/api/3d/saveDesign',
         data: {
           bn: this.bn,
           flower_head_id: this.ksInfo.ht,

@@ -1,13 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-Vue.use(Vuex)
 
 import { apiUrl } from './const'
-import { get, post } from './ajax'
+import { get, post } from '../util/ajax'
 
-
-export default new Vuex.Store({
+export default {
   state: {
     userNo: 20230,
     desNo: 30163,
@@ -250,4 +245,4 @@ export default new Vuex.Store({
     },
 
   }
-})
+}

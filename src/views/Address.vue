@@ -33,7 +33,7 @@ export default {
   methods: {
     loadAddressInfo () {
       this.$get({
-        url: 'api/address'
+        url: '/api/address'
       }).then((res) => {
         this.list = res.data
         this.list.map((i) => {

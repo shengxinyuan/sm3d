@@ -49,7 +49,7 @@ export default {
   computed: {},
   created() {
     this.$get({
-      url: 'api/3d/get_all_diamonds',
+      url: '/api/3d/get_all_diamonds',
       data: {
         id: this.$route.query.id
       }
