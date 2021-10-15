@@ -270,6 +270,7 @@ export default {
   },
   computed: {},
   created() {
+    console.log('--------console test');
     // iframe console
     const iframe = document.createElement("iframe");
     iframe.setAttribute("style", "display:none;");
