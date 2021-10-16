@@ -5,6 +5,10 @@ axios.defaults.baseURL = 'http://zuanshi.nxm.wanheweb.com/';
 
 const getRequest = method => {
   return ({ url, data, options = {}, isForm = true }) => {
+    let tokenHeader = {}
+    if (window.top.uni && window.top.uni.getStorageSync) {
+      tokenHeader.token = window.top.uni.getStorageSync('token')
+    }
     return axios({
       url,
       method,
@@ -17,7 +21,8 @@ const getRequest = method => {
         'Content-Type': isForm
           ? 'application/x-www-form-urlencoded; charset=UTF-8'
           : 'application/json',
-        ...options.headers
+        ...options.headers,
+        ...tokenHeader
       }
     })
       .then(res => {
