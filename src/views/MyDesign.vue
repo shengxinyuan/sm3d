@@ -139,7 +139,7 @@ export default {
         })
         .then(() => {
           this.$post({
-            url: '/api/design/deleteDesign',
+            url: '/api/3d/deleteDesign',
             data: {
               id: this.currtBn
             }

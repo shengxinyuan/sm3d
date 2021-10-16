@@ -192,7 +192,7 @@ export default {
   methods: {
     loadDesign () {
       this.$get({
-        url: '/api/design/design_detail',
+        url: '/api/3d/design_detail',
         data: {
           design_bn: this.bn
         }

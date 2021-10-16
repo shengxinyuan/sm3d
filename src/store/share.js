@@ -235,7 +235,7 @@ export default {
      */
     getDesignInfo(_, { design_bn }) {
       return get({
-        url: 'api/design/design_detail',
+        url: 'api/3d/design_detail',
         data: {
           design_bn
         }
