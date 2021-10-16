@@ -44,9 +44,9 @@
       <div class="design-tabs-cont">
         <div class="list" v-if="designTab === 1">
           <div
-            :class="$store.state.partId === v.id ? 'active' : ''"
+            :class="$store.state.design.partId === v.id ? 'active' : ''"
             class="item"
-            v-for="(v, i) in $store.state.parts"
+            v-for="(v, i) in $store.state.design.parts"
             :key="i"
             @click="
               () => {
@@ -72,9 +72,9 @@
         </div>
         <div class="list" v-if="designTab === 2">
           <div
-            :class="$store.state.mainPartId === v.id ? 'active' : ''"
+            :class="$store.state.design.mainPartId === v.id ? 'active' : ''"
             class="item"
-            v-for="(v, i) in $store.state.mainParts"
+            v-for="(v, i) in $store.state.design.mainParts"
             :key="i"
             @click="
               () => {
@@ -100,9 +100,9 @@
         </div>
         <div class="list" v-if="designTab === 3">
           <div
-            :class="$store.state.metalId === v.id ? 'active' : ''"
+            :class="$store.state.design.metalId === v.id ? 'active' : ''"
             class="item"
-            v-for="(v, i) in $store.state.metals"
+            v-for="(v, i) in $store.state.design.metals"
             :key="i"
             @click="
               () => {
