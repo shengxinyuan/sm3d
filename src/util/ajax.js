@@ -1,10 +1,11 @@
 import axios from 'axios'
 import { stringify } from 'qs'
 
+axios.defaults.baseURL = 'http://zuanshi.nxm.wanheweb.com/';
+
 const getRequest = method => {
-  return ({ baseUrl = 'http://zhuanshi.nxm.wanheweb.com/', url, data, options = {}, isForm = true }) => {
+  return ({ url, data, options = {}, isForm = true }) => {
     return axios({
-      baseUrl,
       url,
       method,
       ...(method === 'POST'
