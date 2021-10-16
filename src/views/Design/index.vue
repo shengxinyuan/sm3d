@@ -152,9 +152,9 @@
               alt=""
             />
             <div class="diamond-info">
-              <p>GIA {{ $store.state.diamondInfo.size }}</p>
-              <p>详情: {{ $store.state.diamondInfo.detail || "_" }}</p>
-              <p>售价 ¥ {{ $store.state.diamondInfo.price || "-" }}元</p>
+              <p>GIA {{ $store.state.design.diamondInfo.size }}</p>
+              <p>详情: {{ $store.state.design.diamondInfo.detail || "_" }}</p>
+              <p>售价 ¥ {{ $store.state.design.diamondInfo.price || "-" }}元</p>
             </div>
           </div>
           <a class="change-btn" @click="selectDiamond">
@@ -453,7 +453,6 @@ export default {
           .dispatch('submitDesign', {
             image: this.imgUrl,
             bn: this.design_bn,
-
           })
           .then(({ data }) => {
             console.log(data);

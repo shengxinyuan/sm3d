@@ -128,7 +128,7 @@ export default {
         url += key + '=' + queryObj[key] + '&'
       }
       url = url.slice(0,url.length-1)
-      location.href = backUrl.split('?')[0] + '?' + url
+      this.$router.replace(`/design?${url}`)
     },
   },
 };

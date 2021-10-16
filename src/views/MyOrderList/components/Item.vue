@@ -37,7 +37,6 @@ export default {
   computed: {},
   methods: {
     detail(id) {
-      location.href = `/diamondDetail?backUrl=${encodeURIComponent(getUrlParam('backUrl'))}&id=${id}`
     },
   },
 };
