@@ -11,12 +11,12 @@ Vue.use(VueRouter)
 
 export const routes = [
   {
-    path: '/',
+    path: '/debug',
     name: 'DebugList',
     component: DebugList
   },
   {
-    path: '/home',
+    path: '/',
     name: 'Home',
     component: Home
   },

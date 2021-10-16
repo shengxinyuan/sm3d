@@ -411,6 +411,9 @@ export default {
         this.my3d.changeCameraPos(false, -45, 85, -65);
         
       }, 3000);
+
+      // 获取价格
+      this.getPrice()
     },
 
     /**
@@ -588,6 +591,26 @@ export default {
       // 金属图层
       material && this.my3d.customizeMetalClass('金属图层', material);
     },
+
+    getPrice() {
+      const {
+        partId,
+        mainPartId,
+        metalId,
+        currentHandInch,
+        diamondId
+      } = this.$store.state.design;
+
+      console.log();
+
+      this.$store.dispatch('getDesignPrice', {
+        currentHandInch: currentHandInch || 13,
+        partId,
+        mainPartId,
+        metalId,
+        diamondId
+      });
+    }
   },
 
   filters: {

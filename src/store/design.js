@@ -345,7 +345,7 @@ export default {
      */
     getDiamondInfo({ commit, state }, { id }) {
       get({
-        url: 'api/3d/get_diamond',
+        url: '/api/3d/get_diamond',
         data: {
           id
         }
@@ -363,11 +363,36 @@ export default {
      */
     getDesignInfo(_, { design_bn }) {
       return get({
-        url: 'api/3d/design_detail',
+        url: '/api/3d/design_detail',
         data: {
           design_bn
         }
       }).then((data) => {
+        return data
+      })
+    },
+
+    /**
+     * 13 实时计算价钱
+     */
+     getDesignPrice(_, {
+        currentHandInch,
+        partId,
+        mainPartId,
+        metalId,
+        diamondId
+      }) {
+      return get({
+        url: '/api/3d/order/compute_price',
+        data: {
+          diamond_id: diamondId,	
+          texture_id: metalId,
+          ring_size: currentHandInch,
+          ring_arm_id: mainPartId,
+          flower_head_id: partId,
+        }
+      }).then((data) => {
+        console.log('price', data);
         return data
       })
     },
