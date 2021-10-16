@@ -1,6 +1,6 @@
 <template>
   <div class="design">
-    
+    <title-bar title="3D设计" />
     <Loading v-if="loading" />
 
     <img class="img2" src="../../assets/diamond-list/bg.png" alt="" />

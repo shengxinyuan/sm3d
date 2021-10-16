@@ -2,6 +2,7 @@ import axios from 'axios'
 import { stringify } from 'qs'
 
 axios.defaults.baseURL = 'http://zuanshi.nxm.wanheweb.com/';
+// axios.defaults.baseURL = 'http://zuanshi.dis.wanheweb.com/';
 
 const getRequest = method => {
   return ({ url, data, options = {}, isForm = true }) => {

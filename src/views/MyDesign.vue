@@ -1,13 +1,6 @@
 <template>
   <div class="bag">
-    <van-nav-bar
-      title="我的设计"
-      left-text=""
-      left-arrow
-      @click-left="onClickLeft"
-      :safe-area-inset-top="true"
-      class="bag-bar"
-    />
+    <title-bar title="我的设计" />
     <van-row class="bag-tab">
       <van-col span="24">
         <van-tabs v-model="active" class="bag-tabs">
@@ -121,9 +114,6 @@ export default {
         this.$toast.fail('获取数据失败，请稍后重试')
       })
     },
-    onClickLeft () {
-      this.$router.back()
-    },
     onChange (index) {
       this.swiperIndex = index
       this.currtBn = this.list[index].bn
@@ -171,26 +161,6 @@ export default {
     flex-direction: column;
   }
 ::v-deep {
-  .bag-bar {
-    .van-icon {
-      color: #000 !important;
-    }
-    .van-nav-bar__content {
-      height: 50px;
-    }
-    .van-nav-bar__title {
-      line-height: 50px;
-      font-size: 16px;
-      font-weight: 700 !important;
-      color: #000;
-    }
-    .van-nav-bar__arrow {
-      font-size: 24px;
-    }
-    .van-nav-bar__left, .van-nav-bar__right {
-      padding: 16px;
-    }
-  }
   .bag-tab {
     position: relative;
     flex: 1;
@@ -260,11 +230,6 @@ export default {
     background-color: #48484f;
   }
   .bag-list {
-
-
-
-
-
     .bag-list__p {
       text-align: center;
       padding-top: 10px;

@@ -1,5 +1,6 @@
 <template>
   <div class="order-detail">
+    <title-bar title="订单详情" />
     <div class="cell">
       <div class="status">{{statusText[status]}}</div>
       <a  v-if="status == 3" class="order-btn" @click="order">支付尾款</a>
@@ -145,18 +146,18 @@
       }
     }
   }
-      .order-btn {
-      background: linear-gradient(#f82222, #b51616);
-      border-radius: 25px;
-      background-repeat: no-repeat;
-      background-size: cover;
-      width: 73px;
-      height: 30px;
-      line-height: 30px;
-      font-size: 14px;
-      margin-left: 12px;
-      color: #fff;
-      text-align: center;
-    }
+  .order-btn {
+    background: linear-gradient(#f82222, #b51616);
+    border-radius: 25px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 73px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    margin-left: 12px;
+    color: #fff;
+    text-align: center;
+  }
 }
 </style>

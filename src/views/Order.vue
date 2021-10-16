@@ -1,13 +1,6 @@
 <template>
   <div class="order">
-    <van-nav-bar
-      title="设计信息"
-      left-text=""
-      left-arrow
-      @click-left="onClickLeft"
-      :safe-area-inset-top="true"
-      class="bag-bar"
-    />
+    <title-bar title="设计信息" />
     <div class="order-header" style="margin-top:50px;">
       <div class="design-img" :style="{ backgroundImage: 'url(' + preview_image +'',}"></div>
       <p class="order-tip">3D定制效果仅供参考，商品以实物为准</p>
@@ -287,8 +280,6 @@ export default {
   width: 100vw;
   height: 100vh;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
   background: #fff;
   box-sizing: border-box;
   padding-bottom: 30px;

@@ -1,5 +1,6 @@
 <template>
   <div class="order-list">
+    <title-bar title="订单列表" />
     <van-list
       class="list"
       v-model="loading"
