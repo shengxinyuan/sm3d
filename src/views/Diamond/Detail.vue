@@ -144,6 +144,7 @@ export default {
   flex-direction: column;
   text-align: left;
   overflow: scroll;
+  box-sizing: border-box;
   .item-title-cont {
     padding: 15px;
     background-color: rgb(72, 72, 79);
@@ -151,6 +152,7 @@ export default {
     width: 100%;
     display: flex;
     align-items: center;
+    box-sizing: border-box;
   }
   .flex1 {
     flex: 1;
@@ -182,6 +184,7 @@ export default {
     justify-content: center;
     padding: 15px 15px 40px;
     background-color: rgb(72, 72, 79);
+    box-sizing: border-box;
     .cost {
       flex: 1;
       color: rgb(193, 177, 138);

@@ -292,6 +292,7 @@ export default {
     }
     .order-info-cont {
       padding: 15px;
+      font-size: 13px;
       .address {
         margin-top: 10px;
       }

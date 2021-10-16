@@ -476,7 +476,6 @@ export default {
       queryObj.currentHandInch = currentHandInch;
       queryObj.bn = this.design_bn;
 
-      console.log(queryObj);
       let url = '//' + location.host + location.pathname + '?';
       for (let key in queryObj) {
         if (queryObj[key]) {
@@ -485,9 +484,6 @@ export default {
       }
       url = url.slice(0, url.length - 1);
 
-      console.log(
-        `/diamondList?backUrl=${encodeURIComponent(url)}`
-      );
       this.$router.push(`/diamondList?backUrl=${encodeURIComponent(url)}`)
     },
 
@@ -560,6 +556,15 @@ export default {
         this.$store.commit('setState', {
           mainPartId,
         });
+
+        setTimeout(() => {
+          if (this.mark) {
+            this.my3d.printUserTextOfLayer(940, this.mark)
+            setTimeout(() => {
+              this.my3d.setRotationState(true);
+            }, 200)
+          }
+        }, 1000);
       }
     },
     /**
@@ -697,7 +702,7 @@ export default {
       width: 150px;
       height: 40px;
       line-height: 40px;
-      border-radius: 16px;
+      border-radius: 20px;
       background-color: rgb(193, 177, 138);
       color: rgb(52, 52, 60);
       text-align: center;

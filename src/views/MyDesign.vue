@@ -91,9 +91,6 @@
         <van-row>修改</van-row>
       </van-col>
     </van-row>
-    <van-row>
-      <van-tabbar v-model="bottomActive" class="bag-bottom"></van-tabbar>
-    </van-row>
   </div>
 </template>
 

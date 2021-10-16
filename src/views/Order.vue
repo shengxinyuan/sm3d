@@ -125,25 +125,6 @@
         </div>
       </div>
     </div>
-    <!-- <van-col class="bag-btns">
-      <van-col class="bag-price"> </van-col>
-      <van-col>
-        <router-link to="/mydesign">
-          <van-col class="bag-btns__btn bag-btns__mydesign">
-            <van-row><van-icon name="bag-o" color="rgb(193, 177, 138)" size="25"/></van-row>
-          </van-col>
-        </router-link>
-        <van-col class="bag-btns__btn bag-btns__share">
-          
-        </van-col>
-        <van-col style="flex:1;"></van-col>
-        <van-col class="bag-btns__btn bag-btns__share">
-          
-        </van-col>
-      </van-col>
-    </van-col> -->
-
-
     <van-dialog class="dialog" v-model="show" title="设计名称" show-cancel-button @open="handleOpen" @confirm="handleConfirm" @close="handleClose">
       <van-field v-model="curTitle" label="" ref="inputRef"  placeholder="请填写设计名称" autofocus class="title-input" />
     </van-dialog>
@@ -285,6 +266,8 @@ export default {
   display: flex;
   flex-direction: column;
   background: #fff;
+  box-sizing: border-box;
+  padding-bottom: 30px;
 }
 
 ::v-deep {
@@ -302,6 +285,7 @@ export default {
     padding: 8px;
     text-align: center;
     width: 100%;
+    box-sizing: border-box;
   }
   .order-name {
     display: flex;
@@ -373,14 +357,17 @@ export default {
       align-items: center;
       .order-cell__label {
         width: 50%;
-        padding-left: 30px;
-        padding-right: 20px;
+        padding-left: 16px;
+        padding-right: 16px;
         text-align: left;
+        font-size: 14px;
       }
       .order-cell__value {
         width: 140px;
         color: rgb(193, 177, 138);
         text-align: right;
+        font-size: 14px;
+        padding-right: 16px;
       }
     }
     .order-cell__picker {

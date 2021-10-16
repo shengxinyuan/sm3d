@@ -169,6 +169,7 @@ export default {
   flex-direction: column;
   padding: 15px 22px;
   text-align: left;
+  box-sizing: border-box;
   .flex {
     display: flex;
     align-items: center;
