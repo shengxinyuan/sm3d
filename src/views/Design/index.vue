@@ -457,7 +457,7 @@ export default {
           })
           .then(({ data }) => {
             console.log(data);
-            location.href = `/order?bn=${data}`;
+            this.$router.push(`/order?bn=${data}`)
           });
       }, 300);
     },
@@ -489,7 +489,7 @@ export default {
       console.log(
         `/diamondList?backUrl=${encodeURIComponent(url)}`
       );
-      location.href = `/diamondList?backUrl=${encodeURIComponent(url)}`;
+      this.$router.push(`/diamondList?backUrl=${encodeURIComponent(url)}`)
     },
 
     /**
