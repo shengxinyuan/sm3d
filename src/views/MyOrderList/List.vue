@@ -34,6 +34,15 @@ export default {
   },
   created () {
     // this.onLoad()
+    this.$get({
+        url: '/api/3d/order/list'
+      }).then((res) => {
+        this.list = res.data
+        this.list.map((i) => {
+          i.name = i.contact
+          i.tel = i.mobile
+        })
+      }).catch(() => {})
   },
   computed: {
 

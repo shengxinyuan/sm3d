@@ -24,6 +24,8 @@ export default {
     // 当前钻石
     diamondId: '',
     diamondInfo: {},
+    // 设计标题
+    title: '',
 
     otherGems: [],
     metalWeb: [],
@@ -313,7 +315,8 @@ export default {
         partId,
         metalId,
         diamondId,
-        currentHandInch
+        currentHandInch,
+        title
       } = state
 
       const query = {
@@ -324,7 +327,7 @@ export default {
         texture_id: metalId,
         ring_size: currentHandInch,
         good_type: 1,
-        title: '', 
+        title: title, 
         preview_image,
       }
 
@@ -392,8 +395,11 @@ export default {
           flower_head_id: partId,
         }
       }).then((data) => {
-        console.log('price', data);
-        return data
+        if (data.status === 1) {
+          return data.data.price
+        } else {
+          return '-'
+        }
       })
     },
 

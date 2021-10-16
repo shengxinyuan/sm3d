@@ -113,7 +113,7 @@
     </div>
     
     <div class="bag-btns">
-      <div class="price">¥ 12000</div>
+      <div class="price">¥ {{ price | formatCost }}</div>
       <div class="btns">
         <van-icon name="bag-o" color="rgb(193, 177, 138)" size="25" class="icon-my-design" @click="() => {$router.push('/mydesign')}"/>
         <div>
@@ -137,6 +137,7 @@ import { colorList } from '../const/design'
 export default {
   data () {
     return {
+      price: '',
       bn: this.$route.query.bn || 0,
       active: 2,
       title: '',
@@ -197,6 +198,22 @@ export default {
             this.ksInfo.cz = item.nameCn
           }
         });
+
+        this.$get({
+          url: '/api/3d/order/compute_price',
+          data: {
+            diamond_id: data.diamond_id,	
+            texture_id: data.texture_id,
+            ring_size: data.ring_size,
+            ring_arm_id: data.ring_arm_id,
+            flower_head_id: data.flower_head_id,
+          }
+        }).then((res) => {
+          if (res.status === 1) {
+            this.price = res.data.price
+          }
+        })
+
       }).catch(() => {
         this.$toast.fail('获取数据失败，请稍后重试')
       })
@@ -254,7 +271,14 @@ export default {
     handleClose () {
       this.curTitle = ''
     }
-  }
+  },
+  filters: {
+    formatCost(num) {
+      if (typeof num === 'number' && !isNaN(num) ) {
+        return num.toString() + '.00'
+      }
+    },
+  },
 }
 </script>
 

@@ -206,7 +206,7 @@
         </a>
       </div>
       <div class="buy-group">
-        <div class="cost">¥ 22000</div>
+        <div class="cost">¥ {{ price | formatCost }}</div>
         <div class="buy-btn" @click="confirmDesign">确认设计</div>
       </div>
     </section>
@@ -257,6 +257,9 @@ export default {
       // 保存的设计信息
       saveDesignInfo: null,
       design_bn: '',
+
+      // price
+      price: '-'
     };
   },
   computed: {},
@@ -296,6 +299,7 @@ export default {
             flower_head_id,
             texture_id,
             ring_print,
+            title,
           } = res.data
 
           this.getDiamond(diamond_id)
@@ -305,7 +309,8 @@ export default {
             metalId: metalId || texture_id,
             mark: mark || ring_print,
             currentHandInch: currentHandInch || ring_size,
-            diamondId: diamondId || diamond_id
+            diamondId: diamondId || diamond_id,
+            title: title,
           })
           this.mark = mark || ring_print || ''
           
@@ -315,7 +320,8 @@ export default {
             metalId: metalId || texture_id,
             mark: mark || ring_print,
             currentHandInch: currentHandInch || ring_size,
-            diamondId: diamondId || diamond_id
+            diamondId: diamondId || diamond_id,
+            title,
           })
           
         });
@@ -411,9 +417,6 @@ export default {
         this.my3d.changeCameraPos(false, -45, 85, -65);
         
       }, 3000);
-
-      // 获取价格
-      this.getPrice()
     },
 
     /**
@@ -530,6 +533,8 @@ export default {
         currentHandInch: handInch,
       });
       this.handPicker = false;
+
+      this.getPrice()
     },
 
     /**
@@ -545,6 +550,8 @@ export default {
           partId,
         });
       }
+
+      this.getPrice()
     },
 
     /**
@@ -569,6 +576,8 @@ export default {
           }
         }, 1000);
       }
+
+      this.getPrice()
     },
     /**
      * 切换材料
@@ -590,8 +599,10 @@ export default {
       });
       // 金属图层
       material && this.my3d.customizeMetalClass('金属图层', material);
+      this.getPrice()
     },
 
+    // 实时获取金额
     getPrice() {
       const {
         partId,
@@ -601,15 +612,15 @@ export default {
         diamondId
       } = this.$store.state.design;
 
-      console.log();
-
       this.$store.dispatch('getDesignPrice', {
         currentHandInch: currentHandInch || 13,
         partId,
         mainPartId,
         metalId,
         diamondId
-      });
+      }).then((price) => {
+        this.price = price
+      })
     }
   },
 
@@ -617,6 +628,11 @@ export default {
     formatIndex(num) {
       num = num + 1;
       return num < 10 ? '0' + num : num;
+    },
+    formatCost(num) {
+      if (typeof num === 'number' && !isNaN(num) ) {
+        return num.toString() + '.00'
+      }
     },
   },
 };
@@ -720,6 +736,9 @@ export default {
       color: rgb(193, 177, 138);
       height: 40px;
       line-height: 40px;
+      padding-left: 4px;
+      text-align: left;
+      font-size: 18px;
     }
     .buy-btn {
       width: 150px;
