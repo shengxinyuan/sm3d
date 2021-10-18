@@ -1,28 +1,28 @@
 <template>
-  <div class="order-item" @click="() => {detail(info.id)}">
+  <div class="order-item" >
     <div class="order-number">
-      <span class="flex1">订单编号：HH12312313</span>
-      <span class="red">已下单</span>
+      <span class="flex1">订单编号: {{info.bn}}</span>
+      <span class="red">{{statusList[info.status]}}</span>
     </div>
     <div class="order-info-box">
       <img class="img" src="../../../assets/diamond-list/diamond-view.png" alt="">
       <div class="detail">
         <p class="title">3D定制订单</p>
-        <p>钻石GIA证书: XXXXXX</p>
-        <p>钻石金额: ¥1200</p>
-        <p>3D定制订单 花头：NO1001</p>
-        <p>3D定制订单 戒臂：NO1222</p>
+        <p>类型: {{typeList[info.good_type]}}</p>
+        <p>定金比例: {{info.deposit_ratio}}%</p>
+        <p>收货方式: {{sfTypeList[info.sf_type]}}</p>
+        <p>创建时间: {{info.create_time}}</p>
       </div>
     </div>
     <div class="order-price">
-      <span class="price">合计：¥1000</span>
-      <a class="order-btn">支付尾款</a>
+      <span class="price">合计：¥ {{ info.total_amount }}</span>
+      <a class="order-btn" @click="() => {detail(info.bn)}">查看详情</a>
     </div>
   </div>
 </template>
 
 <script>
-import { getUrlParam } from '../../../util/index'
+import { statusList, typeList, sfTypeList } from '../../../const/order'
 
 export default {
   name: 'orderItem',
@@ -30,13 +30,24 @@ export default {
   components: {},
   data() {
     return {
+      typeList,
+      sfTypeList,
+      statusList,
       loading: false,
       finished: false,
     };
   },
   computed: {},
   methods: {
-    detail(id) {
+    detail(bn) {
+      this.$router.push(`/orderDetail?bn=${bn}`)
+    },
+  },
+  filters: {
+    formatCost(num) {
+      if (typeof num === 'number' && !isNaN(num) ) {
+        return num.toString() + '.00'
+      }
     },
   },
 };
@@ -66,10 +77,11 @@ export default {
     }
   }
   .order-info-box {
-    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 10px 0 6px 0;
+
     .img {
       display: block;
       width: 100px;
@@ -80,7 +92,10 @@ export default {
       margin-left: 10px;
       color: #999;
       font-size: 12px;
-      line-height: 1.5;
+      line-height: 1.8;
+      & > p {
+        margin: 0;
+      }
       .title {
         color: #303133;
         line-height: 30px;
