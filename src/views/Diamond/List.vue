@@ -1,5 +1,6 @@
 <template>
   <div class="diamond-list">
+    <title-bar title="钻石列表" />
     <div>
       <div class="diamonds-count">
         <span class="num">{{total}}颗钻石供您挑选</span>

@@ -5,6 +5,7 @@ import store from './store'
 import 'vant/lib/index.css'
 import { Tag, Tab, Tabs, Toast, NavBar, Col, Row, Button, Swipe, SwipeItem, Tabbar, TabbarItem, Icon, Divider, List, Picker, Popup, AddressList, Dialog } from 'vant'
 import { get, post } from '../src/util/ajax'
+import TitleBar from './components/TitleBar'
 
 Vue.use(AddressList)
 Vue.use(Divider)
@@ -25,7 +26,7 @@ Vue.use(List)
 Vue.use(Picker)
 Vue.use(Popup)
 Vue.use(Dialog)
-
+Vue.component('title-bar', TitleBar)
 Vue.prototype.$get = get
 Vue.prototype.$post = post
 Vue.prototype.$toast = Toast

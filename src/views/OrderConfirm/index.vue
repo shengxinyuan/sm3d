@@ -1,14 +1,7 @@
 <template>
   <div class="order-confirm">
-    <van-nav-bar
-      title="确认订单"
-      left-text=""
-      left-arrow
-      @click-left="onClickLeft"
-      :safe-area-inset-top="true"
-      class="bag-bar"
-    />
-    <section class="order-info-item" style="margin-top:60px;">
+    <title-bar title="确认订单" />
+    <section class="order-info-item">
       <div class="flex order-title-cont">
         <van-icon name="location-o icon-style" />
         <div class="title">
@@ -72,7 +65,7 @@
           商品总金额
         </div>
         <div class="title yellow">
-          ¥{{ddInfo.cost}}
+          ¥{{ddInfo.total_amount}}
         </div>
       </div>
       <div class="order-info-cont">
@@ -86,10 +79,16 @@
           <div class="flex1">定金比例</div>
           <div>{{ddInfo.deposit_ratio || 0}}%</div>
         </div>
+        <div class="flex pt10" v-if="userInfo.is_vip">
+          <van-icon name="balance-list-o icon-style" />
+          <div class="flex1">原价</div>
+          <div class="delete">¥ {{ddInfo.total_amount - ddInfo.deposit || 0}}</div>
+        </div>
         <div class="flex pt10">
           <van-icon name="balance-list-o icon-style" />
           <div class="flex1">尾款</div>
-          <div>¥ {{ddInfo.cost || 0 - ddInfo.deposit || 0}}</div>
+          <div v-if="userInfo.is_vip">¥ {{ddInfo.total_vip  - ddInfo.deposit || 0}}</div>
+          <div v-else>¥ {{ddInfo.total_amount - ddInfo.deposit || 0}}</div>
         </div>
       </div>
     </section>
@@ -122,6 +121,10 @@ export default {
         ht: '',
         fs: '天然钻石(白)'
       },
+      userInfo: {
+        balance: 0,
+        is_vip: 0
+      },
       zsInfo: {
         zs: 'GIA 232813821738',
         zz: '0.15ct',
@@ -136,7 +139,9 @@ export default {
       ddInfo: {
         cost: 0,
         deposit: 0,
-        deposit_ratio: 0
+        deposit_ratio: 0,
+        total_amount: 0,
+        total_vip: 0,
       }
     }
   },
@@ -175,10 +180,9 @@ export default {
           this.ksInfo.ht = data.flower_head_id
           this.ksInfo.jb = data.ring_arm_id
           this.zsInfo.zs = data.diamond_id
-          this.ddInfo.cost = ddData.cost
-          this.ddInfo.deposit = ddData.deposit
-          this.ddInfo.deposit_ratio = ddData.deposit_ratio
-          
+          this.ddInfo = ddData
+          this.userInfo.balance = ddData.user_info.balance
+          this.userInfo.is_vip = ddData.user_info.is_vip
           colorList.forEach(item => {
           if (item.id === data.texture_id) {
             this.ksInfo.cz = item.nameCn
@@ -204,13 +208,13 @@ export default {
             this.$toast.success('提交订单成功')
             if (window.uni) {
               const payment_data = {
-                vip: 0,
-                menber_price: 3000,
-                shop_price: +ddInfo.cost
+                vip: this.userInfo.is_vip ? 1 : 0,
+                menber_price: +this.userInfo.balance,
+                shop_price: this.ddInfo.deposit
               }
-              ddInfo.cost
+              // 定金支付使用定金bn design_bn
               window.uni.navigateTo({
-                url: `../my/payments?data=${+res.data.bn}&shop=${JSON.stringify(payment_data)}`
+                url: `../my/payments?data=${res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}`
               })
             }
           }
@@ -221,9 +225,6 @@ export default {
         this.$toast('请先选择收货地址')
       }
     },
-    onClickLeft () {
-      this.$router.back()
-    },
     changeAddress () {
       this.$router.push('/address')
     }
@@ -232,30 +233,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep {
-  .bag-bar {
-    position: fixed !important;
-    width: 100%;
-    .van-icon {
-      color: #000 !important;
-    }
-    .van-nav-bar__content {
-      height: 50px;
-    }
-    .van-nav-bar__title {
-      line-height: 50px;
-      font-size: 16px;
-      font-weight: 700 !important;
-      color: #000;
-    }
-    .van-nav-bar__arrow {
-      font-size: 24px;
-    }
-    .van-nav-bar__left, .van-nav-bar__right {
-      padding: 16px;
-    }
-  }
-}
 .order-confirm {
   height: 100%;
   background-color: rgb(60, 60, 68);
@@ -345,5 +322,8 @@ export default {
       font-size: 16px;
     }
   }
+}
+.delete {
+  text-decoration: line-through;
 }
 </style>

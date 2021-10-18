@@ -1,5 +1,6 @@
 <template>
   <div class="diamond-detail">
+    <title-bar title="钻石详情" />
     <img src="../../assets/diamond-list/diamond-detail-img.png" width="100%" alt="" />
     <div class="item-title-cont">
       <div class="flex1">

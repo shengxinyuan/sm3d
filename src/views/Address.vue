@@ -1,13 +1,6 @@
 <template>
-  <div>
-    <van-nav-bar
-      title="地址列表"
-      left-text=""
-      left-arrow
-      @click-left="onClickLeft"
-      :safe-area-inset-top="true"
-      class="bag-bar"
-    />
+  <div class="address">
+    <title-bar title="地址列表"/>
     <van-address-list
       v-model="chosenAddressId"
       :list="list"
@@ -33,22 +26,23 @@ export default {
   methods: {
     loadAddressInfo () {
       this.$get({
-        url: '/api/address'
+        url: '/api/address',
+        data: {
+          is_mine: 1
+        }
       }).then((res) => {
         this.list = res.data
         this.list.map((i) => {
           i.name = i.contact
           i.tel = i.mobile
+          i.address = i.province + '-' + i.area + '-' + i.city + '-' + i.address
         })
       }).catch(() => {})
-    },
-    onClickLeft () {
-      this.$router.back()
     },
     onAdd () {
       if (window.uni) {
         window.uni.navigateTo({
-          url: '../my/addAddress?is_mine=undefined&onShow=0'
+          url: '../my/addAddress?is_mine=1&onShow=0'
         })
       }
     },
@@ -64,26 +58,6 @@ export default {
 
 <style lang="scss" scoped>
 ::v-deep {
-  .bag-bar {
-    .van-icon {
-      color: #000 !important;
-    }
-    .van-nav-bar__content {
-      height: 50px;
-    }
-    .van-nav-bar__title {
-      line-height: 50px;
-      font-size: 16px;
-      font-weight: 700 !important;
-      color: #000;
-    }
-    .van-nav-bar__arrow {
-      font-size: 24px;
-    }
-    .van-nav-bar__left, .van-nav-bar__right {
-      padding: 16px;
-    }
-  }
   .van-address-item__edit {
     display: none;
   }

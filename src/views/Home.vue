@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <title-bar title="3D设计" :type="2"/>
     <router-link to="/design" tag="a"><div class="home-banner"></div></router-link>
     <!-- <div class="home-text"></div> -->
     <router-link to="/design" tag="a"><div class="home-tag"></div></router-link>
@@ -18,7 +19,8 @@
 
 export default {
   name: 'Home',
-  components: {}
+  components: {},
+  methods: {},
 }
 </script>
 

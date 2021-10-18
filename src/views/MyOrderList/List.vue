@@ -1,13 +1,6 @@
 <template>
   <div class="order-list">
-    <van-nav-bar
-      title="我的3D定制订单"
-      left-text=""
-      left-arrow
-      @click-left="$router.back()"
-      :safe-area-inset-top="true"
-      class="bag-bar"
-    />
+    <title-bar title="我的3D定制订单" />
     <van-list
       class="list"
       finished-text="没有更多了"
@@ -57,32 +50,6 @@ export default {
   text-align: left;
   overflow: scroll;
   padding-bottom: 25px;
-  .list {
-    padding-top: 50px;
-  }
 }
-::v-deep {
-  .bag-bar {
-    position: fixed !important;
-    width: 100%;
-    .van-icon {
-      color: #000 !important;
-    }
-    .van-nav-bar__content {
-      height: 50px;
-    }
-    .van-nav-bar__title {
-      line-height: 50px;
-      font-size: 16px;
-      font-weight: 700 !important;
-      color: #000;
-    }
-    .van-nav-bar__arrow {
-      font-size: 24px;
-    }
-    .van-nav-bar__left, .van-nav-bar__right {
-      padding: 16px;
-    }
-  }
-}
+
 </style>
