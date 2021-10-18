@@ -3,7 +3,8 @@
     <title-bar title="订单详情" />
     <div class="cell">
       <div class="status">{{statusText[status]}}</div>
-      <a  v-if="status == 3" class="order-btn" @click="order">支付尾款</a>
+      <a  v-if="status == 40" class="order-btn" @click="orderFinal">支付尾款</a>
+      <a  v-if="status == 10" class="order-btn" @click="orderBefore">支付定金</a>
     </div>
     <div class="divider" />
     <div class="p8">
@@ -13,10 +14,10 @@
           <van-tag round type="primary" class="tag">邮寄</van-tag>
         </div>
         <div>
-          <span>{{address}}</span>
+          <span>{{orderInfo.address}}</span>
           <br/>
-          <span>{{name}}</span>
-          <span>{{tel}}</span>
+          <span>{{orderInfo.name}}</span>
+          <span>{{orderInfo.tel}}</span>
         </div>
       </div>
     </div>
@@ -34,22 +35,22 @@
     <div class="p8">
       <div class="cell">
         <span>定金</span>
-        <span>¥100</span>
+        <span>¥{{orderInfo.deposit}}</span>
       </div>
       <div class="cell">
         <span>尾款</span>
-        <span>¥100</span>
+        <span>¥{{orderInfo.vip ? orderInfo.total_vip - orderInfo.deposit : orderInfo.total_amount - orderInfo.deposit}}</span>
       </div>
       <div class="cell">
         <span>总金额</span>
-        <span>¥100</span>
+        <span>¥{{orderInfo.vip ? this.orderInfo.total_vip : orderInfo.total_amount}</span>
       </div>
     </div>
     <div class="divider" />
     <div class="p8">
       <div class="cell">
         <span>订单编号</span>
-        <span>{{orderBn}}</span>
+        <span>{{orderInfo.bn}}</span>
       </div>
       <div class="cell">
         <span>订单时间</span>
@@ -64,16 +65,26 @@
   export default {
     data() {
       return {
-        status: 3,
-        address: '翻斗大街翻斗花园',
-        name: '胡图图',
-        tel: '1888888888',
-        orderBn: 'HH0354214952',
+        orderInfo: {
+          status: 3,
+          address: '翻斗大街翻斗花园',
+          name: '胡图图',
+          tel: '1888888888',
+          bn: 'HH0354214952',
+          member_id: 0,
+          deposit: 0,
+          total_vip: 0,
+          total_amount: 0
+        },
         statusText: {
-          1: '已发货',
-          2: '待发货',
-          3: '待付尾款',
-          4: '已付款'
+          10: '待支付定金',
+          20: '等待生产',
+          30: '已安排生产',
+          40: '待付尾款',
+          60: '已发货',
+          70: '确定收货',
+          80: '售后',
+          90: '订单已取消'
         },
         payment_data: {
           vip: 0,
@@ -84,12 +95,38 @@
     },
     computed: {
     },
+    created () {
+      // this.onLoad()
+      this.$get({
+          url: '/api/3d/order/detail',
+          data: {
+            bn: this.$router.bn
+          }
+        }).then(({ status, data }) => {
+          if (status === 1) {
+            this.orderInfo = data.data
+          }
+        }).catch(() => {})
+    },
     methods: {
-      order() {
-        console.log(1, window.uni)
+      orderFinal () {
+        this.order({
+          vip: this.orderInfo.vip,
+          menber_price: 0,
+          shop_price: this.orderInfo.vip ? this.orderInfo.total_vip - this.orderInfo.deposit : this.orderInfo.total_amount - this.orderInfo.deposit,
+        })
+      },
+      orderBefore () {
+        this.order({
+          vip: this.orderInfo.vip,
+          menber_price: 0,
+          shop_price: this.orderInfo.deposit,
+        })
+      },
+      order(payment_data) {
         if (window.uni) {
           window.uni.navigateTo({
-            url: `../my/payments?data=${+this.orderBn}&shop=${JSON.stringify(this.payment_data)}`
+            url: `../my/payments?data=${+this.orderBn}&shop=${JSON.stringify(payment_data)}`
           })
         }
       }
