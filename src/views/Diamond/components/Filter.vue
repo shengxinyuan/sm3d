@@ -1,82 +1,48 @@
 <template>
-  <div class="diamond-filter">
+  <div class="diamond-filter" @scroll.stop>
+    
+    <van-nav-bar
+      title="条件筛选"
+      left-text=""
+      left-arrow
+      @click-left="goback"
+      :safe-area-inset-top="true"
+      class="bag-bar"
+    />
 
-    <section class="filter-item">
-      <div class="filter-item-label" @click="goback">钻石大小（克拉）</div>
+    <div class="filter-cont">
+      <section class="filter-item">
+      <div class="filter-item-label">钻石大小（克拉）</div>
       <div class="filter-item-value flex" @click="showPicker = true">
         <div class="picker-value">
-          <div class="value">{{num1}}</div>
+          <div class="value">{{minsize}}</div>
           <van-icon name="arrow-down" />
           <div class="unit">ct</div>
         </div>
         <div>—</div>
         <div class="picker-value">
-          <div class="value">{{num2}}</div>
+          <div class="value">{{maxsize}}</div>
           <van-icon name="arrow-down" />
           <div class="unit">ct</div>
         </div>
       </div>
-      
     </section>
 
-    <section class="filter-item">
-      <div class="filter-item-label" @click="goback">颜色选择</div>
-      <div class="filter-item-value">
-        <span class="active">1</span>
-        <span>2</span>
-        <span>2</span>
+    <section class="filter-item" v-for="(v, i) in list" :key="i">
+      <div class="filter-item-label">{{v.title}}</div>
+      <div class="filter-item-value warp">
+        <span :class="v.value === item.value ? 'active' : ''" v-for="(item, index) in v.value_list" :key="index" @click="selectItem(v.name, item.value)">
+          <div :class="v.name === 'shape' ? 'shape': '' ">
+            {{item.title}}
+          </div>
+        </span>
       </div>
     </section>
-
-    <section class="filter-item">
-      <div class="filter-item-label" @click="goback">颜色选择</div>
-      <div class="filter-item-value">
-        <span>1</span>
-        <span>2</span>
-        <span>2</span>
-        <span>1</span>
-        <span>2</span>
-        <span>2</span>
-        <span>1</span>
-        <span>2</span>
-      </div>
-    </section>
-
-    <section class="filter-item">
-      <div class="filter-item-label" @click="goback">颜色选择</div>
-      <div class="filter-item-value">
-        <span>1</span>
-        <span>2</span>
-        <span>2</span>
-        <span>1</span>
-        <span>2</span>
-        <span>2</span>
-        <span>1</span>
-        <span>2</span>
-      </div>
-    </section>
-
-    <section class="filter-item">
-      <div class="filter-item-label" @click="goback">颜色选择</div>
-      <div class="filter-item-value">
-        <span>1</span>
-        <span>2</span>
-        <span>2</span>
-      </div>
-    </section>
-
-    <section class="filter-item">
-      <div class="filter-item-label" @click="goback">颜色选择</div>
-      <div class="filter-item-value">
-        <span>1</span>
-        <span>2</span>
-        <span>2</span>
-      </div>
-    </section>
+    </div>
 
     <div class="btns-box">
       <a class="btn-reset" @click="reset">重置</a>
-      <a class="btn" @click="goback">确认筛选</a>
+      <a class="btn" @click="selected">确认筛选</a>
     </div>
 
     <van-popup v-model="showPicker" round position="bottom">
@@ -96,20 +62,18 @@ const diamondSize = []
 for (let i = 0.3; i < 20.1; i= i + .1) {
   diamondSize.push(i.toFixed(1))
 } 
-const defaultVal = {
-  num1: '0.3',
-  num2: '1.0',
-}
+
 
 export default {
   components: {
   },
-  props: [],
+  props: ['option_list', 'size'],
   data() {
     return {
+      list: [],
       showPicker: false,
-      num1: defaultVal.num1,
-      num2: defaultVal.num2,
+      minsize: 0,
+      maxsize: 0,
     };
   },
   computed: {
@@ -120,36 +84,52 @@ export default {
           defaultIndex: 0,
         },
         {
-          values: diamondSize.filter(v => +v > this.num1),
+          values: diamondSize.filter(v => +v > this.minsize),
           defaultIndex: 7,
         },
       ]
     }
   },
   created() {
-
-  },
-  mounted() {
+    this.list = this.option_list
+    this.minsize = this.size.minsize
+    this.maxsize = this.size.maxsize
   },
   methods: {
     reset() {
-      for (let v in defaultVal) {
-        this[v] = defaultVal[v]
+      for (let v in this.size) {
+        this[v] = this.size[v]
       }
+
+      this.list = this.list.map((item) => ({
+        ...item,
+        value: ''
+      }))
     },
     goback() {
       this.$emit('close')
     },
+    selected() {
+      this.$emit('selected', this.list, {minsize: this.minsize, maxsize:this.maxsize})
+    },
     onChange(_, val) {
-      const [num1, num2] = val
-      this.num1 = num1
-      this.num2 = num2
+      const [minsize, maxsize] = val
+      this.minsize = minsize
+      this.maxsize = maxsize
     },
     onConfirm(val) {
-      const [num1, num2] = val
-      this.num1 = num1
-      this.num2 = num2
+      const [minsize, maxsize] = val
+      this.minsize = minsize
+      this.maxsize = maxsize
       this.showPicker = false
+    },
+    selectItem(name, value) {
+      this.list.forEach(val => {
+        if (val.name === name) {
+          val.value = value
+        }
+      });
+      this.list = [...this.list]
     }
   },
 };
@@ -167,9 +147,20 @@ export default {
   color: #fff;
   display: flex;
   flex-direction: column;
-  padding: 15px 22px;
+  padding-bottom: 80px;
   text-align: left;
   box-sizing: border-box;
+  .filter-cont {
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 50px 16px 0 16px;
+    box-sizing: border-box;
+  }
+  .filter-item-label {
+    font-size: 15px;
+    padding: 0 6px;
+  }
   .flex {
     display: flex;
     align-items: center;
@@ -194,24 +185,28 @@ export default {
         margin: 0 12px 0 16px;
       }
     }
+    .warp {
+      flex-wrap: wrap;
+    }
     .filter-item-value {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       margin-top: 10px;
-      
       & > span {
         display: block;
-        flex: 1;
         text-align: center;
         height: 32px;
         line-height: 32px;
         min-width: 32px;
         border-radius: 16px;
         background-color: #48484f;
+        font-weight: normal;
         color: #c1b18a;
-        margin: 0 10px;
-        font-weight: bold;
+        margin: 6px 6px 0;
+        font-size: 12px;
+      }
+      .shape {
+        width: 56px;
       }
       & > .active {
         background-color: #c1b18a;
@@ -259,4 +254,27 @@ export default {
     font-size: 24px !important;
   }
 }
+
+/deep/.bag-bar {
+    position: fixed;
+    width: 100%;
+    .van-icon {
+      color: #000 !important;
+    }
+    .van-nav-bar__content {
+      height: 50px;
+    }
+    .van-nav-bar__title {
+      line-height: 50px;
+      font-size: 16px;
+      font-weight: 700 !important;
+      color: #000;
+    }
+    .van-nav-bar__arrow {
+      font-size: 24px;
+    }
+    .van-nav-bar__left, .van-nav-bar__right {
+      padding: 8px;
+    }
+  }
 </style>

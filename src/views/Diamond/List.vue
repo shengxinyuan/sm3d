@@ -6,26 +6,26 @@
         <span class="num">{{total}}颗钻石供您挑选</span>
         <span class="filter-btn" @click="filter">筛选</span>
       </div>
-      <div class="diamond-weight-list">
+      <!-- <div class="diamond-weight-list">
         <span>15分</span>
         <span>25分</span>
         <span>70分</span>
         <span>1克拉</span>
         <span>1克拉以上</span>
-      </div>
+      </div> -->
       <div></div>
     </div>
     <van-list
       class="list"
       v-model="loading"
       :finished="finished"
-      finished-text="没有更多了"
+      :finished-text="list.length === 0 ? '未根据筛选查找到钻石' : '没有更多了'"
       @load="onLoad"
     >
-      <D-Item v-for="item in list" :key="item.id" :info="item" />
+      <D-Item v-for="(item, index) in list" :key="index" :info="item" />
     </van-list>
 
-    <D-Filter v-show="filterStatus" @close="close" />
+    <D-Filter v-if="filterStatus" @close="close" @selected="selected" :option_list="option_list" :size="size" />
   </div>
 </template>
 
@@ -40,27 +40,20 @@ export default {
   },
   data() {
     return {
-      list: [1, 2, 3, 4, 5, 6, 7],
       loading: false,
       finished: false,
       filterStatus: false,
+      list: [],
       total: '-',
+      option_list: [],
+      size: {
+        minsize: '0.3',
+        maxsize: '1.0',
+      },
+      query: {
+        page: 1,
+      }
     };
-  },
-  computed: {},
-  created() {
-    this.$get({
-      url: '/api/3d/get_all_diamonds',
-      data: {
-        id: this.$route.query.id
-      }
-    }).then((res) => {
-      console.log(res);
-      if (res.status === 1) {
-        this.total = res.data.total
-        this.list = res.data.data
-      }
-    })
   },
   methods: {
     filter() {
@@ -69,8 +62,42 @@ export default {
     close() {
       this.filterStatus = false;
     },
+    selected(res, size) {
+      this.size = size
+      this.option_list = res;
+      this.filterStatus = false;
+      const params = {};
+      res.forEach(item => {
+        if (item.value) {
+          params[item.name] = item.value
+        }
+      });
+      this.query = {
+        page: 1,
+        ...params,
+        size_lower: size.minsize * 100,
+        size_upper: size.maxsize * 100,
+      }
+      this.getList()
+    },
+    getList() {
+      this.$get({
+        url: '/api/3d/get_all_diamonds',
+        data: this.query
+      }).then((res) => {
+        if (res.status === 1) {
+          const data = res.data;
+          this.total = data.total;
+          this.list = this.query.page === 1 ? data.data : [...this.list, ...data.data];
+          this.option_list = this.option_list.length ? this.option_list : data.option_list;
+          this.finished = data.last_page === data.current_page || data.last_page === 0;
+          this.loading = false
+          this.query.page = data.current_page + 1
+        }
+      })
+    },
     onLoad() {
-      this.finished = true;
+      this.getList()
     },
   },
 };
@@ -83,6 +110,7 @@ export default {
   color: #fff;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   .diamonds-count {
     display: flex;
     padding: 15px 15px 0 15px;
@@ -125,9 +153,6 @@ export default {
       padding: 0 5px;
       white-space: nowrap;
     }
-  }
-  .list {
-    overflow: scroll;
   }
 }
 </style>
