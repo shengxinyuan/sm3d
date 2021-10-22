@@ -56,11 +56,11 @@
     <div class="divider" />
     <div class="order-info-box">
       <div class="cell">
-        <span>设计详情:</span>
+        <span>3D定制订单</span>
       </div>
       <div class="design-img" :style="{ backgroundImage: 'url(' +orderInfo.design_info.preview_image+'',}"></div>
       <div class="detail">
-        <p class="title">3D定制订单</p>
+        <p class="title">定制详情</p>
         <div class="cell">
           <span>类型:</span>
           <span>{{typeList[orderInfo.good_type]}}</span>
@@ -83,7 +83,7 @@
         </div>
       </div>
       <div class="detail">
-        <p class="title">3D定制订单</p>
+        <p class="title">钻石详情</p>
         <div class="cell">
           <span>颜色</span>
           <span>{{orderInfo.design_info.diamond_info && orderInfo.design_info.diamond_info.color}}</span>
