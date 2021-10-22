@@ -90,6 +90,7 @@
           <div v-if="userInfo.is_vip">¥ {{ddInfo.total_vip  - ddInfo.deposit || 0}}</div>
           <div v-else>¥ {{ddInfo.total_amount - ddInfo.deposit || 0}}</div>
         </div>
+        <div  class="jump-vip" @click="jumpVip">成为会员，享价格优惠！</div>
       </div>
     </section>
 
@@ -227,6 +228,13 @@ export default {
     },
     changeAddress () {
       this.$router.push('/address')
+    },
+    jumpVip () {
+      if (window.uni) {
+        window.uni.navigateTo({
+          url: '../my/vip_member'
+        })
+      }
     }
   }
 }
@@ -325,5 +333,16 @@ export default {
 }
 .delete {
   text-decoration: line-through;
+}
+.jump-vip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(193, 177, 138);
+  border-radius: 12px;
+  margin-top: 12px;
+  margin-left: 50%;
+  padding: 2px;
+  color: rgb(60, 60, 68);
 }
 </style>

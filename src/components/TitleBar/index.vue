@@ -5,7 +5,7 @@
       left-text=""
       left-arrow
       @click-left="onClickLeft"
-      :safe-area-inset-top="true"
+      safe-area-inset-top
       class="bag-bar"
     />
   </div>

@@ -16,7 +16,7 @@
                 </van-row>
               </van-col>
               <van-col span="24">
-                <a href="/design.html">
+                <a href="/design">
                   <van-button type="primary" class="button">去智能定制</van-button>
                 </a>
               </van-col>
@@ -141,10 +141,29 @@ export default {
         });
     },
     jumpDesign () {
-      window.location.href = window.location.origin + `/design.html?bn=${this.currtBn}`
+      window.location.href = window.location.origin + `/design?bn=${this.currtBn}`
     },
     share () {
-      window.location.href = window.location.origin + `/share.html?bn=${this.currtBn}`
+      if (window.top.uni && window.top.uni.share) {
+        window.top.uni.share({
+          provider: "weixin",
+          scene: "WXSceneSession",
+          type: 0,
+          href: `http://zuanshi.dis.wanheweb.com/smsj/index.html#/pages/index/threedesign?url=share&bn=${this.currtBn}`,
+          title: '奢美珠宝',
+          summary: '我在奢美珠宝设计了我的专属钻戒，快来看看吧！',
+          imageUrl: 'http://zuanshi.nxm.wanheweb.com/uploads/designImage/20211019/design_223313_5661.png',
+          success: function(res) {
+            // console.log(res) 
+          },
+          fail: function(err) {
+            // console.log(err)
+            // that.com.msg('失败')
+          }
+        });
+      } else {
+        window.location.href = window.location.origin + `/share?bn=${this.currtBn}`
+      }
     },
     jumpOrderConfirm () {
       this.$router.push(`./orderConfirm?bn=${this.currtBn}`)
