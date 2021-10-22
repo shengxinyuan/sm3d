@@ -4,7 +4,7 @@
     <Loading v-if="loading" />
 
     <div class="page-header">
-      用户186-XXXX-2206 给您分享了他设计的钻戒
+      用户{{ksInfo.nickname || '-'}} 给您分享了他设计的钻戒
     </div>
 
     <img class="img2" src="../../assets/diamond-list/bg.png" alt="" />
@@ -16,15 +16,19 @@
       <div class="list">
         <div class="order-cell">
           <span class="order-cell__label">价格：</span>
-          <span class="order-cell__value">¥ {{ksInfo.price || '-'}}</span>
+          <span class="order-cell__value">¥ {{price || '-'}}</span>
         </div>
         <div class="order-cell">
           <span class="order-cell__label">款式：</span>
-          <span class="order-cell__value">智能定制款式</span>
+          <span class="order-cell__value">{{ksInfo.title}}</span>
         </div>
         <div class="order-cell">
           <span class="order-cell__label">视角：</span>
-          <span class="order-cell__value">随意拖动</span>
+          <span class="order-cell__value">360°任意切换</span>
+        </div>
+        <div class="order-cell">
+          <span class="order-cell__label">钻石：</span>
+          <span class="order-cell__value">GIA认证</span>
         </div>
       </div>
       <div class="buy-group">
@@ -39,7 +43,6 @@
 <script>
 import Loading from '../../components/3DLoading'
 import { resourceDomainName, baseUrl } from '../../const/design';
-import { getUrlParam } from '../../util/index';
 
 export default {
   components: {
@@ -49,6 +52,7 @@ export default {
   data() {
     return {
       loading: true,
+      price: '',
       ksInfo: {},
     };
   },
@@ -56,31 +60,28 @@ export default {
   created() {
 
     // 加载账号信息
-    this.$store.dispatch('loadUserInfo');
+    const design_bn = this.$route.query.bn;
+    this.$store.dispatch('share_loadUserInfo');
+    this.$store.dispatch('share_getDesignInfo', { design_bn }).then((res) => {
 
-    const design_bn = getUrlParam('bn');
-
-    this.$store.dispatch('getDesignInfo', { design_bn }).then((res) => {
-      this.ksInfo = res.data
-      console.log(res);
-      this.ksInfo.price = '12000'
-    });
-    
-  },
-  mounted() {
-    // 请求：材质、宝石、设计数据
-    Promise.all([
-      this.$store.dispatch('loadDesignInfo'),
-      this.$store.dispatch('loadMetalList'),
-      this.$store.dispatch('loadMetalWeb'),
-      this.$store.dispatch('loadGemList'),
-      this.$store.dispatch('loadGemWeb'),
-    ]).then(() => {
-      console.log('mounted -> data loaded -> init3D');
-      this.init3D();
+      this.ksInfo = res.data;
+      this.getPrice(res.data)
+      
+      // 请求：材质、宝石、设计数据
+      Promise.all([
+        this.$store.dispatch('share_loadDesignInfo'),
+        this.$store.dispatch('share_loadMetalList'),
+        this.$store.dispatch('share_loadMetalWeb'),
+        this.$store.dispatch('share_loadGemList'),
+        this.$store.dispatch('share_loadGemWeb'),
+      ]).then(() => {
+        console.log('mounted -> data loaded -> init3D');
+        this.init3D();
+      }).catch((err) => {
+        console.log(err);
+      })
     });
   },
-
   methods: {
     // 初始化3D
     async init3D() {
@@ -93,7 +94,7 @@ export default {
         gemWeb,
         gemWebDefault,
         metalId,
-      } = this.$store.state;
+      } = this.$store.state.share;
 
       console.log('mainPartId', partId, mainPartId);
 
@@ -131,8 +132,28 @@ export default {
         this.loading = false
         this.my3d.changeCameraPos(false, -45, 85, -65);
         
-      }, 1000);
+      }, 3000);
     },
+    // 实时获取金额
+    getPrice(data) {
+      const {
+        ring_size,
+        diamond_id,
+        ring_arm_id,
+        flower_head_id,
+        texture_id,
+      } = data
+
+      this.$store.dispatch('share_getDesignPrice', {
+        currentHandInch: ring_size || 13,
+        partId: flower_head_id,
+        mainPartId: ring_arm_id,
+        metalId: texture_id,
+        diamondId: diamond_id
+      }).then((price) => {
+        this.price = price
+      })
+    }
   },
 
 };
@@ -140,6 +161,7 @@ export default {
 
 <style lang="scss" scoped>
 .share {
+  text-align: left;
   height: 100vh;
   position: relative;
   width: 100%;

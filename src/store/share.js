@@ -1,5 +1,5 @@
 
-import { apiUrl } from './const'
+import { apiUrl } from '../const/design'
 import { get, post } from '../util/ajax'
 
 export default {
@@ -44,7 +44,7 @@ export default {
      * 1 加载账号信息
      * @param userId
      */
-    loadUserInfo({ commit, state }) {
+    share_loadUserInfo({ commit, state }) {
       return post({
         url: apiUrl + 'app/userInfo',
         data: {
@@ -61,7 +61,7 @@ export default {
     /**
      * 2 获取金属材质列表（用于切换材质）
      */
-    loadMetalList({ commit, state }) {
+     share_loadMetalList({ commit, state }) {
       let metals = []
       return post({
         url: apiUrl + 'app/findUserMetalByUser',
@@ -118,7 +118,7 @@ export default {
     /**
      * 3 加载款式信息
      */
-    loadDesignInfo({ commit, state }) {
+     share_loadDesignInfo({ commit, state }) {
       return post({
         url: apiUrl + 'app/getVariableDesignLayerInfo',
         data: {
@@ -152,7 +152,7 @@ export default {
     /**
      * 4 获取宝石材质列表（用于切换材质）
      */
-    loadGemList({ commit, state }) {
+     share_loadGemList({ commit, state }) {
       return post({
         url: apiUrl + 'app/findUserGemByUser',
         data: {
@@ -186,7 +186,7 @@ export default {
      * 6 获取金属web材质参数（用于渲染）
      * @param userId
      */
-    loadMetalWeb({ commit, state }) {
+     share_loadMetalWeb({ commit, state }) {
       post({
         url: apiUrl + 'app/findMetalWebsByUser',
         data: {
@@ -210,7 +210,7 @@ export default {
      * 7 获取宝石web材质列表（用于渲染）
      * @param userId
      */
-    loadGemWeb({ commit, state }) {
+     share_loadGemWeb({ commit, state }) {
       post({
         url: apiUrl + 'app/findGemWebsByUser',
         data: {
@@ -233,7 +233,7 @@ export default {
     /**
      * 11 获取设计信息
      */
-    getDesignInfo(_, { design_bn }) {
+    share_getDesignInfo(_, { design_bn }) {
       return get({
         url: 'api/3d/design_detail',
         data: {
@@ -243,6 +243,34 @@ export default {
         return data
       })
     },
+
+    /**
+     * 13 实时计算价钱
+     */
+     share_getDesignPrice(_, {
+      currentHandInch,
+      partId,
+      mainPartId,
+      metalId,
+      diamondId
+    }) {
+    return get({
+      url: '/api/3d/order/compute_price',
+      data: {
+        diamond_id: diamondId,	
+        texture_id: metalId,
+        ring_size: currentHandInch,
+        ring_arm_id: mainPartId,
+        flower_head_id: partId,
+      }
+    }).then((data) => {
+      if (data.status === 1) {
+        return data.data.price
+      } else {
+        return '-'
+      }
+    })
+  },
 
   }
 }

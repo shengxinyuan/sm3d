@@ -270,7 +270,7 @@ export default {
       margin-top: 30px;
     }
     .bag-list__buy {
-      margin-top: 30px;
+      // margin-top: 30px;
     }
     .bag-list__btn--left {
       width: 40vw;
