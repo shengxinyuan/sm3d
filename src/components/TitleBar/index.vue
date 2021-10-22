@@ -40,7 +40,9 @@
 
 <style lang="scss" scoped>
 .title-bar-box {
-	height: 50px ;
+	height: 50px;
+  padding-top: 24px;
+  background: #fff;
 }
 
 /deep/.bag-bar {

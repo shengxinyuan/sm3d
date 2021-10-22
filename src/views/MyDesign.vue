@@ -75,7 +75,7 @@
         <van-row><van-icon name="delete-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>删除</van-row>
       </van-col>
-      <van-col class="bag-btns__btn bag-btns__share" @click="share">
+      <van-col v-if="hasShare" class="bag-btns__btn bag-btns__share" @click="share">
         <van-row><van-icon name="share-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>分享</van-row>
       </van-col>
@@ -92,6 +92,7 @@
 export default {
   data () {
     return {
+      hasShare: window.top.uni && window.top.uni.share,
       active: 2,
       bottomActive: 0,
       isEmpty: false,
@@ -141,7 +142,7 @@ export default {
         });
     },
     jumpDesign () {
-      this.$router.push(`/design?bn=${this.currtBn}`)
+      window.location.href = window.location.origin + `/design?bn=${this.currtBn}`
     },
     share () {
       if (window.top.uni && window.top.uni.share) {
@@ -161,8 +162,6 @@ export default {
             // that.com.msg('失败')
           }
         });
-      } else {
-        window.location.href = window.location.origin + `/share?bn=${this.currtBn}`
       }
     },
     jumpOrderConfirm () {
@@ -257,6 +256,7 @@ export default {
     .bag-list__p--top {
       font-size: 18px;
       font-weight: 500;
+      margin: 6px 0;
     }
     .bag-list__p--middle {
       font-size: 12px;
@@ -265,12 +265,6 @@ export default {
     .bag-list__p--bottom {
       font-size: 15px;
       font-weight: 700;
-    }
-    .bag-list__btns {
-      margin-top: 30px;
-    }
-    .bag-list__buy {
-      // margin-top: 30px;
     }
     .bag-list__btn--left {
       width: 40vw;
