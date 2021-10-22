@@ -1,7 +1,7 @@
 <template>
   <div class="order">
     <title-bar title="设计信息" />
-    <div class="order-header" style="margin-top:50px;">
+    <div class="order-header">
       <div class="design-img" :style="{ backgroundImage: 'url(' + preview_image +'',}"></div>
       <p class="order-tip">3D定制效果仅供参考，商品以实物为准</p>
     </div>
@@ -305,10 +305,10 @@ export default {
   .order-name {
     display: flex;
     align-items: flex-start;
-    padding: 12px 16px 12px 32px;
+    padding: 12px 16px 2px 16px;
     color: #fff;
     background: #3C3C44;
-    border-bottom: 1px solid #5f5f5f;
+    font-size: 14px;
     .van-cell.van-field {
       background-color: #3c3c44;
       height: 25px;
@@ -513,6 +513,8 @@ export default {
     border-radius: 8px;
     margin: 12px;
     width: 290px;
+    // height: 30px;
+    // background-color: #3c3c44;
   }
   .van-dialog__confirm {
     color: rgb(193, 177, 138);
