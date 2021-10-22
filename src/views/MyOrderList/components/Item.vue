@@ -5,7 +5,7 @@
       <span class="red">{{statusList[info.status]}}</span>
     </div>
     <div class="order-info-box">
-      <img class="img" src="../../../assets/diamond-list/diamond-view.png" alt="">
+      <div class="design-img" v-if="info.design_info && info.design_info.preview_image" :style="{ backgroundImage: 'url(' + info.design_info.preview_image +'',}"></div>
       <div class="detail">
         <p class="title">3D定制订单</p>
         <p>类型: {{typeList[info.good_type]}}</p>
@@ -54,6 +54,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.design-img {
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  margin: 0 auto;
+  background-size: 100px 160px;
+  background-position: center;
+
+}
 .flex1 {
   flex: 1;
 }

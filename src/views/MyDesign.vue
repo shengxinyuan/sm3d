@@ -141,7 +141,7 @@ export default {
         });
     },
     jumpDesign () {
-      window.location.href = window.location.origin + `/design?bn=${this.currtBn}`
+      this.$router.push(`/design?bn=${this.currtBn}`)
     },
     share () {
       if (window.top.uni && window.top.uni.share) {

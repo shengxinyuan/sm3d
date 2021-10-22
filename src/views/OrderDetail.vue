@@ -24,7 +24,7 @@
     </div>
     <div class="divider" />
     <div class="order-info-box">
-      <img class="img" :src="orderInfo.design_info.preview_image" alt="">
+      <div class="design-img" :style="{ backgroundImage: 'url(' +orderInfo.design_info.preview_image+'',}"></div>
       <div class="detail">
         <p class="title">3D定制订单</p>
         <p>类型: {{typeList[orderInfo.good_type]}}</p>
@@ -198,11 +198,19 @@ import { statusList, typeList, sfTypeList } from '../const/order'
     display: flex;
     align-items: center;
     justify-content: center;
+    .design-img {
+      width: 100px;
+      height: 120px;
+      background-repeat: no-repeat;
+      margin: 0 auto;
+      background-size: 100px 160px;
+      background-position: center;
+      margin: 20px;
+    }
     .img {
       display: block;
       width: 100px;
       height: 100px;
-      margin-left: 20px;
     }
     .detail {
       flex: 1;
@@ -210,6 +218,7 @@ import { statusList, typeList, sfTypeList } from '../const/order'
       color: #999;
       font-size: 12px;
       line-height: 1.2;
+      text-align: left;
       .title {
         color: #303133;
         line-height: 30px;
