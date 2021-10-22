@@ -1,11 +1,22 @@
 <template>
-  <div class="order-detail">
+  <div class="order-detail" v-if="orderInfo && orderInfo.status">
     <title-bar title="订单详情" />
     <div class="cell">
       <div class="status">{{statusList[orderInfo.status]}}</div>
       <a  v-if="orderInfo.status == 40" class="order-btn" @click="orderFinal">支付尾款</a>
       <a  v-if="orderInfo.status == 10" class="order-btn" @click="orderBefore">支付定金</a>
       <a  v-if="orderInfo.status == 60" class="order-btn" @click="delivered">确认收货</a>
+    </div>
+    <div class="divider" />
+    <div class="p8" fz>
+      <div class="cell">
+        <span>订单编号:</span>
+        <span>{{orderInfo.bn}}</span>
+      </div>
+      <div class="cell">
+        <span>下单时间:</span>
+        <span>{{orderInfo.create_time}}</span>
+      </div>
     </div>
     <div class="divider" />
     <div class="p8">
@@ -23,29 +34,7 @@
       </div>
     </div>
     <div class="divider" />
-    <div class="order-info-box">
-      <div class="design-img" :style="{ backgroundImage: 'url(' +orderInfo.design_info.preview_image+'',}"></div>
-      <div class="detail">
-        <p class="title">3D定制订单</p>
-        <p>类型: {{typeList[orderInfo.good_type]}}</p>
-        <p>款式: 圆款钻石定制</p>
-        <p>戒臂: {{orderInfo.design_info.flower_head_id}}</p>
-        <p>花头: {{orderInfo.design_info.ring_arm_id}}</p>
-        <p>钻石: {{orderInfo.design_info.diamond_id}}</p>
-        <p>手寸: {{orderInfo.design_info.ring_size}}</p>
-        <p v-if="orderInfo.design_info.title">刻字: {{orderInfo.design_info.title}}</p>
-      </div>
-    </div>
-    <div class="divider" />
     <div class="p8">
-      <div class="cell">
-        <span>定金</span>
-        <span>¥ {{orderInfo.deposit}}</span>
-      </div>
-      <div class="cell">
-        <span>尾款</span>
-        <span>¥ {{(orderInfo.user_info.is_vip ? orderInfo.total_vip - orderInfo.deposit : orderInfo.total_amount - orderInfo.deposit)}}</span>
-      </div>
       <div class="cell delete" v-if="orderInfo.user_info.is_vip">
         <span>原价</span>
         <span>¥ {{orderInfo.total_amount}}</span>
@@ -54,23 +43,75 @@
         <span>总金额</span>
         <span>¥ {{orderInfo.user_info.is_vip ? this.orderInfo.total_vip : orderInfo.total_amount}}</span>
       </div>
+      <div class="cell">
+        <span>定金</span>
+        <span>¥ {{orderInfo.deposit}}</span>
+      </div>
+      <div class="cell">
+        <span>尾款</span>
+        <span>¥ {{(orderInfo.user_info.is_vip ? orderInfo.total_vip - orderInfo.deposit : orderInfo.total_amount - orderInfo.deposit)}}.00</span>
+      </div>
+      
     </div>
     <div class="divider" />
-    <div class="p8">
+    <div class="order-info-box">
       <div class="cell">
-        <span>订单编号</span>
-        <span>{{orderInfo.bn}}</span>
+        <span>设计详情:</span>
       </div>
-      <div class="cell">
-        <span>下单时间</span>
-        <span>{{orderInfo.create_time}}</span>
+      <div class="design-img" :style="{ backgroundImage: 'url(' +orderInfo.design_info.preview_image+'',}"></div>
+      <div class="detail">
+        <p class="title">3D定制订单</p>
+        <div class="cell">
+          <span>类型:</span>
+          <span>{{typeList[orderInfo.good_type]}}</span>
+        </div>
+        <div class="cell">
+          <span>款式:</span>
+          <span>圆款钻石定制</span>
+        </div>
+        <div class="cell">
+          <span>钻石编号id:</span>
+          <span>{{orderInfo.design_info.diamond_id}}</span>
+        </div>
+        <div class="cell">
+          <span>手寸:</span>
+          <span>{{orderInfo.design_info.ring_size}}</span>
+        </div>
+        <div class="cell" v-if="orderInfo.design_info.title">
+          <span>刻字:</span>
+          <span>{{orderInfo.design_info.title}}</span>
+        </div>
       </div>
-      <div class="cell">
-        <span>更新时间</span>
-        <span>{{orderInfo.update_time}}</span>
+      <div class="detail">
+        <p class="title">3D定制订单</p>
+        <div class="cell">
+          <span>颜色</span>
+          <span>{{orderInfo.design_info.diamond_info && orderInfo.design_info.diamond_info.color}}</span>
+        </div>
+        <div class="cell">
+          <span>净度</span>
+          <span>{{orderInfo.design_info.diamond_info && orderInfo.design_info.diamond_info.clarity}}</span>
+        </div>
+        <div class="cell">
+          <span>荧光</span>
+          <span>{{orderInfo.design_info.diamond_info && orderInfo.design_info.diamond_info.flr_intensity}}</span>
+        </div>
+        <div class="cell">
+          <span>抛光</span>
+          <span>{{orderInfo.design_info.diamond_info && orderInfo.design_info.diamond_info.polish}}</span>
+        </div>
+        <div class="cell">
+          <span>切工</span>
+          <span>{{orderInfo.design_info.diamond_info && orderInfo.design_info.diamond_info.cut}}</span>
+        </div>
+        <div class="cell">
+          <span>对称</span>
+          <span>{{orderInfo.design_info.diamond_info && orderInfo.design_info.diamond_info.symmetry}}</span>
+        </div>
       </div>
     </div>
     <div class="divider" />
+    
   </div>
 </template>
 
@@ -169,13 +210,13 @@ import { statusList, typeList, sfTypeList } from '../const/order'
 
 <style lang="scss" scoped>
 .order-detail {
-  margin-bottom: 50px;
   .p8 {
     padding: 8px;
+    font-size: 14px;
   }
   .status {
     padding: 3%;
-    font-size: 19px;
+    font-size: 16px;
     font-weight: bold;
     text-align: left;
   }
@@ -194,36 +235,33 @@ import { statusList, typeList, sfTypeList } from '../const/order'
     padding: 2px 6px;
   }
   .order-info-box {
-    height: 220px;
+    font-size: 14px;
     display: flex;
-    align-items: center;
     justify-content: center;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
     .design-img {
-      width: 100px;
-      height: 120px;
+      width: 345px;
+      height: 370px;
       background-repeat: no-repeat;
-      margin: 0 auto;
-      background-size: 100px 160px;
+      background-size: 355px 560px;
       background-position: center;
-      margin: 20px;
-    }
-    .img {
-      display: block;
-      width: 100px;
-      height: 100px;
+      margin: 0 auto;
     }
     .detail {
       flex: 1;
-      margin-left: 10px;
       color: #999;
       font-size: 12px;
-      line-height: 1.2;
+      line-height: 1.6;
       text-align: left;
       .title {
         color: #303133;
-        line-height: 30px;
-        font-weight: bold;
         font-size: 14px;
+        margin: 10px 0 8px 10px;
+      }
+      .cell {
+        padding: 0 10px;
       }
     }
   }

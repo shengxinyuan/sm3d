@@ -44,10 +44,6 @@
               <span class="order-cell__label">材质</span>
               <span class="order-cell__value">{{ksInfo.cz}}</span>
             </div>
-            <!-- <div class="order-cell">
-              <span class="order-cell__label">工艺</span>
-              <span class="order-cell__value">{{ksInfo.gy}}</span>
-            </div> -->
             <div class="order-cell">
               <span class="order-cell__label">戒臂</span>
               <span class="order-cell__value">{{ksInfo.jb}}</span>
@@ -68,37 +64,33 @@
               <span class="order-cell__label">钻石价格</span>
               <span class="order-cell__value">¥{{zsInfo.price || "1500"}}</span>
             </div>
-            <!-- <div class="order-cell">
-              <span class="order-cell__label">钻重</span>
-              <span class="order-cell__value">{{zsInfo.zz}}</span>
-            </div> -->
             <div class="order-cell">
               <span class="order-cell__label">形状</span>
-              <span class="order-cell__value">{{zsInfo.xz}}</span>
+              <span class="order-cell__value">{{zsInfo.shape}}</span>
             </div>
             <div class="order-cell">
               <span class="order-cell__label">颜色</span>
-              <span class="order-cell__value">{{zsInfo.ys}}</span>
+              <span class="order-cell__value">{{zsInfo.color}}</span>
             </div>
             <div class="order-cell">
               <span class="order-cell__label">净度</span>
-              <span class="order-cell__value">{{zsInfo.jd}}</span>
+              <span class="order-cell__value">{{zsInfo.clarity}}</span>
             </div>
             <div class="order-cell">
               <span class="order-cell__label">荧光</span>
-              <span class="order-cell__value">{{zsInfo.yg}}</span>
+              <span class="order-cell__value">{{zsInfo.flr_intensity}}</span>
             </div>
             <div class="order-cell">
               <span class="order-cell__label">抛光</span>
-              <span class="order-cell__value">{{zsInfo.pg}}</span>
+              <span class="order-cell__value">{{zsInfo.polish}}</span>
             </div>
             <div class="order-cell">
               <span class="order-cell__label">切工</span>
-              <span class="order-cell__value">{{zsInfo.qg}}</span>
+              <span class="order-cell__value">{{zsInfo.cut}}</span>
             </div>
             <div class="order-cell">
               <span class="order-cell__label">对称</span>
-              <span class="order-cell__value">{{zsInfo.dc}}</span>
+              <span class="order-cell__value">{{zsInfo.symmetry}}</span>
             </div>
           </div>
         </van-tab>
@@ -147,15 +139,6 @@ export default {
         kz: ''
       },
       zsInfo: {
-        zs: '',
-        zz: '0.30ct',
-        xz: '圆形',
-        ys: 'K',
-        jd: 'SI2',
-        yg: '无',
-        pg: 'EX',
-        qg: 'VG',
-        dc: 'EX'
       },
       showSc: false,
       showHelp: false
@@ -184,8 +167,8 @@ export default {
         this.ksInfo.kz = data.ring_print
         this.ksInfo.ht = data.flower_head_id
         this.ksInfo.jb = data.ring_arm_id
-        this.zsInfo.zs = data.diamond_id
-        this.zsInfo.zs = data.diamond_id
+
+        this.zsInfo = data.diamond_info
         colorList.forEach(item => {
           if (item.id === data.texture_id) {
             this.ksInfo.cz = item.nameCn
@@ -334,6 +317,9 @@ export default {
     flex: 1;
     background-color: #3c3c44 !important;
     margin-bottom: 70px;
+    .van-tabs__content {
+      padding-bottom: 10px;
+    }
     .van-tabs__wrap {
       margin-bottom: 6px;
       width: 50%;
@@ -366,7 +352,7 @@ export default {
     display: flex;
     flex-direction: column;
     .order-cell {
-      height: 42px;
+      height: 32px;
       display: flex;
       padding: 8px;
       align-items: center;
