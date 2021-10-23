@@ -181,9 +181,9 @@ import { statusList, typeList, sfTypeList } from '../const/order'
       },
       orderBefore () {
         this.order({
-          vip: this.orderInfo.user_info.is_vip,
-          menber_price: 0,
-          shop_price: this.orderInfo.deposit,
+          vip: this.orderInfo.user_info.is_vip ? 1 : 0,
+          menber_price: this.orderInfo.user_info.balance ? +this.orderInfo.user_info.balance : 0,
+          shop_price: this.orderInfo.deposit ? +this.orderInfo.deposit : 0,
         })
       },
       order(payment_data) {
