@@ -7,7 +7,10 @@ axios.defaults.baseURL = 'http://zuanshi.nxm.wanheweb.com/';
 const getRequest = method => {
   return ({ url, data, options = {}, isForm = true }) => {
     let tokenHeader = {}
+    console.log(window.top.uni);
     if (window.top.uni && window.top.uni.getStorageSync) {
+
+      
       console.log('in uni');
       console.log('window.top.uni', );
       console.log(window.top.uni.getStorageSync('token'));
