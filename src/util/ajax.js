@@ -22,6 +22,7 @@ const getRequest = method => {
         : { }),
       params: method === 'GET' ? data : options.params,
       headers: {
+        'Host': 'zuanshi.nxm.wanheweb.com',
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': isForm
           ? 'application/x-www-form-urlencoded; charset=UTF-8'
