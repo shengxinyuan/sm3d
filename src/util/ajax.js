@@ -11,7 +11,9 @@ const getRequest = method => {
     // if (window.parent.uni && window.parent.uni.getStorageSync) {
     //   tokenHeader.token = window.parent.uni.getStorageSync('token')
     // }
-    tokenHeader = localStorage.getItem('token');
+    if (localStorage.getItem('token')) {
+      tokenHeader.token = localStorage.getItem('token');
+    }
     return axios({
       url,
       method,
