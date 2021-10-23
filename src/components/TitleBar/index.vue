@@ -1,5 +1,6 @@
 <template>
   <div class="title-bar-box">
+    <div class="status-bar"></div>
     <van-nav-bar
       :title="title"
       left-text=""
@@ -41,13 +42,20 @@
 <style lang="scss" scoped>
 .title-bar-box {
 	height: 50px;
-  padding-top: 24px;
   background: #fff;
 }
-
+.status-bar {
+  width: 100%;
+  height: 24px;
+  background: #fff;
+  position: fixed;
+  top:0;
+  z-index: 9;
+}
 /deep/.bag-bar {
     position: fixed;
     width: 100%;
+    top: 24px;
     .van-icon {
       color: #000 !important;
     }
