@@ -29,6 +29,9 @@ export default {
         url: '/api/address',
         data: {
           is_mine: 1
+        },
+        options: {
+          token: localStorage.getItem('token')
         }
       }).then((res) => {
         this.list = res.data
