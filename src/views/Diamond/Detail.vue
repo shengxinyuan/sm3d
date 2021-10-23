@@ -88,7 +88,7 @@
       ></div
     >
 
-    <img src="../../assets/diamond-list/detail.png" width="100%" alt="" />
+    <img src="../../assets/diamond-list/detail.jpg" width="100%" alt="" />
 
     <div class="buy-group">
       <div class="cost">售价 ¥ {{info.price}}</div>
