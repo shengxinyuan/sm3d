@@ -177,19 +177,21 @@ import { statusList, typeList, sfTypeList } from '../const/order'
           vip: this.orderInfo.user_info.is_vip,
           menber_price: this.orderInfo.user_info.balance,
           shop_price: this.orderInfo.user_info.is_vip ? this.orderInfo.total_vip - this.orderInfo.deposit : this.orderInfo.total_amount - this.orderInfo.deposit,
-        })
+        }, this.orderInfo.final_bn_id
+        )
       },
       orderBefore () {
         this.order({
           vip: this.orderInfo.user_info.is_vip ? 1 : 0,
           menber_price: this.orderInfo.user_info.balance ? +this.orderInfo.user_info.balance : 0,
           shop_price: this.orderInfo.deposit ? +this.orderInfo.deposit : 0,
-        })
+        }, this.orderInfo.deposit_bn_id
+        )
       },
-      order(payment_data) {
+      order(payment_data, bnId) {
         if (window.uni) {
           window.uni.navigateTo({
-            url: `../my/payments?data=${this.orderInfo.bn}&shop=${JSON.stringify(payment_data)}`
+            url: `../my/payments?data=${+bnId}&shop=${JSON.stringify(payment_data)}`
           })
         }
       },
