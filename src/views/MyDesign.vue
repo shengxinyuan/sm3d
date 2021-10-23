@@ -75,7 +75,7 @@
         <van-row><van-icon name="delete-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>删除</van-row>
       </van-col>
-      <van-col v-if="hasShare" class="bag-btns__btn bag-btns__share" @click="share">
+      <van-col class="bag-btns__btn bag-btns__share" @click="share">
         <van-row><van-icon name="share-o" color="rgb(193, 177, 138)" size="25"/></van-row>
         <van-row>分享</van-row>
       </van-col>
@@ -177,6 +177,8 @@ export default {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    padding-top: 1px;
   }
 ::v-deep {
   .bag-tab {

@@ -41,7 +41,7 @@
 
 <style lang="scss" scoped>
 .title-bar-box {
-	height: 50px;
+	height: 72px;
   background: #fff;
 }
 .status-bar {

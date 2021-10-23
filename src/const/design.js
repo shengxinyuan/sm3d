@@ -22,13 +22,13 @@ export const colorList = [
     "waste":0.13
 },
 {
-    "color":"244,187,149",
+    "color":"238, 175, 144",
     "density":0.0152,
     "fMetallic":"1",
     "fSmoothness":"0.9",
     "id":3,
     "name":"R18k",
-    "nameCn":"红18K金",
+    "nameCn":"红18K金(改)",
     "parentId":0,
     "price":310,
     "purity":0.76,

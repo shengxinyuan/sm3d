@@ -8,6 +8,7 @@ const getRequest = method => {
   return ({ url, data, options = {}, isForm = true }) => {
     let tokenHeader = {}
     if (window.top.uni && window.top.uni.getStorageSync) {
+      console.log(window.top.uni.getStorageSync('token'));
       tokenHeader.token = window.top.uni.getStorageSync('token')
     }
     return axios({
