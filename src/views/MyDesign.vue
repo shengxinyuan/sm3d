@@ -92,7 +92,7 @@
 export default {
   data () {
     return {
-      hasShare: window.top.uni && window.top.uni.share,
+      hasShare: window.parent.uni && window.parent.uni.share,
       active: 2,
       bottomActive: 0,
       isEmpty: false,
@@ -145,8 +145,8 @@ export default {
       this.$router.push(`/design?bn=${this.currtBn}`)
     },
     share () {
-      if (window.top.uni && window.top.uni.share) {
-        window.top.uni.share({
+      if (window.parent.uni && window.parent.uni.share) {
+        window.parent.uni.share({
           provider: "weixin",
           scene: "WXSceneSession",
           type: 0,
