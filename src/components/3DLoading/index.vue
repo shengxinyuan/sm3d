@@ -10,7 +10,7 @@
       <span></span>
       <span></span>
     </div>
-    <div class="tips">没有一枚钻戒，比亲手设计更有价值和意义。</div>
+    <div class="tips">你的钻戒，我要亲手设计</div>
   </div>
 </template>
 
