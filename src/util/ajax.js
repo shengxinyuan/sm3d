@@ -7,10 +7,11 @@ axios.defaults.baseURL = 'http://zuanshi.nxm.wanheweb.com/';
 const getRequest = method => {
   return ({ url, data, options = {}, isForm = true }) => {
     let tokenHeader = {}
-    console.log(123, window.top, window.top, window.parent === window.parent)
-    if (window.parent.uni && window.parent.uni.getStorageSync) {
-      tokenHeader.token = window.parent.uni.getStorageSync('token')
-    }
+    // console.log(123, window.top, window.top, window.parent === window.parent)
+    // if (window.parent.uni && window.parent.uni.getStorageSync) {
+    //   tokenHeader.token = window.parent.uni.getStorageSync('token')
+    // }
+    tokenHeader = localStorage.getItem('token');
     return axios({
       url,
       method,

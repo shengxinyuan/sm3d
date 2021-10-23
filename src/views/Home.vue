@@ -20,6 +20,11 @@
 export default {
   name: 'Home',
   components: {},
+  created () {
+    if (this.$route.query.token) {
+      localStorage.setItem('token',this.$route.query.token);
+    }
+  },
   methods: {},
 }
 </script>

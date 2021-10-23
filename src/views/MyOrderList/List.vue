@@ -27,6 +27,11 @@ export default {
       page: 1
     }
   },
+  created () {
+    if (this.$route.query.token) {
+      localStorage.setItem('token',this.$route.query.token);
+    };
+  },
   methods: {
     getList() {
       this.$get({
