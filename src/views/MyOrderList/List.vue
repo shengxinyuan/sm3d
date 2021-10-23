@@ -28,8 +28,8 @@ export default {
     }
   },
   created () {
-    if (this.$route.query.token) {
-      localStorage.setItem('token',this.$route.query.token);
+    if (this.$route.query.hasOwnProperty('token')) {
+      localStorage.setItem('token', this.$route.query.token);
     };
   },
   methods: {

@@ -210,8 +210,8 @@ export default {
             if (window.uni) {
               const payment_data = {
                 vip: this.userInfo.is_vip ? 1 : 0,
-                menber_price: +this.userInfo.balance,
-                shop_price: this.ddInfo.deposit
+                menber_price: this.userInfo.balance ? +this.userInfo.balance : 0,
+                shop_price: this.ddInfo.deposit ? +this.ddInfo.deposit : 0
               }
               // 定金支付使用定金bn design_bn
               window.uni.navigateTo({
