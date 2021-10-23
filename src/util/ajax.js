@@ -11,7 +11,7 @@ const getRequest = method => {
     // if (window.parent.uni && window.parent.uni.getStorageSync) {
     //   tokenHeader.token = window.parent.uni.getStorageSync('token')
     // }
-    if (localStorage.getItem('token') && url.includes('jcd.bavlo.com')) {
+    if (localStorage.getItem('token') && !url.includes('jcd.bavlo.com')) {
       tokenHeader.token = localStorage.getItem('token');
     }
     return axios({
