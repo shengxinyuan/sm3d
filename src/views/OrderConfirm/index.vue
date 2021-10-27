@@ -61,34 +61,26 @@
     <section class="order-info-item">
       <div class="flex order-title-cont">
         <van-icon name="gold-coin-o icon-style" />
-        <div class="title flex1">
-          商品总金额
+        <div class="title flex1 fs-18">
+          订单总金额
         </div>
-        <div class="title yellow">
-          ¥{{ddInfo.total_amount}}
+        <div class="title yellow fs-18">
+          ¥ {{ddInfo.total_amount}}
         </div>
       </div>
       <div class="order-info-cont">
-        <div class="flex">
-          <van-icon name="cash-back-record icon-style" />
-          <div class="flex1">定金</div>
-          <div>¥ {{ddInfo.deposit || 0}}</div>
-        </div>
-        <div class="flex pt10">
+        <div class="flex yellow fs-18" v-if="userInfo.is_vip">
           <van-icon name="coupon-o icon-style" />
-          <div class="flex1">定金比例</div>
-          <div>{{ddInfo.deposit_ratio || 0}}%</div>
+          <div class="flex1">VIP优惠</div>
+          <div>- {{ddInfo.total_amount - ddInfo.total_vip || 0}}元</div>
         </div>
-        <div class="flex pt10" v-if="userInfo.is_vip">
+        <div class="flex pt10 fs-18">
           <van-icon name="balance-list-o icon-style" />
-          <div class="flex1">原价</div>
-          <div class="delete">¥ {{ddInfo.total_amount - ddInfo.deposit || 0}}</div>
-        </div>
-        <div class="flex pt10">
-          <van-icon name="balance-list-o icon-style" />
-          <div class="flex1">尾款</div>
-          <div v-if="userInfo.is_vip">¥ {{ddInfo.total_vip  - ddInfo.deposit || 0}}</div>
-          <div v-else>¥ {{ddInfo.total_amount - ddInfo.deposit || 0}}</div>
+          <div class="flex1">支付</div>
+          <div>
+            <span>定金：{{ddInfo.deposit}}元 + </span>
+            <span>尾款：{{userInfo.is_vip ? ddInfo.total_vip  - ddInfo.deposit : ddInfo.total_amount - ddInfo.deposit}}元</span>
+          </div>
         </div>
         <div  class="jump-vip" @click="jumpVip">成为会员，享价格优惠！</div>
       </div>
@@ -140,7 +132,6 @@ export default {
       ddInfo: {
         cost: 0,
         deposit: 0,
-        deposit_ratio: 0,
         total_amount: 0,
         total_vip: 0,
       }
@@ -215,7 +206,7 @@ export default {
               }
               // 定金支付使用定金bn design_bn_id
               window.uni.navigateTo({
-                url: `../my/payments?data=${+res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}`
+                url: `../my/payments?data=${+res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`
               })
             }
           }
@@ -241,6 +232,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.fs-18 {
+  font-size: 18px;
+}
 .order-confirm {
   height: 100%;
   background-color: rgb(60, 60, 68);
@@ -271,9 +265,6 @@ export default {
     .order-title-cont {
       padding: 15px;
       border-bottom: 1px solid rgb(60, 60, 68);
-      .title {
-        font-size:14px;
-      }
     }
     .order-info-cont {
       padding: 15px;

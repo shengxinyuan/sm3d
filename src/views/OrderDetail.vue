@@ -191,7 +191,7 @@ import { statusList, typeList, sfTypeList } from '../const/order'
       order(payment_data, bnId) {
         if (window.uni) {
           window.uni.navigateTo({
-            url: `../my/payments?data=${+bnId}&shop=${JSON.stringify(payment_data)}`
+            url: `../my/payments?data=${+bnId}&shop=${JSON.stringify(payment_data)}&source=3d`
           })
         }
       },
