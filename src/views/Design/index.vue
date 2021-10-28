@@ -204,6 +204,10 @@
           <i class="icon-try"></i>
           <span class="txt">手寸</span>
         </a>
+        <a class="option" @click="tryOn">
+          <i class="icon-try"></i>
+          <span class="txt">试戴</span>
+        </a>
       </div>
       <div class="buy-group">
         <div class="cost">¥ {{ price | formatCost }}</div>
@@ -602,6 +606,33 @@ export default {
       this.getPrice()
     },
 
+    tryOn() {
+      const { webModelPics } = this.$store.state.design;
+      console.log(webModelPics);
+      if (webModelPics && webModelPics.length) {
+        this.hasModeltryOn();
+      } else {
+        this.$store.dispatch('loadModelPicList').then(() => {
+          this.hasModeltryOn();
+        })
+      }
+    },
+
+    hasModeltryOn() {
+      const { webModelPics, userNo } = this.$store.state.design;
+      const state = this.my3d.getTryOnState();
+      if (state === 0) {
+        this.my3d.onWindowResize(0);
+        const nowWebModelPic = webModelPics[0];
+        nowWebModelPic.imgUrl = 'https://design.bavlo.com/WebModelPics/' + userNo + '/' + nowWebModelPic.name;
+        this.my3d.setModelTryonMode(true, nowWebModelPic);
+      } else {
+        this.my3d.setModelTryonMode(false, null);
+        this.my3d.onWindowResize(2);
+      }
+    },
+
+
     // 实时获取金额
     getPrice() {
       const {
@@ -660,7 +691,7 @@ export default {
 }
 
 .web3d-cont {
-  height: calc(100vh - 170px);
+  height: calc(100vh - 270px);
   position: relative;
   #web3d {
     & > div {
@@ -711,6 +742,12 @@ export default {
         height: 32px;
         width: 32px;
         background: url("../../assets/design/mark.png") no-repeat center/100%;
+      }
+      .icon-try {
+        display: block;
+        height: 32px;
+        width: 32px;
+        background: url("../../assets/design/try.png") no-repeat center/100%;
       }
       .icon-try {
         display: block;

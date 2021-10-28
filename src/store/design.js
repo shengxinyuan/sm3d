@@ -280,13 +280,12 @@ export default {
      * 9 获取试戴背景图列表
      */
     loadModelPicList({ commit, state }) {
-      post({
+      return post({
         url: apiUrl + 'app/webModelPicList',
         data: {
           userId: state.userNo,
           desTypeId: state.designInfo.type.id
         },
-        isForm: false
       }).then((data) => {
         if (data.code === 0) {
           const webModelPics = data.list
