@@ -693,7 +693,7 @@ export default {
 }
 
 .web3d-cont {
-  height: calc(100vh - 270px);
+  height: calc(100vh - 268px);
   position: relative;
   #web3d {
     & > div {

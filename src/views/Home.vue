@@ -5,7 +5,7 @@
     <!-- <div class="home-text"></div> -->
     <a href="/design.html"><div class="home-tag"></div></a>
     <a href="/design.html"><div class="home-design"></div></a>
-    <router-link to="/mydesign" tag="a"><div class="home-design">我的设计</div></router-link>
+    <router-link to="/mydesign" tag="a"><div class="home-mydesign"></div></router-link>
     <!-- <router-link to="/mydesign">
       <div class="home-mydesign"></div>
     </a> -->
@@ -67,7 +67,7 @@ export default {
     line-height: 26vw;
   }
   .home-mydesign {
-    background-image: url("https://imgcdn.zbird.com/storage/uploads/images/2021_01_24/WEEipXbENhpRqr2eZBOi4bvr8d3yXaTXtyJLTTuQ.jpeg");
+    background-image: url("../assets/home/bg2.jpeg");
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
