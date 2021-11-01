@@ -54,7 +54,7 @@
             </div>
             <div class="order-cell">
               <span class="order-cell__label">刻字</span>
-              <span class="order-cell__value">{{ksInfo.kz}}</span>
+              <span class="order-cell__value">{{ksInfo.kz || '-'}}</span>
             </div>
           </div>
         </van-tab>
