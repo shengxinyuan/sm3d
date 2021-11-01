@@ -16,7 +16,7 @@
                 </van-row>
               </van-col>
               <van-col span="24">
-                <a href="/design">
+                <a href="/design.html">
                   <van-button type="primary" class="button">去智能定制</van-button>
                 </a>
               </van-col>
@@ -56,9 +56,9 @@
                 </van-row>
               </van-col>
               <van-col span="24">
-                <router-link to="/design">
+                <a to="/design.html">
                   <van-button type="primary" class="button">去智能定制</van-button>
-                </router-link>
+                </a>
               </van-col>
             </van-row>
           </van-tab>
@@ -144,7 +144,7 @@ export default {
         });
     },
     jumpDesign () {
-      this.$router.push(`/design?bn=${this.currtBn}`)
+      location.href = `/design.html?bn=${this.currtBn}`
     },
     share () {
       if (window.parent.uni && window.parent.uni.share) {
@@ -167,7 +167,7 @@ export default {
       }
     },
     jumpOrderConfirm () {
-      this.$router.push(`./orderConfirm?bn=${this.currtBn}`)
+      this.$router.push(`/orderConfirm?bn=${this.currtBn}`)
     }
   }
 }

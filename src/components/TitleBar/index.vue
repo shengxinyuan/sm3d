@@ -28,7 +28,7 @@
     methods: {
       onClickLeft () {
 				if (this.type === 1) {
-        	this.$router.back()
+        	window.history.go(-1)
 				} else if (window.uni.reLaunch) {
 					window.uni.reLaunch({
 						url: '../../pages/index/index'

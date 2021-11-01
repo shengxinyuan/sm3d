@@ -301,12 +301,15 @@ export default {
      * 10 提交设计
      */
     async submitDesign({ commit, state }, { image, bn }) {
-      const { data } = await post({
+      const { data, message } = await post({
         url:'/api/3d/design/upload_image',
         data: {
           base64: image
         }
       })
+      if (!data) {
+        return alert('err： ' + message)
+      }
       const preview_image = data.url
       const {
         mark,

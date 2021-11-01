@@ -129,7 +129,7 @@ export default {
         url += key + '=' + queryObj[key] + '&'
       }
       url = url.slice(0,url.length-1)
-      this.$router.replace(`/design?${url}`)
+      location.href = `/design.html?${url}`
     },
   },
 };
