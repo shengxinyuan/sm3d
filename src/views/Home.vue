@@ -1,16 +1,16 @@
 <template>
   <div class="home">
     <title-bar title="3D设计" :type="2"/>
-    <router-link to="/design" tag="a"><div class="home-banner"></div></router-link>
+    <a href="/design.html"><div class="home-banner"></div></a>
     <!-- <div class="home-text"></div> -->
-    <router-link to="/design" tag="a"><div class="home-tag"></div></router-link>
-    <router-link to="/design" tag="a"><div class="home-design"></div></router-link>
+    <a href="/design.html"><div class="home-tag"></div></a>
+    <a href="/design.html"><div class="home-design"></div></a>
     <router-link to="/mydesign" tag="a"><div class="home-design">我的设计</div></router-link>
     <!-- <router-link to="/mydesign">
       <div class="home-mydesign"></div>
-    </router-link> -->
-    <router-link to="/design" tag="a"><div class="home-se"></div></router-link>
-    <router-link to="/design" tag="a"><div class="home-img"></div></router-link>
+    </a> -->
+    <a href="/design.html"><div class="home-se"></div></a>
+    <a href="/design.html"><div class="home-img"></div></a>
   </div>
 </template>
 
