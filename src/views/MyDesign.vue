@@ -165,7 +165,7 @@ export default {
       }
     },
     jumpOrderConfirm () {
-      this.$router.push(`./orderConfirm?bn=${this.currtBn}`)
+      this.$router.push(`/orderConfirm?bn=${this.currtBn}`)
     }
   }
 }

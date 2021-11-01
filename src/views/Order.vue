@@ -215,13 +215,12 @@ export default {
       this.show = !this.show
     },
     buy () {
-      this.$router.push(`./orderConfirm?bn=${this.bn}`)
+      this.$router.push(`/orderConfirm?bn=${this.bn}`)
     },
     handleOpen () {
       this.curTitle = this.title
     },
     handleConfirm () {
-      console.log(this.curTitle)
       this.title = this.curTitle
       this.$post({
         url: '/api/3d/saveDesign',
@@ -239,7 +238,6 @@ export default {
         }
       }).then((res) => {
         this.$toast.fail('保存成功')
-        // this.$router.push('./mydesign')
       }).catch(() => {
         this.$toast.fail('保存失败')
       })

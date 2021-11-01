@@ -465,9 +465,11 @@ export default {
             bn: this.design_bn,
           })
           .then(({ data }) => {
-            console.log(data);
-            location.href = '/order/?bn=${data}'
-          });
+            location.href = `/order/?bn=${data}`
+          })
+          .catch(({ message }) => {
+            Toast
+          })
       }, 300);
     },
 
