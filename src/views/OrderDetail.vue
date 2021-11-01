@@ -166,9 +166,11 @@ import { statusList, typeList, sfTypeList } from '../const/order'
             data: {
               order_bn: this.$route.query.bn
             }
-          }).then(({ status, data }) => {
+          }).then(({ status, data, message }) => {
             if (status === 1) {
               this.orderInfo = data
+            } else {
+              this.$toast.fail(message || '获取数据失败')
             }
           }).catch(() => {})
       },

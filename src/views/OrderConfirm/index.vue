@@ -158,28 +158,32 @@ export default {
         })
       ])
         .then((res) => {
-          const { data } = res[0]
-          const { data: ddData } = res[1]
-          this.preview_image = data.preview_image
-          if (this.preview_image && this.preview_image.startsWith('uploads')) {
-            this.preview_image = '' + this.preview_image
+          if (res.status == 1) {
+            const { data } = res[0]
+            const { data: ddData } = res[1]
+            this.preview_image = data.preview_image
+            if (this.preview_image && this.preview_image.startsWith('uploads')) {
+              this.preview_image = '' + this.preview_image
+            }
+            if (data.title) {
+              this.name = data.title
+            }
+            this.ksInfo.sc = data.ring_size
+            this.ksInfo.kz = data.ring_print
+            this.ksInfo.ht = data.flower_head_id
+            this.ksInfo.jb = data.ring_arm_id
+            this.zsInfo.zs = data.diamond_id
+            this.ddInfo = ddData
+            this.userInfo.balance = ddData.user_info.balance
+            this.userInfo.is_vip = ddData.user_info.is_vip
+            colorList.forEach(item => {
+                if (item.id === data.texture_id) {
+                  this.ksInfo.cz = item.nameCn
+                }
+            });
+          } else {
+            this.$toast.fail(res.message || '获取数据失败')
           }
-          if (data.title) {
-            this.name = data.title
-          }
-          this.ksInfo.sc = data.ring_size
-          this.ksInfo.kz = data.ring_print
-          this.ksInfo.ht = data.flower_head_id
-          this.ksInfo.jb = data.ring_arm_id
-          this.zsInfo.zs = data.diamond_id
-          this.ddInfo = ddData
-          this.userInfo.balance = ddData.user_info.balance
-          this.userInfo.is_vip = ddData.user_info.is_vip
-          colorList.forEach(item => {
-          if (item.id === data.texture_id) {
-            this.ksInfo.cz = item.nameCn
-          }
-        });
         }).catch((res) => {
           this.$toast.fail('获取数据失败')
         })
@@ -209,6 +213,8 @@ export default {
                 url: `../my/payments?data=${+res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`
               })
             }
+          } else {
+            this.$toast.fail(res.message || '提交订单失败')
           }
         }).catch(() => {
           this.$toast.fail('提交订单失败')

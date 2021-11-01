@@ -187,6 +187,8 @@ export default {
         }).then((res) => {
           if (res.status === 1) {
             this.price = res.data.price
+          } else {
+            this.$toast.fail(res.message || '获取数据失败，请稍后重试')
           }
         })
 

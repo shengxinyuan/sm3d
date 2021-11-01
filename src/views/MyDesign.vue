@@ -135,6 +135,8 @@ export default {
             if (res.status == '1') {
               this.loadList()
               this.$toast.success('删除成功')
+            } else {
+              this.$toast.fail(res.message || '删除失败，请稍后重试')
             }
           }).catch(() => {
             this.$toast.fail('删除失败')
