@@ -413,22 +413,39 @@ export default {
       // 加载3D第五步：加载款式3D
       this.my3d.loadVarDesign(designInfo, mainPartId, partId.toString());
 
+      this.loaded();
+
+    },
+
+    // 加载完
+    loaded() {
       setTimeout(() => {
-        // 设置材质
-        this.loading = false
-        this.changeMetalId(metalId);
-        // 设置角度
-        this.my3d.changeCameraPos(false, -45, 85, -65);
-        
-      }, 3000);
+        console.log(123);
+        if (this.my3d.getLoadModelState() !== 2) {
+          this.loaded()
+        } else {
+          const { metalId } = this.$store.state.design;
+          // 设置材质
+          this.loading = false
+          
+          // 设置角度
+          this.my3d.changeCameraPos(false, -45, 85, -65);
+
+          // 设置材质
+          setTimeout(() => {
+            this.changeMetalId(metalId);
+          }, 1000)
+        }
+      }, 1000);
     },
 
     /**
      * 确认设计
      */
-    confirmDesign() {
+    async confirmDesign() {
       const { currentHandInch, diamondId } = this.$store.state.design;
 
+      // 未选择手寸
       if (!currentHandInch) {
         this.$dialog
           .alert({
@@ -441,6 +458,7 @@ export default {
         return;
       }
 
+      // 未选择钻石
       if (!diamondId) {
         this.$dialog
           .alert({
@@ -452,25 +470,35 @@ export default {
           });
         return;
       }
+
+      // 是否在试戴中
+      const state = this.my3d.getTryOnState();
+      if (state !== 0) {
+        this.my3d.setModelTryonMode(false, null);
+        this.my3d.onWindowResize(2);
+      }
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // 设置固定角度
       this.loading = true;
       this.my3d.changeBackground('72,72,79');
       this.my3d.changeCameraPos(false, -45, 85, -65);
 
-      setTimeout(() => {
-        const canvas = document.querySelector('#mainCanvas')
-        this.imgUrl = this.my3d.getDesignImage(canvas.offsetWidth * 2, canvas.offsetHeight * 2);
-        this.$store
-          .dispatch('submitDesign', {
-            image: this.imgUrl,
-            bn: this.design_bn,
-          })
-          .then(({ data }) => {
-            location.href = `/order/?bn=${data}`
-          })
-          .catch(({ message }) => {
-            Toast
-          })
-      }, 300);
+      // 截图
+      await new Promise(resolve => setTimeout(resolve, 200));
+      const canvas = document.querySelector('#mainCanvas')
+      this.imgUrl = this.my3d.getDesignImage(canvas.offsetWidth * 2, canvas.offsetHeight * 2);
+      this.$store
+        .dispatch('submitDesign', {
+          image: this.imgUrl,
+          bn: this.design_bn,
+        })
+        .then(({ data }) => {
+          location.href = `/order/?bn=${data}`
+        })
+        .catch(({ message }) => {
+          Toast
+        })
     },
 
     /**
@@ -498,11 +526,6 @@ export default {
 
       location.href = `/diamondList/?backUrl=${encodeURIComponent(url)}`
     },
-
-    /**
-     * 试戴 todo
-     */
-    tryOn() {},
 
     /**
      * 保存刻印
@@ -608,9 +631,11 @@ export default {
       this.getPrice()
     },
 
+    /**
+     * 试戴 todo
+     */
     tryOn() {
       const { webModelPics } = this.$store.state.design;
-      console.log(webModelPics);
       if (webModelPics && webModelPics.length) {
         this.hasModeltryOn();
       } else {
@@ -693,7 +718,7 @@ export default {
 }
 
 .web3d-cont {
-  height: calc(100vh - 268px);
+  height: calc(100vh - 275px);
   position: relative;
   #web3d {
     & > div {

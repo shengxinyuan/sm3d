@@ -429,6 +429,7 @@ export default {
     confirmDesign() {
       const { currentHandInch, diamondId } = this.$store.state.design;
 
+      // 未选择手寸
       if (!currentHandInch) {
         this.$dialog
           .alert({
@@ -441,6 +442,7 @@ export default {
         return;
       }
 
+      // 未选择钻石
       if (!diamondId) {
         this.$dialog
           .alert({
@@ -452,11 +454,24 @@ export default {
           });
         return;
       }
+
+      // 是否在试戴中
+      const state = this.my3d.getTryOnState();
+      console.log(12312312,state);
+      if (state !== 0) {
+        this.my3d.setModelTryonMode(false, null);
+        this.my3d.onWindowResize(2);
+      }
+
+      return
+
+      // 设置固定角度
       this.loading = true;
       this.my3d.changeBackground('72,72,79');
       this.my3d.changeCameraPos(false, -45, 85, -65);
 
       setTimeout(() => {
+        // 截图
         const canvas = document.querySelector('#mainCanvas')
         this.imgUrl = this.my3d.getDesignImage(canvas.offsetWidth * 2, canvas.offsetHeight * 2);
         this.$store
