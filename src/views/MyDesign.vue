@@ -29,8 +29,7 @@
                     <div class="design-img" :style="{ backgroundImage: 'url(' + item.preview_image +'',}"></div>
                   </van-col>
                   <van-col span="24" class="bag-list__p">
-                    <p class="bag-list__p--top">{{item.title}}</p>
-                    <p class="bag-list__p--middle">{{item.ring_print}}</p>
+                    <p class="bag-list__p--top">方案名称：{{item.title}}</p>
                     <!-- <p class="bag-list__p--bottom">{{item.money}}</p> -->
                   </van-col>
                 </van-swipe-item>

@@ -200,7 +200,7 @@
           <i class="icon-mark"></i>
           <span class="txt">印记</span>
         </a>
-        <a class="option" @click="() => (handPicker = true)">
+        <a class="option" @click="openHandInch">
           <i class="icon-try"></i>
           <span class="txt">手寸</span>
         </a>
@@ -217,9 +217,12 @@
 
     <van-popup v-model="handPicker" round position="bottom">
       <van-picker
+        ref="picker"
         show-toolbar
-        default-index="8"
-        :columns="handInch"
+        :columns="[{
+          values: handInch,
+          defaultIndex: 8
+        }]"
         @cancel="handPicker = false"
         @confirm="changeHandInch"
       />
@@ -307,7 +310,7 @@ export default {
           } = res.data
 
           this.getDiamond(diamond_id)
-          console.log({
+          console.log('detail',{
             partId: partId || flower_head_id,
             mainPartId: mainPartId || ring_arm_id,
             metalId: metalId || texture_id,
@@ -420,7 +423,6 @@ export default {
     // 加载完
     loaded() {
       setTimeout(() => {
-        console.log(123);
         if (this.my3d.getLoadModelState() !== 2) {
           this.loaded()
         } else {
@@ -432,9 +434,11 @@ export default {
           this.my3d.changeCameraPos(false, -45, 85, -65);
 
           // 设置材质
-          setTimeout(() => {
-            this.changeMetalId(metalId);
-          }, 1000)
+          this.changeMetalId(metalId);
+
+          if (this.mark) {
+            this.my3d.printUserTextOfLayer(940, this.mark)
+          }
         }
       }, 1000);
     },
@@ -497,7 +501,7 @@ export default {
           location.href = `/order/?bn=${data}`
         })
         .catch(({ message }) => {
-          Toast
+          console.log(message);
         })
     },
 
@@ -558,12 +562,30 @@ export default {
      * @param handInch
      */
     changeHandInch(handInch) {
+      console.log('handInch',handInch);
       this.$store.commit('setState', {
-        currentHandInch: handInch,
+        currentHandInch: handInch[0],
       });
       this.handPicker = false;
 
       this.getPrice()
+    },
+
+    // 打开手寸
+    openHandInch() {
+      this.handPicker = true;
+      const { currentHandInch } = this.$store.state.design;
+      this.$nextTick(() => {
+        if (currentHandInch) {
+          let index = 8;
+          handInch.forEach((item, i) => {
+            if (+item === +currentHandInch) {
+              index = i
+            }
+          })
+          this.$refs.picker.setIndexes([index])
+        }
+      })
     },
 
     /**
@@ -626,6 +648,7 @@ export default {
       this.$store.commit('setState', {
         metalId,
       });
+      
       // 金属图层
       material && this.my3d.customizeMetalClass('金属图层', material);
       this.getPrice()

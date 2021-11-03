@@ -2,7 +2,7 @@ export const baseUrl = ''
 export const apiUrl = 'https://jcd.bavlo.com/manage/'
 export const resourceDomainName = 'https://design.bavlo.com/'
 export const normalMapUrl = resourceDomainName + 'NormalFiles/'
-export const handInch = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24']
+export const handInch = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20']
 
 export const colorList = [
 {
@@ -42,7 +42,7 @@ export const colorList = [
   "fSmoothness":"0.9",
   "id":1,
   "name":"Y18k",
-  "nameCn":"黄18K金(改)",
+  "nameCn":"黄18K金",
   "parentId":0,
   "price":310,
   "purity":0.76,

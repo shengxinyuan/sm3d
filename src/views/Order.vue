@@ -132,7 +132,7 @@ export default {
       ksInfo: {
         sc: 0,
         cz: '',
-        cz_id: 2,
+        cz_id: '',
         jb: '',
         ht: '',
         fs: '',
@@ -167,6 +167,7 @@ export default {
         this.ksInfo.kz = data.ring_print
         this.ksInfo.ht = data.flower_head_id
         this.ksInfo.jb = data.ring_arm_id
+        this.ksInfo.cz_id = data.texture_id
 
         this.zsInfo = data.diamond_info
         colorList.forEach(item => {
