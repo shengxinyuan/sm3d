@@ -158,7 +158,7 @@ export default {
         })
       ])
         .then((res) => {
-          if (res.status == 1) {
+          if (res[0].status == 1 && res[1].status == 1) {
             const { data } = res[0]
             const { data: ddData } = res[1]
             this.preview_image = data.preview_image
