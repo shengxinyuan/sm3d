@@ -201,7 +201,7 @@
           <span class="txt">印记</span>
         </a>
         <a class="option" @click="openHandInch">
-          <i class="icon-try"></i>
+          <i class="icon-hand"></i>
           <span class="txt">手寸</span>
         </a>
         <a class="option" @click="tryOn">
@@ -799,11 +799,11 @@ export default {
         width: 32px;
         background: url("../assets/design/try.png") no-repeat center/100%;
       }
-      .icon-try {
+      .icon-hand {
         display: block;
         height: 32px;
         width: 32px;
-        background: url("../assets/design/try.png") no-repeat center/100%;
+        background: url("../assets/design/hand.png") no-repeat center/100%;
       }
       .txt {
         margin: 4px 0 10px;
