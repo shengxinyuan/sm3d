@@ -1,6 +1,6 @@
 <template>
   <div class="order-list">
-    <title-bar title="我的3D定制订单" />
+    <title-bar title="我的3D定制订单" :type="2"/>
     <van-list
       v-model="loading"
       :finished="finished"

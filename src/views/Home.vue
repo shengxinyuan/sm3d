@@ -1,12 +1,12 @@
 <template>
   <div class="home">
     <title-bar title="3D设计" :type="2"/>
-    <a href="/design.html"><div class="home-banner"></div></a>
-    <a href="/design.html"><div class="home-tag"></div></a>
-    <a href="/design.html"><div class="home-design"></div></a>
-    <router-link to="/mydesign" tag="a"><div class="home-mydesign"></div></router-link>
-    <a href="/design.html"><div class="home-se"></div></a>
-    <a href="/design.html"><div class="home-img"></div></a>
+    <div class="home-banner"></div>
+    <div class="home-tag"></div>
+    <div class="home-design" @click="goDesign"></div>
+    <div class="home-mydesign" @click="goMyDesign"></div>
+    <div class="home-se"></div>
+    <div class="home-img"></div>
   </div>
 </template>
 
@@ -16,12 +16,32 @@
 export default {
   name: 'Home',
   components: {},
+  data() {
+    return {
+      num: 0
+    }
+  },
   created () {
     if (this.$route.query.hasOwnProperty('token')) {
       localStorage.setItem('token',this.$route.query.token);
     }
   },
-  methods: {},
+  methods: {
+    goDesign() {
+      this.check()
+      if (this.num < 10) return
+      location.href = '/design.html'
+    },
+    goMyDesign() {
+      this.check()
+      if (this.num < 10) return
+      this.$router.push('/mydesign')
+    },
+    check() {
+      this.num++;
+      this.$toast.success('暂未开放功能，敬请期待！')
+    }
+  },
 }
 </script>
 
