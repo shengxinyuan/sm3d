@@ -1,16 +1,15 @@
 import axios from 'axios'
 import { stringify } from 'qs'
 
-axios.defaults.baseURL = 'http://zuanshi.nxm.wanheweb.com/';
-// axios.defaults.baseURL = 'http://zuanshi.dis.wanheweb.com/';
+// 正式环境是dis 其他都是nxm
+const host = location.host.includes('zuanshi.dis.wanheweb.com') ? 'http://zuanshi.dis.wanheweb.com/' : 'http://zuanshi.nxm.wanheweb.com/'
+
+axios.defaults.baseURL = host;
 
 const getRequest = method => {
   return ({ url, data, options = {}, isForm = true }) => {
     let tokenHeader = {}
-    // console.log(123, window.top, window.top, window.parent === window.parent)
-    // if (window.parent.uni && window.parent.uni.getStorageSync) {
-    //   tokenHeader.token = window.parent.uni.getStorageSync('token')
-    // }
+
     if (localStorage.getItem('token') && !url.includes('jcd.bavlo.com')) {
       tokenHeader.token = localStorage.getItem('token');
     }

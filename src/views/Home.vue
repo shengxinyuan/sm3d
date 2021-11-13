@@ -1,17 +1,14 @@
 <template>
   <div class="home">
     <title-bar title="3D设计" :type="2"/>
-    <div class="home-banner"></div>
-    <div class="home-tag"></div>
-    <div class="home-design" @click="goDesign"></div>
-    <div class="home-mydesign" @click="goMyDesign"></div>
-    <div class="home-se"></div>
-    <div class="home-img"></div>
+    <img class="bg" src="https://img.alicdn.com/imgextra/i2/O1CN01dJSghE1EbxeleU7et_!!6000000000371-0-tps-1181-1505.jpg" alt="">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN01wpcP3V1LHzhiI3sFa_!!6000000001275-0-tps-1181-299.jpg" alt="" @click="goDesign">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN010zvOy524FO9yVUlmn_!!6000000007361-0-tps-1181-311.jpg" alt="" @click="goMyDesign">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN01RKzJpt1DNTW8q5Y8f_!!6000000000204-0-tps-1181-1319.jpg" alt="">
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
 
 export default {
   name: 'Home',
@@ -49,62 +46,11 @@ export default {
 .home {
   overflow-y: auto;
   max-height: 100vh;
-  .home-banner {
-    background-image: url("https://imgcdn.zbird.com/storage/uploads/images/2021_01_27/Q3EIUIX6sA8842U9hnWJJWESRL9cSUfSLCf5CR3U.jpeg");
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 100vw;
-  }
-  .home-text {
-    background-image: url("https://imgcdn.zbird.com/storage/uploads/images/2021_01_24/HOg7MurhDfOf5ux6yXyIiI1tA71hoA1h0IbT6iZW.jpeg");
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 14.5vw;
-  }
-  .home-tag {
-    background-image: url("https://imgcdn.zbird.com/storage/uploads/images/2021_01_24/HmeWgmB87x1bZcBd8WxY69HhTusL7TBlxQlPauEh.jpeg");
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 15.5vw;
-  }
-  .home-design {
-    background-image: url("https://imgcdn.zbird.com/storage/uploads/images/2021_01_24/3FHglq6qUqIlfLKF95ZedwP6WoEuyLXQomIgvFGf.jpeg");
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 26vw;
-    line-height: 26vw;
-  }
-  .home-mydesign {
-    background-image: url("../assets/home/bg2.jpeg");
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 26vw;
-  }
-  .home-se {
-    background-image: url("https://imgcdn.zbird.com/storage/uploads/images/2021_01_24/ZzceWXmABJMMMlnFX5uwxh8al8ynTLSYCEQykdhx.jpeg");
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 14vw;
-  }
-  .home-img {
-    background-image: url("https://imgcdn.zbird.com/storage/uploads/images/2021_08_09/Fah6VrFMSxh7ZgCCY8gUbRHBDO2sBy0RjfV2amHU.jpeg");
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100vw;
-    height: 97vw;
+  .bg {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
   }
 }
 </style>
