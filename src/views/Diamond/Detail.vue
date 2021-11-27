@@ -121,15 +121,19 @@ export default {
   },
   methods: {
     confirm() {
-      const backUrl = decodeURIComponent(this.$route.query.backUrl)
-      const queryObj = urlParse(backUrl)
-      queryObj.diamondId = this.$route.query.id
-      let url = ''
-      for(let key in queryObj) {
-        url += key + '=' + queryObj[key] + '&'
+      if (this.$route.query.source === 'buy') {
+        this.$router.push(`/orderConfirm?diamond_id=${this.$route.query.id}`)
+      } else {
+        const backUrl = decodeURIComponent(this.$route.query.backUrl)
+        const queryObj = urlParse(backUrl)
+        queryObj.diamondId = this.$route.query.id
+        let url = ''
+        for(let key in queryObj) {
+          url += key + '=' + queryObj[key] + '&'
+        }
+        url = url.slice(0,url.length-1)
+        location.href = `/design.html?${url}`
       }
-      url = url.slice(0,url.length-1)
-      location.href = `/design.html?${url}`
     },
   },
 };

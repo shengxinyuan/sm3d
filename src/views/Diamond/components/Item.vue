@@ -57,7 +57,16 @@ export default {
   computed: {},
   methods: {
     detail(id) {
-      this.$router.push(`/diamondDetail?backUrl=${encodeURIComponent(getUrlParam('backUrl'))}&id=${id}`)
+      let backUrl = getUrlParam('backUrl') || ''
+      let source = getUrlParam('source') || ''
+      if (backUrl) {
+        backUrl = `&backUrl=${encodeURIComponent(backUrl)}`
+      }
+      if (source) {
+        source = `&source=${source}`
+      }
+      
+      this.$router.push(`/diamondDetail?id=${id}${backUrl}${source}`)
     },
   },
 };

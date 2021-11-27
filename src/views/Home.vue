@@ -4,6 +4,7 @@
     <img class="bg" src="https://img.alicdn.com/imgextra/i2/O1CN01dJSghE1EbxeleU7et_!!6000000000371-0-tps-1181-1505.jpg" alt="">
     <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN01wpcP3V1LHzhiI3sFa_!!6000000001275-0-tps-1181-299.jpg" alt="" @click="goDesign">
     <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN010zvOy524FO9yVUlmn_!!6000000007361-0-tps-1181-311.jpg" alt="" @click="goMyDesign">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i1/O1CN01JbD8qj1hSSITIqtJz_!!6000000004276-0-tps-1181-311.jpg" alt="" @click="buyDiamond">
     <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN01RKzJpt1DNTW8q5Y8f_!!6000000000204-0-tps-1181-1319.jpg" alt="">
   </div>
 </template>
@@ -33,6 +34,11 @@ export default {
       this.check()
       if (this.num < 10) return
       this.$router.push('/mydesign')
+    },
+    buyDiamond() {
+      this.check()
+      if (this.num < 10) return
+      this.$router.push('/diamondList?source=buy')
     },
     check() {
       this.num++;
