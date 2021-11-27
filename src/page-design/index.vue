@@ -40,11 +40,21 @@
           @click="() => (designTab = 3)"
           >戒托材质</a
         >
+        <a
+          :class="designTab === 4 ? 'active' : ''"
+          @click="
+            () => {
+              designTab = 4;
+              edit3dPartType = 4;
+            }
+          "
+          >固定款式</a
+        >
       </div>
       <div class="design-tabs-cont">
         <div class="list" v-if="designTab === 1">
           <div
-            :class="$store.state.design.partId === v.id ? 'active' : ''"
+            :class="!isFixedDesign && $store.state.design.partId === v.id ? 'active' : ''"
             class="item"
             v-for="(v, i) in $store.state.design.parts"
             :key="i"
@@ -72,7 +82,7 @@
         </div>
         <div class="list" v-if="designTab === 2">
           <div
-            :class="$store.state.design.mainPartId === v.id ? 'active' : ''"
+            :class="!isFixedDesign && $store.state.design.mainPartId === v.id ? 'active' : ''"
             class="item"
             v-for="(v, i) in $store.state.design.mainParts"
             :key="i"
@@ -124,6 +134,34 @@
               ></i>
             </div>
             <div class="txt">{{ v.nameCn }}</div>
+          </div>
+        </div>
+        <div class="list" v-if="designTab === 4">
+          <div
+            :class="isFixedDesign && $store.state.design.fixedDesignId === v.id ? 'active' : ''"
+            class="item"
+            v-for="(v, i) in $store.state.design.fixedDesignList"
+            :key="i"
+            @click="
+              () => {
+                changeFixedDesignId(v.id);
+              }
+            "
+          >
+            <div class="img-box">
+              <i class="img-border" />
+              <i
+                class="main-parts-img img"
+                :style="{
+                  backgroundImage:
+                    'url(' +
+                    'https://design.bavlo.com/design/' +
+                    v.id +
+                    '/web.png!600',
+                }"
+              ></i>
+            </div>
+            <div class="txt">款式{{ i | formatIndex }}</div>
           </div>
         </div>
       </div>
@@ -266,7 +304,10 @@ export default {
       design_bn: '',
 
       // price
-      price: '-'
+      price: '-',
+
+      // 是否是固定款
+      isFixedDesign: false,
     };
   },
   computed: {},
@@ -284,6 +325,7 @@ export default {
       this.$store.dispatch('loadMetalWeb'),
       this.$store.dispatch('loadGemList'),
       this.$store.dispatch('loadGemWeb'),
+      this.$store.dispatch('loadFixedDesignList'),
     ]).then(() => {
       console.log('mounted -> data loaded -> init3D');
 
@@ -372,54 +414,78 @@ export default {
         }
       }
     },
-    // 初始化3D
+    // 切换前的清理工作
+    clearAndPrepare3D() {
+      if (this.__pre_isFixedDesign == null || this.isFixedDesign !== this.__pre_isFixedDesign) {
+        if (this.my3d && this.my3d) {
+          this.my3d.onClose();
+        }
+        document.querySelector('#web3d').innerHTML = '';
+
+        const {
+          metalWeb,
+          metalWebDefault,
+          gemWeb,
+          gemWebDefault,
+        } = this.$store.state.design;
+
+        // 加载3D第一步：初始化3D场景
+        this.my3d = Bavlo.initWeb3D(
+          baseUrl,
+          'web3d',
+          false,
+          resourceDomainName,
+          // false
+          // 是否是固定搭配
+          this.isFixedDesign
+        );
+
+        // 加载3D第二步：定义3D窗口尺寸
+        this.my3d.onWindowResize(2);
+        window.onresize = () => {
+          this.my3d.onWindowResize(2);
+        };
+
+        // 加载3D第三步：初始化web材质
+        this.my3d.initUserMatInfo(
+          metalWebDefault,
+          metalWeb,
+          gemWebDefault,
+          gemWeb
+        );
+
+        // 加载3D第四步：设置3D场景背景色
+        this.my3d.changeBackground('37,37,42');
+      }
+      this.__pre_isFixedDesign = this.isFixedDesign;
+    },
+    // 初始化定制款3D
     async init3D() {
+      this.isFixedDesign = false;
+      this.clearAndPrepare3D();
+
       const {
         designInfo,
         partId,
         mainPartId,
-        metalWeb,
-        metalWebDefault,
-        gemWeb,
-        gemWebDefault,
-        metalId,
       } = this.$store.state.design;
-
-      console.log('partId', partId);
-
-      // 加载3D第一步：初始化3D场景
-      this.my3d = Bavlo.initWeb3D(
-        baseUrl,
-        'web3d',
-        false,
-        resourceDomainName,
-        false
-      );
-
-      // 加载3D第二步：定义3D窗口尺寸
-      this.my3d.onWindowResize(2);
-      window.onresize = () => {
-        this.my3d.onWindowResize(2);
-      };
-
-      // 加载3D第三步：初始化web材质
-      this.my3d.initUserMatInfo(
-        metalWebDefault,
-        metalWeb,
-        gemWebDefault,
-        gemWeb
-      );
-
-      // 加载3D第四步：设置3D场景背景色
-      this.my3d.changeBackground('37,37,42');
 
       // 加载3D第五步：加载款式3D
       this.my3d.loadVarDesign(designInfo, mainPartId, partId.toString());
 
       this.loaded();
-
     },
 
+    // 初始化固定款3D
+    async initFixedDesign3D(fixedDesign) {
+      this.isFixedDesign = true;
+      this.clearAndPrepare3D();
+
+      // 加载3D第五步：加载款式3D
+      this.my3d.loadDesign(fixedDesign);
+
+      this.loaded();
+    },
     // 加载完
     loaded() {
       setTimeout(() => {
@@ -593,16 +659,18 @@ export default {
      * @param partId
      */
     changePartId(partId) {
-      console.log('partId', partId);
-      let loadState = this.my3d.getLoadModelState();
-      if (loadState == 2) {
-        this.my3d.switchPart(this.edit3dPartType, Number(partId));
-        this.$store.commit('setState', {
-          partId,
-        });
-      }
+      this.checkFromFixedDesign().then(() => {
+        console.log('partId', partId);
+        let loadState = this.my3d.getLoadModelState();
+        if (loadState == 2) {
+          this.my3d.switchPart(this.edit3dPartType, Number(partId));
+          this.$store.commit('setState', {
+            partId,
+          });
+        }
 
-      this.getPrice()
+        this.getPrice()
+      })
     },
 
     /**
@@ -610,25 +678,27 @@ export default {
      * @param mainPartId
      */
     changeMainPartId(mainPartId) {
-      console.log('mainPartId', mainPartId);
-      let loadState = this.my3d.getLoadModelState();
-      if (loadState == 2) {
-        this.my3d.switchPart(this.edit3dPartType, Number(mainPartId));
-        this.$store.commit('setState', {
-          mainPartId,
-        });
+      this.checkFromFixedDesign().then(() => {
+        console.log('mainPartId', mainPartId);
+        let loadState = this.my3d.getLoadModelState();
+        if (loadState == 2) {
+          this.my3d.switchPart(this.edit3dPartType, Number(mainPartId));
+          this.$store.commit('setState', {
+            mainPartId,
+          });
 
-        setTimeout(() => {
-          if (this.mark) {
-            this.my3d.printUserTextOfLayer(940, this.mark)
-            setTimeout(() => {
-              this.my3d.setRotationState(true);
-            }, 200)
-          }
-        }, 1000);
-      }
+          setTimeout(() => {
+            if (this.mark) {
+              this.my3d.printUserTextOfLayer(940, this.mark)
+              setTimeout(() => {
+                this.my3d.setRotationState(true);
+              }, 200)
+            }
+          }, 1000);
+        }
 
-      this.getPrice()
+        this.getPrice()
+      })
     },
     /**
      * 切换材料
@@ -648,10 +718,59 @@ export default {
       this.$store.commit('setState', {
         metalId,
       });
-      
+
+      let name = '金属图层';
+      if (this.isFixedDesign) {
+        const cus = this.my3d.getCustomization()
+        const target = cus.find((c) => (/^Metal/i).test(c.name))
+        if (target) {
+          name = target.name
+        }
+      }
+
       // 金属图层
-      material && this.my3d.customizeMetalClass('金属图层', material);
+      material && this.my3d.customizeMetalClass(name, material);
       this.getPrice()
+    },
+
+    /**
+     * 检查是否从固定款切换而来
+     */
+    async checkFromFixedDesign() {
+      return new Promise((resolve, reject) => {
+        if (this.isFixedDesign) {
+          this.$dialog.confirm({
+            title: '提示',
+            message: '是否以当前设计款式覆盖固定款式方案？',
+          })
+            .then(() => {
+              this.init3D()
+              resolve()
+            }).catch(reject);
+        }
+        resolve()
+      })
+    },
+
+    /**
+     * 切换固定款
+     * @param fixedDesignId
+     */
+    changeFixedDesignId(fixedDesignId) {
+      this.$dialog.confirm({
+        title: '提示',
+        message: '是否以当前固定款式覆盖设计款式方案？',
+      })
+        .then(async () => {
+          this.$store.commit('setState', {
+            fixedDesignId,
+          });
+          this.$store.dispatch('getFixedDesignInfo', { designId: fixedDesignId })
+            .then((fixedDesign) => {
+              fixedDesign && this.initFixedDesign3D(fixedDesign);
+              this.getPrice()
+            });
+        });
     },
 
     /**
@@ -720,6 +839,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep {
+  canvas {
+    background: rgb(37, 37, 42) !important;
+  }
+}
 .design {
   height: 100vh;
   position: relative;
@@ -727,7 +851,7 @@ export default {
   overflow: hidden;
   color: #fff;
   background: rgb(37, 37, 42);
-  
+
   .img2 {
     position: absolute;
     left: 0;

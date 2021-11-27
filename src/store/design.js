@@ -26,6 +26,9 @@ export default {
     diamondInfo: {},
     // 设计标题
     title: '',
+    // 固定款
+    fixedDesignList: [],
+    fixedDesignId: '',
 
     otherGems: [],
     metalWeb: [],
@@ -404,6 +407,69 @@ export default {
         }
       })
     },
+
+    /**
+     * 14 获取固定款列表
+     */
+    loadFixedDesignList({ commit, state }) {
+      return post({
+        url: apiUrl + 'app/designList',
+        data: {
+          userId: state.userNo,
+          loadType: 1,
+          dgpage: 1,
+          rows: 200,
+        },
+      }).then((data) => {
+        if (data.code === 0) {
+          const fixedDesignList = data.list
+          commit('setState', { fixedDesignList })
+        } else {
+          myAlert('数据加载失败！', 'alert-danger')
+        }
+      })
+    },
+
+    /**
+     * 15 获取固定款信息
+     */
+    getFixedDesignInfo({ commit, state }, { designId }) {
+      const {
+        fixedDesignList
+      } = state
+      let fixedDesign;
+      fixedDesignList.forEach((item) => {
+        if (+item.id === +designId) {
+          fixedDesign = item;
+        }
+      });
+
+      if (fixedDesign && fixedDesign.layers) {
+        return fixedDesign;
+      }
+
+      return post({
+        url: apiUrl + 'app/designLayerInfo',
+        data: {
+          designId
+        }
+      }).then((data) => {
+        if (data.code === 0) {
+          fixedDesign = data.designInfo
+          const newFixedDesignList = fixedDesignList.map((item) => {
+            if (+item.id === +designId) {
+              return { ...item, ...data.designInfo }
+            }
+            return item;
+          })
+          commit('setState', { fixedDesignList: newFixedDesignList })
+          return fixedDesign;
+        } else {
+          myAlert('数据加载失败！', 'alert-danger')
+        }
+      })
+    },
+    
 
   }
 }
