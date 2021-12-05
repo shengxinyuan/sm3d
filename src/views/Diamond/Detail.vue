@@ -122,7 +122,7 @@ export default {
   methods: {
     confirm() {
       if (this.$route.query.source === 'buy') {
-        this.$router.push(`/orderConfirm?diamond_id=${this.$route.query.id}`)
+        this.$router.push(`/orderConfirm?diamond_id=${this.$route.query.id}&good_type=4`)
       } else {
         const backUrl = decodeURIComponent(this.$route.query.backUrl)
         const queryObj = urlParse(backUrl)

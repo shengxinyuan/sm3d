@@ -27,26 +27,12 @@
         <div>
           <div class="design-img" :style="{ backgroundImage: 'url(' + preview_image +'',}"></div>
         </div>
-        <div class="order-cell">
-          <span class="order-cell__label">款式：</span>
-          <span class="order-cell__value">{{ksInfo.ks}}</span>
+        
+        <div class="order-cell" v-for="(item, index) in infoList" :key="index">
+          <span class="order-cell__label">{{ item.label }}</span>
+          <span class="order-cell__value">{{ item.value }}</span>
         </div>
-        <div class="order-cell">
-          <span class="order-cell__label">材质：</span>
-          <span class="order-cell__value">{{ksInfo.cz}}</span>
-        </div>
-        <div class="order-cell" v-if="ksInfo.kz">
-          <span class="order-cell__label">刻字：</span>
-          <span class="order-cell__value">{{ksInfo.kz}}</span>
-        </div>
-        <div class="order-cell">
-          <span class="order-cell__label">戒臂：</span>
-          <span class="order-cell__value">{{ksInfo.jb}}</span>
-        </div>
-        <div class="order-cell">
-          <span class="order-cell__label">花头：</span>
-          <span class="order-cell__value">{{ksInfo.ht}}</span>
-        </div>
+        
         <!-- <div class="order-cell">
           <span class="order-cell__label">辅石：</span>
           <span class="order-cell__value">{{ksInfo.fs}}</span>
@@ -61,28 +47,27 @@
     <section class="order-info-item">
       <div class="flex order-title-cont">
         <van-icon name="gold-coin-o icon-style" />
-        <div class="title flex1 fs-18">
+        <div class="title flex1 fs-16">
           订单总金额
         </div>
-        <div class="title yellow fs-18">
+        <div class="title yellow fs-16">
           ¥ {{ddInfo.total_amount}}
         </div>
       </div>
       <div class="order-info-cont">
-        <div class="flex yellow fs-18" v-if="userInfo.is_vip">
+        <div class="flex yellow fs-16" v-if="userInfo.is_vip">
           <van-icon name="coupon-o icon-style" />
           <div class="flex1">VIP优惠</div>
           <div>- {{ddInfo.total_amount - ddInfo.total_vip || 0}}元</div>
         </div>
-        <div class="flex pt10 fs-18">
+        <div class="flex pt10 fs-16">
           <van-icon name="balance-list-o icon-style" />
           <div class="flex1">支付</div>
           <div>
-            <span>定金：{{ddInfo.deposit}}元 + </span>
-            <span>尾款：{{userInfo.is_vip ? ddInfo.total_vip  - ddInfo.deposit : ddInfo.total_amount - ddInfo.deposit}}元</span>
+            {{paymentTxt}}
           </div>
         </div>
-        <div  class="jump-vip" @click="jumpVip">成为会员，享价格优惠！</div>
+        <div  class="jump-vip" @click="jumpVip" v-if="!userInfo.is_vip">成为会员，享价格优惠！</div>
       </div>
     </section>
 
@@ -93,7 +78,7 @@
 </template>
 
 <script>
-import { colorList } from '../../const/design'
+import { getTextureCname } from '../../util/designUtils'
 
 export default {
   components: {
@@ -101,33 +86,15 @@ export default {
   data () {
     return {
       bn: this.$route.query.bn,
+      diamond_id: this.$route.query.diamond_id,
+      good_type: this.$route.query.good_type ? this.$route.query.good_type : 1,
       comment: '',
       preview_image: '',
-      ksInfo: {
-        sc: {
-          value: '12 51.2mm',
-          index: '12'
-        },
-        ks: '圆款钻石定制',
-        cz: '',
-        jb: '',
-        ht: '',
-        fs: '天然钻石(白)'
-      },
+      infoList: [],
+      paymentTxt: '',
       userInfo: {
         balance: 0,
         is_vip: 0
-      },
-      zsInfo: {
-        zs: 'GIA 232813821738',
-        zz: '0.15ct',
-        xz: '圆形',
-        ys: 'K',
-        jd: 'SI2',
-        yg: '无',
-        pg: 'EX',
-        qg: 'VG',
-        dc: 'EX'
       },
       ddInfo: {
         cost: 0,
@@ -140,64 +107,123 @@ export default {
   created () {
     this.onLoad()
   },
-  computed: {},
   methods: {
     onLoad () {
-      Promise.all([
-        this.$get({
-          url: '/api/3d/design_detail',
-          data: {
-            design_bn: this.bn
-          }
-        }),
-        this.$get({
-          url: '/api/3d/order',
-          data: {
-            design_bn: this.bn
-          }
-        })
-      ])
-        .then((res) => {
-          if (res[0].status == 1 && res[1].status == 1) {
-            const { data } = res[0]
-            const { data: ddData } = res[1]
-            this.preview_image = data.preview_image
-            if (this.preview_image && this.preview_image.startsWith('uploads')) {
-              this.preview_image = '' + this.preview_image
-            }
-            if (data.title) {
-              this.name = data.title
-            }
-            this.ksInfo.sc = data.ring_size
-            this.ksInfo.kz = data.ring_print
-            this.ksInfo.ht = data.flower_head_id
-            this.ksInfo.jb = data.ring_arm_id
-            this.zsInfo.zs = data.diamond_id
-            this.ddInfo = ddData
-            this.userInfo.balance = ddData.user_info.balance
-            this.userInfo.is_vip = ddData.user_info.is_vip
-            colorList.forEach(item => {
-                if (item.id === data.texture_id) {
-                  this.ksInfo.cz = item.nameCn
-                }
-            });
-          } else {
-            this.$toast.fail(res.message || '获取数据失败')
-          }
-        }).catch((res) => {
-          this.$toast.fail('获取数据失败')
-        })
+      if (this.bn) {
+        this.getOrder({ design_bn: this.bn, good_type: 1 })
+      } else {
+        this.getOrder({ diamond_id: this.diamond_id, good_type: 4 })
+      }
+    },
+    getOrder(params) {
+      this.$get({
+        url: '/api/3d/order',
+        data: params
+      }).then(({ data }) => {
+        this.ddInfo = data
+        this.userInfo.balance = data.user_info.balance
+        this.userInfo.is_vip = data.user_info.is_vip
+
+        if (params.good_type === 4) {
+          this.preview_image = 'https://img.alicdn.com/imgextra/i1/O1CN01L5tea41oZy6pUVPgm_!!6000000005240-49-tps-100-100.webp'
+          this.infoList = [{
+            label: 'GIA：',
+            value: data.diamond_info.cert_num
+          }, {
+            label: '大小：',
+            value: data.diamond_info.size
+          }, {
+            label: '颜色：',
+            value: data.diamond_info.color
+          }, {
+            label: '净度：',
+            value: data.diamond_info.clarity
+          }, {
+            label: '切工：',
+            value: data.diamond_info.cut
+          }, {
+            label: '对称：',
+            value: data.diamond_info.symmetry
+          }, {
+            label: '抛光：',
+            value: data.diamond_info.polish
+          }, {
+            label: '荧光：',
+            value: data.diamond_info.flr_intensity
+          }]
+
+          this.paymentTxt = `${this.userInfo.is_vip ? this.ddInfo.total_vip : this.ddInfo.total_amount}元`
+        } else if (params.good_type === 1) {
+          this.preview_image = data.design_info.preview_image
+          this.infoList = [{
+            label: '款式：',
+            value: '自由可变款'
+          }, {
+            label: '材质：',
+            value: getTextureCname(data.design_info.texture_id)
+          }, {
+            label: '刻字：',
+            value: data.design_info.ring_print
+          }, {
+            label: '手寸：',
+            value: data.design_info.ring_size
+          }, {
+            label: '-',
+            value: ''
+          }, {
+            label: '钻石信息',
+            value: ''
+          }, {
+            label: 'GIA：',
+            value: data.design_info.diamond_info.cert_num
+          },  {
+            label: '大小：',
+            value: data.design_info.diamond_info.size
+          }, {
+            label: '颜色：',
+            value: data.design_info.diamond_info.color
+          }, {
+            label: '净度：',
+            value: data.design_info.diamond_info.clarity
+          }, {
+            label: '切工：',
+            value: data.design_info.diamond_info.cut
+          }, {
+            label: '对称：',
+            value: data.design_info.diamond_info.symmetry
+          }, {
+            label: '抛光：',
+            value: data.design_info.diamond_info.polish
+          }, {
+            label: '荧光：',
+            value: data.design_info.diamond_info.flr_intensity
+          }]
+
+          this.paymentTxt = `定金：${this.ddInfo.deposit}元 + 尾款：${this.userInfo.is_vip ? this.ddInfo.total_vip  - this.ddInfo.deposit : this.ddInfo.total_amount - this.ddInfo.deposit}元`
+        }
+        
+      }).catch((err) => {
+        console.log(err);
+        this.$toast.fail('获取数据失败')
+      })
     },
     buy () {
       if (this.$store.state.orderConfirm.currtAddress.id) {
         this.$post({
           url: '/api/3d/order',
-          data: {
+          data: this.good_type === 4 ? {
+            diamond_id: this.diamond_id,
+            coupon_id: 0,
+            comment: this.comment,
+            address_id: this.$store.state.orderConfirm.currtAddress.id,
+            vip: 0,
+            good_type: this.good_type
+          } : {
             design_bn: this.$route.query.bn,
             coupon_id: 0,
             comment: this.comment,
             address_id: this.$store.state.orderConfirm.currtAddress.id,
-            vip: 0
+            vip: 0,
           }
         }).then((res) => {
           if (res.status == 1) {
@@ -210,7 +236,7 @@ export default {
               }
               // 定金支付使用定金bn design_bn_id
               window.uni.navigateTo({
-                url: `../my/payments?data=${res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`
+                url: `../my/payments?data=${this.good_type === 4 ? res.data.bn : res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`
               })
             }
           } else {
@@ -240,6 +266,9 @@ export default {
 <style lang="scss" scoped>
 .fs-18 {
   font-size: 18px;
+}
+.fs-16 {
+  font-size: 16px;
 }
 .order-confirm {
   height: 100%;
