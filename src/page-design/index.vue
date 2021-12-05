@@ -234,7 +234,7 @@
           <i class="icon-diamond"></i>
           <span class="txt">选钻</span>
         </a>
-        <a class="option" @click="() => (footerTabId = 'mark')">
+        <a class="option" @click="openMark">
           <i class="icon-mark"></i>
           <span class="txt">印记</span>
         </a>
@@ -495,18 +495,29 @@ export default {
           const { metalId } = this.$store.state.design;
           // 设置材质
           this.loading = false
-          
+
           // 设置角度
-          this.my3d.changeCameraPos(false, -45, 85, -65);
+          this.setInitCameraPos();
 
           // 设置材质
           this.changeMetalId(metalId);
 
+          // 用户刻印
+          this.printUserMark();
           if (this.mark) {
-            this.my3d.printUserTextOfLayer(940, this.mark)
+            setTimeout(() => {
+              this.my3d.setRotationState(true);
+            }, 200)
           }
         }
       }, 1000);
+    },
+
+    /**
+     * 设置相机角度
+     */
+    setInitCameraPos() {
+      this.my3d.changeCameraPos(false, -45, 100, -65)
     },
 
     /**
@@ -552,7 +563,7 @@ export default {
       // 设置固定角度
       this.loading = true;
       this.my3d.changeBackground('72,72,79');
-      this.my3d.changeCameraPos(false, -45, 85, -65);
+      this.setInitCameraPos();
 
       // 截图
       await new Promise(resolve => setTimeout(resolve, 200));
@@ -597,6 +608,13 @@ export default {
       location.href = `/diamondList/?backUrl=${encodeURIComponent(url)}`
     },
 
+    // 打开刻印
+    openMark() {
+      this.footerTabId = 'mark'
+      this.my3d.setRotationState(false);
+      this.my3d.changeCameraPos(false, 0, 80, -60)
+    },
+
     /**
      * 保存刻印
      */
@@ -604,15 +622,13 @@ export default {
       this.$store.commit('setState', {
         mark: this.mark,
       });
-      
-      this.my3d.printUserTextOfLayer(940, this.mark)
-      this.my3d.changeCameraPos(false, 0, 80, -60)
-      
+      this.printUserMark(true);
     },
 
     // 刻印返回
     markBack() {
       this.footerTabId = 'default'
+      this.setInitCameraPos();
       this.my3d.setRotationState(true);
     },
 
@@ -689,7 +705,7 @@ export default {
 
           setTimeout(() => {
             if (this.mark) {
-              this.my3d.printUserTextOfLayer(940, this.mark)
+              this.printUserMark();
               setTimeout(() => {
                 this.my3d.setRotationState(true);
               }, 200)
@@ -734,9 +750,26 @@ export default {
     },
 
     /**
+     * 用户刻印
+     */
+    printUserMark(force = false) {
+      if (force || this.mark) {
+        let id = 940;
+        if (this.isFixedDesign) {
+          const cus = this.my3d.getCustomization()
+          const target = cus.find((c) => (/^Engrave/i).test(c.name))
+          if (target) {
+            id = target.id
+          }
+        }
+        this.my3d.printUserTextOfLayer(id, this.mark || ' ')
+      }
+    },
+
+    /**
      * 检查是否从固定款切换而来
      */
-    async checkFromFixedDesign() {
+    checkFromFixedDesign() {
       return new Promise((resolve, reject) => {
         if (this.isFixedDesign) {
           this.$dialog.confirm({
@@ -757,20 +790,25 @@ export default {
      * @param fixedDesignId
      */
     changeFixedDesignId(fixedDesignId) {
-      this.$dialog.confirm({
-        title: '提示',
-        message: '是否以当前固定款式覆盖设计款式方案？',
-      })
-        .then(async () => {
-          this.$store.commit('setState', {
-            fixedDesignId,
-          });
-          this.$store.dispatch('getFixedDesignInfo', { designId: fixedDesignId })
-            .then((fixedDesign) => {
-              fixedDesign && this.initFixedDesign3D(fixedDesign);
-              this.getPrice()
-            });
+      const switchIt = async () => {
+        this.$store.commit('setState', {
+          fixedDesignId,
         });
+        this.$store.dispatch('getFixedDesignInfo', { designId: fixedDesignId })
+          .then((fixedDesign) => {
+            fixedDesign && this.initFixedDesign3D(fixedDesign);
+            this.getPrice()
+          });
+      }
+      if (this.isFixedDesign) {
+        switchIt()
+      } else {
+        this.$dialog.confirm({
+          title: '提示',
+          message: '是否以当前固定款式覆盖设计款式方案？',
+        })
+          .then(switchIt);
+      }
     },
 
     /**

@@ -128,19 +128,35 @@ export default {
      * 3 加载款式信息
      */
     loadDesignInfo({ commit, state }) {
-      return post({
-        url: apiUrl + 'app/getVariableDesignLayerInfo',
-        data: {
-          id: state.desNo
-        }
-      }).then((data) => {
-        if (data.code === 0) {
+      return Promise.all([
+        post({
+          url: apiUrl + 'app/getVariableDesignLayerInfo',
+          data: {
+            id: state.desNo
+          }
+        }),
+        get({ // 花头
+          url: '/api/3d/getAllHead'
+        }),
+        get({ // 戒臂
+          url: '/api/3d/getAllRing'
+        }),
+      ]).then(([data, heads, rings]) => {
+        if (data.code === 0 && heads.code === 0 && rings.code === 0) {
           const designInfo = data.info
-          const { mainParts } = designInfo
-          // 当前戒臂ID （主part ID）
-          const mainPartId = designInfo.mainParts[0].id
+
+          // let { mainParts } = designInfo
+          const mainPartsFilter = (rings.data || []).map(d => d.flower_id)
+          const mainParts = (designInfo.mainParts || []).filter((m) => mainPartsFilter.includes(m.id))
+
           // 花头ID列表
-          const parts = designInfo.parts && designInfo.parts[0] || []
+          // let parts = designInfo.parts && designInfo.parts[0] || []
+          const partsFilter = (heads.data || []).map(d => d.ring_arm_id)
+          const parts = (designInfo.parts && designInfo.parts[0] || [])
+            .filter((m) => partsFilter.includes(m.id))
+
+          // 当前戒臂ID （主part ID）
+          const mainPartId = mainParts[0] ? mainParts[0].id : ''
           // 当前花头ID
           const partId = parts[0] ? parts[0].id : ''
 
@@ -412,17 +428,24 @@ export default {
      * 14 获取固定款列表
      */
     loadFixedDesignList({ commit, state }) {
-      return post({
-        url: apiUrl + 'app/designList',
-        data: {
-          userId: state.userNo,
-          loadType: 1,
-          dgpage: 1,
-          rows: 200,
-        },
-      }).then((data) => {
-        if (data.code === 0) {
-          const fixedDesignList = data.list
+      return Promise.all([
+        post({
+          url: apiUrl + 'app/designList',
+          data: {
+            userId: state.userNo,
+            loadType: 1,
+            dgpage: 1,
+            rows: 200,
+          },
+        }),
+        get({
+          url: '/api/3d/getAllCombo'
+        }),
+      ]).then(([data, combos]) => {
+        if (data.code === 0 && combos.code === 0) {
+          const filters = (combos.data || []).map((c) => c.combo_id)
+          const fixedDesignList = (data.list || []).filter((f) => filters.includes(f.id))
+
           commit('setState', { fixedDesignList })
         } else {
           myAlert('数据加载失败！', 'alert-danger')
