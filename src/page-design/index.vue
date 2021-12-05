@@ -314,8 +314,6 @@ export default {
   created() {
     // 加载账号信息
     this.$store.dispatch('loadUserInfo');
-    const diamondId = getUrlParam('diamondId');
-    this.getDiamond(diamondId, true)
   },
   mounted() {
     // 请求：材质、宝石、设计数据
@@ -336,6 +334,8 @@ export default {
       const mark = getUrlParam('mark');
       const currentHandInch = getUrlParam('currentHandInch');
       const diamondId = getUrlParam('diamondId');
+      const fixedDesignId = getUrlParam('comboId');
+      const isFixedDesign = getUrlParam('isCombo');
 
       if (design_bn) {
         this.$store.dispatch('getDesignInfo', { design_bn }).then((res) => {
@@ -346,23 +346,15 @@ export default {
             diamond_id,
             ring_arm_id,
             flower_head_id,
+            combo_id,
             texture_id,
             ring_print,
             title,
           } = res.data
 
-          this.getDiamond(diamond_id)
-          console.log('detail',{
-            partId: partId || flower_head_id,
-            mainPartId: mainPartId || ring_arm_id,
-            metalId: metalId || texture_id,
-            mark: mark || ring_print,
-            currentHandInch: currentHandInch || ring_size,
-            diamondId: diamondId || diamond_id,
-            title: title,
-          })
+          this.getDiamond(diamondId || diamond_id)
           this.mark = mark || ring_print || ''
-          
+          this.isFixedDesign = isFixedDesign === '' ? Boolean(combo_id) : !!Number(isFixedDesign)
           this.setRenderParams({
             partId: partId || flower_head_id,
             mainPartId: mainPartId || ring_arm_id,
@@ -371,16 +363,20 @@ export default {
             currentHandInch: currentHandInch || ring_size,
             diamondId: diamondId || diamond_id,
             title,
+            fixedDesignId: fixedDesignId || combo_id,
           })
-          
         });
       } else {
+        this.getDiamond(diamondId)
+        this.mark = mark || ''
+        this.isFixedDesign = !!Number(isFixedDesign)
         this.setRenderParams({
           partId,
           mainPartId,
           metalId,
           mark,
           currentHandInch,
+          fixedDesignId: fixedDesignId,
         })
       }
     });
@@ -396,8 +392,13 @@ export default {
       }
 
       this.$store.commit('setState', obj);
+      const { fixedDesignId } = this.$store.state.design;
       setTimeout(() => {
-        this.init3D();
+        if (this.isFixedDesign) {
+          this.changeFixedDesignId(fixedDesignId);
+        } else {
+          this.init3D();
+        }
       }, 0)
     },
 
@@ -573,6 +574,7 @@ export default {
         .dispatch('submitDesign', {
           image: this.imgUrl,
           bn: this.design_bn,
+          isCombo: this.isFixedDesign,
         })
         .then(({ data }) => {
           location.href = `/order/?bn=${data}`
@@ -586,7 +588,7 @@ export default {
      * 钻石选择页
      */
     selectDiamond() {
-      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch } = this.$store.state.design;
+      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch, fixedDesignId } = this.$store.state.design;
       const queryObj = {};
 
       queryObj.mark = mark;
@@ -596,6 +598,8 @@ export default {
       queryObj.diamondId = diamondId;
       queryObj.currentHandInch = currentHandInch;
       queryObj.bn = this.design_bn;
+      queryObj.comboId = fixedDesignId;
+      queryObj.isCombo = this.isFixedDesign ? '1' : '0';
 
       let url = '//' + location.host + location.pathname + '?';
       for (let key in queryObj) {
@@ -847,15 +851,18 @@ export default {
         mainPartId,
         metalId,
         currentHandInch,
-        diamondId
+        diamondId,
+        fixedDesignId,
       } = this.$store.state.design;
 
       this.$store.dispatch('getDesignPrice', {
+        isCombo: this.isFixedDesign,
         currentHandInch: currentHandInch || 13,
         partId,
         mainPartId,
         metalId,
-        diamondId
+        diamondId,
+        comboId: fixedDesignId,
       }).then((price) => {
         this.price = price
       })

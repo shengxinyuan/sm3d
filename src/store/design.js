@@ -142,16 +142,16 @@ export default {
           url: '/api/3d/getAllRing'
         }),
       ]).then(([data, heads, rings]) => {
-        if (data.code === 0 && heads.code === 0 && rings.code === 0) {
+        if (data.code === 0 && heads.status === 1 && rings.status === 1) {
           const designInfo = data.info
 
           // let { mainParts } = designInfo
-          const mainPartsFilter = (rings.data || []).map(d => d.flower_id)
+          const mainPartsFilter = (rings.data || []).map(d => d.ring_arm_id)
           const mainParts = (designInfo.mainParts || []).filter((m) => mainPartsFilter.includes(m.id))
 
           // 花头ID列表
           // let parts = designInfo.parts && designInfo.parts[0] || []
-          const partsFilter = (heads.data || []).map(d => d.ring_arm_id)
+          const partsFilter = (heads.data || []).map(d => d.flower_id)
           const parts = (designInfo.parts && designInfo.parts[0] || [])
             .filter((m) => partsFilter.includes(m.id))
 
@@ -319,7 +319,7 @@ export default {
     /**
      * 10 提交设计
      */
-    async submitDesign({ commit, state }, { image, bn }) {
+    async submitDesign({ commit, state }, { image, bn, isCombo }) {
       const { data, message } = await post({
         url:'/api/3d/design/upload_image',
         data: {
@@ -337,12 +337,11 @@ export default {
         metalId,
         diamondId,
         currentHandInch,
-        title
+        title,
+        fixedDesignId,
       } = state
 
       const query = {
-        flower_head_id: partId,
-        ring_arm_id: mainPartId,
         diamond_id: diamondId,
         ring_print: mark,
         texture_id: metalId,
@@ -350,6 +349,9 @@ export default {
         good_type: 1,
         title: title, 
         preview_image,
+        ring_arm_id: isCombo ? 0 : mainPartId,
+        flower_head_id: isCombo ? 0 : partId,
+        combo_id: isCombo ? fixedDesignId : 0,
       }
 
       if (bn) {
@@ -357,7 +359,7 @@ export default {
       }
 
       return post({
-        url:'/api/3d/saveDesign',
+        url: '/api/3d/saveDesign',
         data: query
       }).then((data) => {
         return data
@@ -399,21 +401,24 @@ export default {
     /**
      * 13 实时计算价钱
      */
-     getDesignPrice(_, {
-        currentHandInch,
-        partId,
-        mainPartId,
-        metalId,
-        diamondId
-      }) {
+    getDesignPrice(_, {
+      isCombo,
+      currentHandInch,
+      partId,
+      mainPartId,
+      metalId,
+      diamondId,
+      comboId,
+    }) {
       return get({
         url: '/api/3d/order/compute_price',
         data: {
-          diamond_id: diamondId,	
+          diamond_id: diamondId,
           texture_id: metalId,
           ring_size: currentHandInch,
-          ring_arm_id: mainPartId,
-          flower_head_id: partId,
+          ring_arm_id: isCombo ? 0 : mainPartId,
+          flower_head_id: isCombo ? 0 : partId,
+          combo_id: isCombo ? comboId : 0,
         }
       }).then((data) => {
         if (data.status === 1) {
@@ -442,7 +447,7 @@ export default {
           url: '/api/3d/getAllCombo'
         }),
       ]).then(([data, combos]) => {
-        if (data.code === 0 && combos.code === 0) {
+        if (data.code === 0 && combos.status === 1) {
           const filters = (combos.data || []).map((c) => c.combo_id)
           const fixedDesignList = (data.list || []).filter((f) => filters.includes(f.id))
 
