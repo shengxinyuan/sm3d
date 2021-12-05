@@ -54,7 +54,7 @@
       <div class="design-tabs-cont">
         <div class="list" v-if="designTab === 1">
           <div
-            :class="!isFixedDesign && $store.state.design.partId === v.id ? 'active' : ''"
+            :class="!isCombo && $store.state.design.partId === v.id ? 'active' : ''"
             class="item"
             v-for="(v, i) in $store.state.design.parts"
             :key="i"
@@ -82,7 +82,7 @@
         </div>
         <div class="list" v-if="designTab === 2">
           <div
-            :class="!isFixedDesign && $store.state.design.mainPartId === v.id ? 'active' : ''"
+            :class="!isCombo && $store.state.design.mainPartId === v.id ? 'active' : ''"
             class="item"
             v-for="(v, i) in $store.state.design.mainParts"
             :key="i"
@@ -138,13 +138,13 @@
         </div>
         <div class="list" v-if="designTab === 4">
           <div
-            :class="isFixedDesign && $store.state.design.fixedDesignId === v.id ? 'active' : ''"
+            :class="isCombo && $store.state.design.comboId === v.id ? 'active' : ''"
             class="item"
-            v-for="(v, i) in $store.state.design.fixedDesignList"
+            v-for="(v, i) in $store.state.design.comboList"
             :key="i"
             @click="
               () => {
-                changeFixedDesignId(v.id);
+                changeComboId(v.id);
               }
             "
           >
@@ -307,7 +307,7 @@ export default {
       price: '-',
 
       // 是否是固定款
-      isFixedDesign: false,
+      isCombo: false,
     };
   },
   computed: {},
@@ -323,7 +323,7 @@ export default {
       this.$store.dispatch('loadMetalWeb'),
       this.$store.dispatch('loadGemList'),
       this.$store.dispatch('loadGemWeb'),
-      this.$store.dispatch('loadFixedDesignList'),
+      this.$store.dispatch('loadComboList'),
     ]).then(() => {
       console.log('mounted -> data loaded -> init3D');
 
@@ -334,8 +334,8 @@ export default {
       const mark = getUrlParam('mark');
       const currentHandInch = getUrlParam('currentHandInch');
       const diamondId = getUrlParam('diamondId');
-      const fixedDesignId = getUrlParam('comboId');
-      const isFixedDesign = getUrlParam('isCombo');
+      const comboId = getUrlParam('comboId');
+      const isCombo = getUrlParam('isCombo');
 
       if (design_bn) {
         this.$store.dispatch('getDesignInfo', { design_bn }).then((res) => {
@@ -354,7 +354,8 @@ export default {
 
           this.getDiamond(diamondId || diamond_id)
           this.mark = mark || ring_print || ''
-          this.isFixedDesign = isFixedDesign === '' ? Boolean(combo_id) : !!Number(isFixedDesign)
+          this.isCombo = isCombo == null ? Boolean(combo_id) : !!Number(isCombo)
+
           this.setRenderParams({
             partId: partId || flower_head_id,
             mainPartId: mainPartId || ring_arm_id,
@@ -363,20 +364,20 @@ export default {
             currentHandInch: currentHandInch || ring_size,
             diamondId: diamondId || diamond_id,
             title,
-            fixedDesignId: fixedDesignId || combo_id,
+            comboId: comboId || combo_id,
           })
         });
       } else {
         this.getDiamond(diamondId)
         this.mark = mark || ''
-        this.isFixedDesign = !!Number(isFixedDesign)
+        this.isCombo = !!Number(isCombo)
         this.setRenderParams({
           partId,
           mainPartId,
           metalId,
           mark,
           currentHandInch,
-          fixedDesignId: fixedDesignId,
+          comboId: comboId,
         })
       }
     });
@@ -392,10 +393,10 @@ export default {
       }
 
       this.$store.commit('setState', obj);
-      const { fixedDesignId } = this.$store.state.design;
+      const { comboId } = this.$store.state.design;
       setTimeout(() => {
-        if (this.isFixedDesign) {
-          this.changeFixedDesignId(fixedDesignId);
+        if (this.isCombo) {
+          this.changeComboId(comboId);
         } else {
           this.init3D();
         }
@@ -403,21 +404,17 @@ export default {
     },
 
     // 获取钻石信息
-    getDiamond(diamondId, openTab) {
+    getDiamond(diamondId) {
       if (diamondId) {
         this.$store.dispatch('getDiamondInfo', { id: diamondId });
         this.$store.commit('setState', {
           diamondId,
         });
-
-        if (openTab) {
-          this.footerTabId = 'diamond';
-        }
       }
     },
     // 切换前的清理工作
     clearAndPrepare3D() {
-      if (this.__pre_isFixedDesign == null || this.isFixedDesign !== this.__pre_isFixedDesign) {
+      if (this.__pre_isCombo == null || this.isCombo !== this.__pre_isCombo) {
         if (this.my3d && this.my3d) {
           this.my3d.onClose();
         }
@@ -438,7 +435,7 @@ export default {
           resourceDomainName,
           // false
           // 是否是固定搭配
-          this.isFixedDesign
+          this.isCombo
         );
 
         // 加载3D第二步：定义3D窗口尺寸
@@ -458,11 +455,11 @@ export default {
         // 加载3D第四步：设置3D场景背景色
         this.my3d.changeBackground('37,37,42');
       }
-      this.__pre_isFixedDesign = this.isFixedDesign;
+      this.__pre_isCombo = this.isCombo;
     },
     // 初始化定制款3D
     async init3D() {
-      this.isFixedDesign = false;
+      this.isCombo = false;
       this.clearAndPrepare3D();
 
       const {
@@ -478,12 +475,12 @@ export default {
     },
 
     // 初始化固定款3D
-    async initFixedDesign3D(fixedDesign) {
-      this.isFixedDesign = true;
+    async initCombo3D(Combo) {
+      this.isCombo = true;
       this.clearAndPrepare3D();
 
       // 加载3D第五步：加载款式3D
-      this.my3d.loadDesign(fixedDesign);
+      this.my3d.loadDesign(Combo);
 
       this.loaded();
     },
@@ -574,7 +571,7 @@ export default {
         .dispatch('submitDesign', {
           image: this.imgUrl,
           bn: this.design_bn,
-          isCombo: this.isFixedDesign,
+          isCombo: this.isCombo,
         })
         .then(({ data }) => {
           location.href = `/order/?bn=${data}`
@@ -588,7 +585,7 @@ export default {
      * 钻石选择页
      */
     selectDiamond() {
-      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch, fixedDesignId } = this.$store.state.design;
+      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch, comboId } = this.$store.state.design;
       const queryObj = {};
 
       queryObj.mark = mark;
@@ -598,8 +595,8 @@ export default {
       queryObj.diamondId = diamondId;
       queryObj.currentHandInch = currentHandInch;
       queryObj.bn = this.design_bn;
-      queryObj.comboId = fixedDesignId;
-      queryObj.isCombo = this.isFixedDesign ? '1' : '0';
+      queryObj.comboId = comboId;
+      queryObj.isCombo = this.isCombo ? '1' : '0';
 
       let url = '//' + location.host + location.pathname + '?';
       for (let key in queryObj) {
@@ -679,7 +676,7 @@ export default {
      * @param partId
      */
     changePartId(partId) {
-      this.checkFromFixedDesign().then(() => {
+      this.checkFromComboDesign().then(() => {
         console.log('partId', partId);
         let loadState = this.my3d.getLoadModelState();
         if (loadState == 2) {
@@ -698,7 +695,7 @@ export default {
      * @param mainPartId
      */
     changeMainPartId(mainPartId) {
-      this.checkFromFixedDesign().then(() => {
+      this.checkFromComboDesign().then(() => {
         console.log('mainPartId', mainPartId);
         let loadState = this.my3d.getLoadModelState();
         if (loadState == 2) {
@@ -740,7 +737,7 @@ export default {
       });
 
       let name = '金属图层';
-      if (this.isFixedDesign) {
+      if (this.isCombo) {
         const cus = this.my3d.getCustomization()
         const target = cus.find((c) => (/^Metal/i).test(c.name))
         if (target) {
@@ -759,7 +756,7 @@ export default {
     printUserMark(force = false) {
       if (force || this.mark) {
         let id = 940;
-        if (this.isFixedDesign) {
+        if (this.isCombo) {
           const cus = this.my3d.getCustomization()
           const target = cus.find((c) => (/^Engrave/i).test(c.name))
           if (target) {
@@ -773,9 +770,9 @@ export default {
     /**
      * 检查是否从固定款切换而来
      */
-    checkFromFixedDesign() {
+    checkFromComboDesign() {
       return new Promise((resolve, reject) => {
-        if (this.isFixedDesign) {
+        if (this.isCombo) {
           this.$dialog.confirm({
             title: '提示',
             message: '是否以当前设计款式覆盖固定款式方案？',
@@ -791,20 +788,20 @@ export default {
 
     /**
      * 切换固定款
-     * @param fixedDesignId
+     * @param comboId
      */
-    changeFixedDesignId(fixedDesignId) {
+    changeComboId(comboId) {
       const switchIt = async () => {
         this.$store.commit('setState', {
-          fixedDesignId,
+          comboId,
         });
-        this.$store.dispatch('getFixedDesignInfo', { designId: fixedDesignId })
-          .then((fixedDesign) => {
-            fixedDesign && this.initFixedDesign3D(fixedDesign);
+        this.$store.dispatch('getComboInfo', { designId: comboId })
+          .then((combo) => {
+            combo && this.initCombo3D(combo);
             this.getPrice()
           });
       }
-      if (this.isFixedDesign) {
+      if (this.isCombo) {
         switchIt()
       } else {
         this.$dialog.confirm({
@@ -852,17 +849,17 @@ export default {
         metalId,
         currentHandInch,
         diamondId,
-        fixedDesignId,
+        comboId,
       } = this.$store.state.design;
 
       this.$store.dispatch('getDesignPrice', {
-        isCombo: this.isFixedDesign,
+        isCombo: this.isCombo,
         currentHandInch: currentHandInch || 13,
         partId,
         mainPartId,
         metalId,
         diamondId,
-        comboId: fixedDesignId,
+        comboId: comboId,
       }).then((price) => {
         this.price = price
       })

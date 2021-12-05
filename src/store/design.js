@@ -11,9 +11,11 @@ export default {
     // 花头
     partId: '',
     parts: [],
+    allParts: [], // 不过滤的全部
     // 戒臂
     mainParts: [],
     mainPartId: '',
+    allMainParts: [], // 不过滤的全部
     // 材质
     metals: [],
     metalId: '',
@@ -27,8 +29,9 @@ export default {
     // 设计标题
     title: '',
     // 固定款
-    fixedDesignList: [],
-    fixedDesignId: '',
+    comboList: [],
+    allComboList: [], // 不过滤的全部
+    comboId: '',
 
     otherGems: [],
     metalWeb: [],
@@ -146,14 +149,14 @@ export default {
           const designInfo = data.info
 
           // let { mainParts } = designInfo
+          const allMainParts = designInfo.mainParts || []
           const mainPartsFilter = (rings.data || []).map(d => d.ring_arm_id)
-          const mainParts = (designInfo.mainParts || []).filter((m) => mainPartsFilter.includes(m.id))
+          const mainParts = allMainParts.filter((m) => mainPartsFilter.includes(m.id))
 
           // 花头ID列表
-          // let parts = designInfo.parts && designInfo.parts[0] || []
+          const allParts = designInfo.parts && designInfo.parts[0] || []
           const partsFilter = (heads.data || []).map(d => d.flower_id)
-          const parts = (designInfo.parts && designInfo.parts[0] || [])
-            .filter((m) => partsFilter.includes(m.id))
+          const parts = allParts.filter((m) => partsFilter.includes(m.id))
 
           // 当前戒臂ID （主part ID）
           const mainPartId = mainParts[0] ? mainParts[0].id : ''
@@ -165,7 +168,9 @@ export default {
             mainParts,
             mainPartId,
             partId,
-            parts
+            parts,
+            allMainParts,
+            allParts,
           })
 
         } else {
@@ -338,7 +343,7 @@ export default {
         diamondId,
         currentHandInch,
         title,
-        fixedDesignId,
+        comboId,
       } = state
 
       const query = {
@@ -351,7 +356,7 @@ export default {
         preview_image,
         ring_arm_id: isCombo ? 0 : mainPartId,
         flower_head_id: isCombo ? 0 : partId,
-        combo_id: isCombo ? fixedDesignId : 0,
+        combo_id: isCombo ? comboId : 0,
       }
 
       if (bn) {
@@ -432,7 +437,7 @@ export default {
     /**
      * 14 获取固定款列表
      */
-    loadFixedDesignList({ commit, state }) {
+    loadComboList({ commit, state }) {
       return Promise.all([
         post({
           url: apiUrl + 'app/designList',
@@ -448,10 +453,11 @@ export default {
         }),
       ]).then(([data, combos]) => {
         if (data.code === 0 && combos.status === 1) {
+          const allComboList = data.list || []
           const filters = (combos.data || []).map((c) => c.combo_id)
-          const fixedDesignList = (data.list || []).filter((f) => filters.includes(f.id))
+          const comboList = allComboList.filter((f) => filters.includes(f.id))
 
-          commit('setState', { fixedDesignList })
+          commit('setState', { comboList, allComboList })
         } else {
           myAlert('数据加载失败！', 'alert-danger')
         }
@@ -461,19 +467,19 @@ export default {
     /**
      * 15 获取固定款信息
      */
-    getFixedDesignInfo({ commit, state }, { designId }) {
+    getComboInfo({ commit, state }, { designId }) {
       const {
-        fixedDesignList
+        comboList
       } = state
-      let fixedDesign;
-      fixedDesignList.forEach((item) => {
+      let combo;
+      comboList.forEach((item) => {
         if (+item.id === +designId) {
-          fixedDesign = item;
+          combo = item;
         }
       });
 
-      if (fixedDesign && fixedDesign.layers) {
-        return fixedDesign;
+      if (combo && combo.layers) {
+        return combo;
       }
 
       return post({
@@ -483,15 +489,15 @@ export default {
         }
       }).then((data) => {
         if (data.code === 0) {
-          fixedDesign = data.designInfo
-          const newFixedDesignList = fixedDesignList.map((item) => {
+          combo = data.designInfo
+          const newComboList = comboList.map((item) => {
             if (+item.id === +designId) {
               return { ...item, ...data.designInfo }
             }
             return item;
           })
-          commit('setState', { fixedDesignList: newFixedDesignList })
-          return fixedDesign;
+          commit('setState', { comboList: newComboList })
+          return combo;
         } else {
           myAlert('数据加载失败！', 'alert-danger')
         }

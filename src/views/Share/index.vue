@@ -130,7 +130,7 @@ export default {
       setTimeout(() => {
         // 设置材质
         this.loading = false
-        this.my3d.changeCameraPos(false, -45, 85, -65);
+        this.my3d.changeCameraPos(false, -45, 100, -65);
         
       }, 3000);
     },
