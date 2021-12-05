@@ -1,5 +1,5 @@
 import Loading from '../components/3DLoading'
-import { resourceDomainName, baseUrl, handInch } from '../const/design';
+import { resourceDomainName, baseUrl } from '../const/design';
 import { getUrlParam } from '../util/index';
 
 export default {
@@ -13,7 +13,7 @@ export default {
       loading: true,
 
       // 保存的设计信息
-      saveDesignInfo: null,
+      saveDesignInfo: {},
       design_bn: '',
 
       // price
@@ -231,205 +231,6 @@ export default {
     },
 
     /**
-     * 确认设计
-     */
-    async confirmDesign() {
-      const { currentHandInch, diamondId } = this.$store.state.design;
-
-      // 未选择手寸
-      if (!currentHandInch) {
-        this.$dialog
-          .alert({
-            title: '请选择手寸',
-            message: '您未选择手寸，请选择戒指手寸大小',
-          })
-          .then(() => {
-            this.handPicker = true;
-          });
-        return;
-      }
-
-      // 未选择钻石
-      if (!diamondId) {
-        this.$dialog
-          .alert({
-            title: '请选择钻石',
-            message: '您未选择钻石，请选择钻石',
-          })
-          .then(() => {
-            this.footerTabId = 'diamond';
-          });
-        return;
-      }
-
-      // 是否在试戴中
-      const state = this.my3d.getTryOnState();
-      if (state !== 0) {
-        this.my3d.setModelTryonMode(false, null);
-        this.my3d.onWindowResize(2);
-      }
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      // 设置固定角度
-      this.loading = true;
-      this.my3d.changeBackground('72,72,79');
-      this.setInitCameraPos();
-
-      // 截图
-      await new Promise(resolve => setTimeout(resolve, 200));
-      const canvas = document.querySelector('#mainCanvas')
-      this.imgUrl = this.my3d.getDesignImage(canvas.offsetWidth * 2, canvas.offsetHeight * 2);
-      this.$store
-        .dispatch('submitDesign', {
-          image: this.imgUrl,
-          bn: this.design_bn,
-          isCombo: this.isCombo,
-        })
-        .then(({ data }) => {
-          location.href = `/order/?bn=${data}`
-        })
-        .catch(({ message }) => {
-          console.log(message);
-        })
-    },
-
-    /**
-     * 钻石选择页
-     */
-    selectDiamond() {
-      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch, comboId } = this.$store.state.design;
-      const queryObj = {};
-
-      queryObj.mark = mark;
-      queryObj.mainPartId = mainPartId;
-      queryObj.partId = partId;
-      queryObj.metalId = metalId;
-      queryObj.diamondId = diamondId;
-      queryObj.currentHandInch = currentHandInch;
-      queryObj.bn = this.design_bn;
-      queryObj.comboId = comboId;
-      queryObj.isCombo = this.isCombo ? '1' : '0';
-
-      let url = '//' + location.host + location.pathname + '?';
-      for (let key in queryObj) {
-        if (queryObj[key]) {
-          url += key + '=' + queryObj[key] + '&';
-        }
-      }
-      url = url.slice(0, url.length - 1);
-
-      location.href = `/diamondList/?backUrl=${encodeURIComponent(url)}`
-    },
-
-    // 打开刻印
-    openMark() {
-      this.footerTabId = 'mark'
-      this.my3d.setRotationState(false);
-      this.my3d.changeCameraPos(false, 0, 80, -60)
-    },
-
-    /**
-     * 保存刻印
-     */
-    saveMark() {
-      this.$store.commit('setState', {
-        mark: this.mark,
-      });
-      this.printUserMark(true);
-    },
-
-    // 刻印返回
-    markBack() {
-      this.footerTabId = 'default'
-      this.setInitCameraPos();
-      this.my3d.setRotationState(true);
-    },
-
-    onKeyup(e) {
-      if (e.keyCode == '13') {
-        //回车执行查询
-        this.saveMark()
-      }
-    },
-
-    /**
-     * 切换手寸
-     * @param handInch
-     */
-    changeHandInch(handInch) {
-      console.log('handInch',handInch);
-      this.$store.commit('setState', {
-        currentHandInch: handInch[0],
-      });
-      this.handPicker = false;
-
-      this.getPrice()
-    },
-
-    // 打开手寸
-    openHandInch() {
-      this.handPicker = true;
-      const { currentHandInch } = this.$store.state.design;
-      this.$nextTick(() => {
-        if (currentHandInch) {
-          let index = 8;
-          handInch.forEach((item, i) => {
-            if (+item === +currentHandInch) {
-              index = i
-            }
-          })
-          this.$refs.picker.setIndexes([index])
-        }
-      })
-    },
-
-    /**
-     * 切换花头
-     * @param partId
-     */
-    changePartId(partId) {
-      this.checkFromComboDesign().then(() => {
-        console.log('partId', partId);
-        let loadState = this.my3d.getLoadModelState();
-        if (loadState == 2) {
-          this.my3d.switchPart(this.edit3dPartType, Number(partId));
-          this.$store.commit('setState', {
-            partId,
-          });
-        }
-
-        this.getPrice()
-      })
-    },
-
-    /**
-     * 切换戒臂
-     * @param mainPartId
-     */
-    changeMainPartId(mainPartId) {
-      this.checkFromComboDesign().then(() => {
-        console.log('mainPartId', mainPartId);
-        let loadState = this.my3d.getLoadModelState();
-        if (loadState == 2) {
-          this.my3d.switchPart(this.edit3dPartType, Number(mainPartId));
-          this.$store.commit('setState', {
-            mainPartId,
-          });
-
-          setTimeout(() => {
-            if (this.mark) {
-              this.printUserMark();
-              setTimeout(() => {
-                this.my3d.setRotationState(true);
-              }, 200)
-            }
-          }, 1000);
-        }
-
-        this.getPrice()
-      })
-    },
-    /**
      * 切换材料
      * @param metalId
      */
@@ -441,9 +242,6 @@ export default {
           material = item;
         }
       });
-
-      console.log('changeMetalId', metalId, material);
-
       this.$store.commit('setState', {
         metalId,
       });
@@ -480,25 +278,6 @@ export default {
     },
 
     /**
-     * 检查是否从固定款切换而来
-     */
-    checkFromComboDesign() {
-      return new Promise((resolve, reject) => {
-        if (this.isCombo) {
-          this.$dialog.confirm({
-            title: '提示',
-            message: '是否以当前设计款式覆盖固定款式方案？',
-          })
-            .then(() => {
-              this.init3D()
-              resolve()
-            }).catch(reject);
-        }
-        resolve()
-      })
-    },
-
-    /**
      * 切换固定款
      * @param comboId
      */
@@ -523,35 +302,6 @@ export default {
           .then(switchIt);
       }
     },
-
-    /**
-     * 试戴 todo
-     */
-    tryOn() {
-      const { webModelPics } = this.$store.state.design;
-      if (webModelPics && webModelPics.length) {
-        this.hasModeltryOn();
-      } else {
-        this.$store.dispatch('loadModelPicList').then(() => {
-          this.hasModeltryOn();
-        })
-      }
-    },
-
-    hasModeltryOn() {
-      const { webModelPics, userNo } = this.$store.state.design;
-      const state = this.my3d.getTryOnState();
-      if (state === 0) {
-        this.my3d.onWindowResize(0);
-        const nowWebModelPic = webModelPics[0];
-        nowWebModelPic.imgUrl = 'https://design.bavlo.com/WebModelPics/' + userNo + '/' + nowWebModelPic.name;
-        this.my3d.setModelTryonMode(true, nowWebModelPic);
-      } else {
-        this.my3d.setModelTryonMode(false, null);
-        this.my3d.onWindowResize(2);
-      }
-    },
-
 
     // 实时获取金额
     getPrice() {

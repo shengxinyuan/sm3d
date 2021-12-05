@@ -4,7 +4,7 @@
     <Loading v-if="loading" />
 
     <div class="page-header">
-      用户{{ksInfo.nickname || '-'}} 给您分享了他设计的钻戒
+      用户{{saveDesignInfo.nickname || '-'}} 给您分享了他设计的钻戒
     </div>
 
     <img class="img2" src="../../assets/diamond-list/bg.png" alt="" />
@@ -20,7 +20,7 @@
         </div>
         <div class="order-cell">
           <span class="order-cell__label">款式：</span>
-          <span class="order-cell__value">{{ksInfo.title}}</span>
+          <span class="order-cell__value">{{saveDesignInfo.title}}</span>
         </div>
         <div class="order-cell">
           <span class="order-cell__label">视角：</span>
@@ -41,121 +41,15 @@
 </template>
 
 <script>
-import Loading from '../../components/3DLoading'
-import { resourceDomainName, baseUrl } from '../../const/design';
+import designMixin from '../../mixins/design';
 
 export default {
-  components: {
-    Loading
-  },
+  mixins: [designMixin],
   props: [],
   data() {
-    return {
-      loading: true,
-      price: '',
-      ksInfo: {},
-    };
+    return {};
   },
   computed: {},
-  created() {
-
-    // 加载账号信息
-    const design_bn = this.$route.query.bn;
-    this.$store.dispatch('share_loadUserInfo');
-    this.$store.dispatch('share_getDesignInfo', { design_bn }).then((res) => {
-
-      this.ksInfo = res.data;
-      this.getPrice(res.data)
-      
-      // 请求：材质、宝石、设计数据
-      Promise.all([
-        this.$store.dispatch('share_loadDesignInfo'),
-        this.$store.dispatch('share_loadMetalList'),
-        this.$store.dispatch('share_loadMetalWeb'),
-        this.$store.dispatch('share_loadGemList'),
-        this.$store.dispatch('share_loadGemWeb'),
-      ]).then(() => {
-        console.log('mounted -> data loaded -> init3D');
-        this.init3D();
-      }).catch((err) => {
-        console.log(err);
-      })
-    });
-  },
-  methods: {
-    // 初始化3D
-    async init3D() {
-      const {
-        designInfo,
-        partId,
-        mainPartId,
-        metalWeb,
-        metalWebDefault,
-        gemWeb,
-        gemWebDefault,
-        metalId,
-      } = this.$store.state.share;
-
-      console.log('mainPartId', partId, mainPartId);
-
-      // 加载3D第一步：初始化3D场景
-      this.my3d = Bavlo.initWeb3D(
-        baseUrl,
-        'web3d',
-        true,
-        resourceDomainName,
-        false
-      );
-
-      // 加载3D第二步：定义3D窗口尺寸
-      this.my3d.onWindowResize(2);
-      window.onresize = () => {
-        this.my3d.onWindowResize(2);
-      };
-
-      // 加载3D第三步：初始化web材质
-      this.my3d.initUserMatInfo(
-        metalWebDefault,
-        metalWeb,
-        gemWebDefault,
-        gemWeb
-      );
-
-      // 加载3D第四步：设置3D场景背景色
-      this.my3d.changeBackground('37,37,42');
-
-      // 加载3D第五步：加载款式3D
-      this.my3d.loadVarDesign(designInfo, mainPartId, partId.toString());
-
-      setTimeout(() => {
-        // 设置材质
-        this.loading = false
-        this.my3d.changeCameraPos(false, -45, 100, -65);
-        
-      }, 3000);
-    },
-    // 实时获取金额
-    getPrice(data) {
-      const {
-        ring_size,
-        diamond_id,
-        ring_arm_id,
-        flower_head_id,
-        texture_id,
-      } = data
-
-      this.$store.dispatch('share_getDesignPrice', {
-        currentHandInch: ring_size || 13,
-        partId: flower_head_id,
-        mainPartId: ring_arm_id,
-        metalId: texture_id,
-        diamondId: diamond_id
-      }).then((price) => {
-        this.price = price
-      })
-    }
-  },
-
 };
 </script>
 
