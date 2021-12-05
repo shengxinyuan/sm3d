@@ -54,7 +54,7 @@
       <div class="design-tabs-cont">
         <div class="list" v-if="designTab === 1">
           <div
-            :class="!isFixedDesign && $store.state.design.partId === v.id ? 'active' : ''"
+            :class="!isCombo && $store.state.design.partId === v.id ? 'active' : ''"
             class="item"
             v-for="(v, i) in $store.state.design.parts"
             :key="i"
@@ -77,12 +77,12 @@
                 }"
               ></i>
             </div>
-            <div class="txt">花头{{ i | formatIndex }}</div>
+            <div class="txt">花头{{ v.id }}</div>
           </div>
         </div>
         <div class="list" v-if="designTab === 2">
           <div
-            :class="!isFixedDesign && $store.state.design.mainPartId === v.id ? 'active' : ''"
+            :class="!isCombo && $store.state.design.mainPartId === v.id ? 'active' : ''"
             class="item"
             v-for="(v, i) in $store.state.design.mainParts"
             :key="i"
@@ -105,7 +105,7 @@
                 }"
               ></i>
             </div>
-            <div class="txt">戒托{{ i | formatIndex }}</div>
+            <div class="txt">戒托{{ v.id }}</div>
           </div>
         </div>
         <div class="list" v-if="designTab === 3">
@@ -138,13 +138,13 @@
         </div>
         <div class="list" v-if="designTab === 4">
           <div
-            :class="isFixedDesign && $store.state.design.fixedDesignId === v.id ? 'active' : ''"
+            :class="isCombo && $store.state.design.comboId === v.id ? 'active' : ''"
             class="item"
-            v-for="(v, i) in $store.state.design.fixedDesignList"
+            v-for="(v, i) in $store.state.design.comboList"
             :key="i"
             @click="
               () => {
-                changeFixedDesignId(v.id);
+                changeComboId(v.id);
               }
             "
           >
@@ -161,7 +161,7 @@
                 }"
               ></i>
             </div>
-            <div class="txt">款式{{ i | formatIndex }}</div>
+            <div class="txt">款式{{ v.id }}</div>
           </div>
         </div>
       </div>
@@ -175,13 +175,17 @@
         <a class="active">选择主钻</a>
       </div>
       <div class="design-tabs-cont">
-        <img
+        <!-- <img
           v-if="!this.$store.state.design.diamondId"
           src="../assets/diamond-list/add-diamond.png"
           @click="selectDiamond"
           alt=""
-          width="100%"
-        />
+        /> -->
+        <div
+          class="design-add-diamond"
+          v-if="!this.$store.state.design.diamondId"
+          @click="selectDiamond"
+        >添加钻石</div>
         <div class="diamond-detail" v-else>
           <div class="diamond-info-cont">
             <img
@@ -234,7 +238,7 @@
           <i class="icon-diamond"></i>
           <span class="txt">选钻</span>
         </a>
-        <a class="option" @click="() => (footerTabId = 'mark')">
+        <a class="option" @click="openMark">
           <i class="icon-mark"></i>
           <span class="txt">印记</span>
         </a>
@@ -269,14 +273,11 @@
 </template>
 
 <script>
-import Loading from '../components/3DLoading'
-import { resourceDomainName, baseUrl, handInch } from '../const/design';
-import { getUrlParam } from '../util/index';
+import { handInch } from '../const/design';
+import designMixin from '../mixins/design';
 
 export default {
-  components: {
-    Loading
-  },
+  mixins: [designMixin],
   props: [],
   data() {
     return {
@@ -295,220 +296,11 @@ export default {
 
       // 截图图片地址
       imgUrl: '',
-
-      //loading
-      loading: true,
-
-      // 保存的设计信息
-      saveDesignInfo: null,
-      design_bn: '',
-
-      // price
-      price: '-',
-
-      // 是否是固定款
-      isFixedDesign: false,
     };
   },
-  computed: {},
-  created() {
-    // 加载账号信息
-    this.$store.dispatch('loadUserInfo');
-    const diamondId = getUrlParam('diamondId');
-    this.getDiamond(diamondId, true)
-  },
-  mounted() {
-    // 请求：材质、宝石、设计数据
-    Promise.all([
-      this.$store.dispatch('loadDesignInfo'),
-      this.$store.dispatch('loadMetalList'),
-      this.$store.dispatch('loadMetalWeb'),
-      this.$store.dispatch('loadGemList'),
-      this.$store.dispatch('loadGemWeb'),
-      this.$store.dispatch('loadFixedDesignList'),
-    ]).then(() => {
-      console.log('mounted -> data loaded -> init3D');
-
-      const design_bn = getUrlParam('bn');
-      const partId = getUrlParam('partId');
-      const mainPartId = getUrlParam('mainPartId');
-      const metalId = getUrlParam('metalId');
-      const mark = getUrlParam('mark');
-      const currentHandInch = getUrlParam('currentHandInch');
-      const diamondId = getUrlParam('diamondId');
-
-      if (design_bn) {
-        this.$store.dispatch('getDesignInfo', { design_bn }).then((res) => {
-          this.saveDesignInfo = res.data
-          this.design_bn = design_bn
-          const {
-            ring_size,
-            diamond_id,
-            ring_arm_id,
-            flower_head_id,
-            texture_id,
-            ring_print,
-            title,
-          } = res.data
-
-          this.getDiamond(diamond_id)
-          console.log('detail',{
-            partId: partId || flower_head_id,
-            mainPartId: mainPartId || ring_arm_id,
-            metalId: metalId || texture_id,
-            mark: mark || ring_print,
-            currentHandInch: currentHandInch || ring_size,
-            diamondId: diamondId || diamond_id,
-            title: title,
-          })
-          this.mark = mark || ring_print || ''
-          
-          this.setRenderParams({
-            partId: partId || flower_head_id,
-            mainPartId: mainPartId || ring_arm_id,
-            metalId: metalId || texture_id,
-            mark: mark || ring_print,
-            currentHandInch: currentHandInch || ring_size,
-            diamondId: diamondId || diamond_id,
-            title,
-          })
-          
-        });
-      } else {
-        this.setRenderParams({
-          partId,
-          mainPartId,
-          metalId,
-          mark,
-          currentHandInch,
-        })
-      }
-    });
-  },
+  mounted() {},
 
   methods: {
-    // 设置参数
-    setRenderParams(obj) {
-      for(let key in obj) {
-        if (!obj[key]) {
-          delete obj[key]
-        }
-      }
-
-      this.$store.commit('setState', obj);
-      setTimeout(() => {
-        this.init3D();
-      }, 0)
-    },
-
-    // 获取钻石信息
-    getDiamond(diamondId, openTab) {
-      if (diamondId) {
-        this.$store.dispatch('getDiamondInfo', { id: diamondId });
-        this.$store.commit('setState', {
-          diamondId,
-        });
-
-        if (openTab) {
-          this.footerTabId = 'diamond';
-        }
-      }
-    },
-    // 切换前的清理工作
-    clearAndPrepare3D() {
-      if (this.__pre_isFixedDesign == null || this.isFixedDesign !== this.__pre_isFixedDesign) {
-        if (this.my3d && this.my3d) {
-          this.my3d.onClose();
-        }
-        document.querySelector('#web3d').innerHTML = '';
-
-        const {
-          metalWeb,
-          metalWebDefault,
-          gemWeb,
-          gemWebDefault,
-        } = this.$store.state.design;
-
-        // 加载3D第一步：初始化3D场景
-        this.my3d = Bavlo.initWeb3D(
-          baseUrl,
-          'web3d',
-          false,
-          resourceDomainName,
-          // false
-          // 是否是固定搭配
-          this.isFixedDesign
-        );
-
-        // 加载3D第二步：定义3D窗口尺寸
-        this.my3d.onWindowResize(2);
-        window.onresize = () => {
-          this.my3d.onWindowResize(2);
-        };
-
-        // 加载3D第三步：初始化web材质
-        this.my3d.initUserMatInfo(
-          metalWebDefault,
-          metalWeb,
-          gemWebDefault,
-          gemWeb
-        );
-
-        // 加载3D第四步：设置3D场景背景色
-        this.my3d.changeBackground('37,37,42');
-      }
-      this.__pre_isFixedDesign = this.isFixedDesign;
-    },
-    // 初始化定制款3D
-    async init3D() {
-      this.isFixedDesign = false;
-      this.clearAndPrepare3D();
-
-      const {
-        designInfo,
-        partId,
-        mainPartId,
-      } = this.$store.state.design;
-
-      // 加载3D第五步：加载款式3D
-      this.my3d.loadVarDesign(designInfo, mainPartId, partId.toString());
-
-      this.loaded();
-    },
-
-    // 初始化固定款3D
-    async initFixedDesign3D(fixedDesign) {
-      this.isFixedDesign = true;
-      this.clearAndPrepare3D();
-
-      // 加载3D第五步：加载款式3D
-      this.my3d.loadDesign(fixedDesign);
-
-      this.loaded();
-    },
-    // 加载完
-    loaded() {
-      setTimeout(() => {
-        if (this.my3d.getLoadModelState() !== 2) {
-          this.loaded()
-        } else {
-          const { metalId } = this.$store.state.design;
-          // 设置材质
-          this.loading = false
-          
-          // 设置角度
-          this.my3d.changeCameraPos(false, -45, 85, -65);
-
-          // 设置材质
-          this.changeMetalId(metalId);
-
-          if (this.mark) {
-            this.my3d.printUserTextOfLayer(940, this.mark)
-          }
-        }
-      }, 1000);
-    },
-
     /**
      * 确认设计
      */
@@ -552,7 +344,7 @@ export default {
       // 设置固定角度
       this.loading = true;
       this.my3d.changeBackground('72,72,79');
-      this.my3d.changeCameraPos(false, -45, 85, -65);
+      this.setInitCameraPos();
 
       // 截图
       await new Promise(resolve => setTimeout(resolve, 200));
@@ -562,6 +354,7 @@ export default {
         .dispatch('submitDesign', {
           image: this.imgUrl,
           bn: this.design_bn,
+          isCombo: this.isCombo,
         })
         .then(({ data }) => {
           location.href = `/order/?bn=${data}`
@@ -575,7 +368,7 @@ export default {
      * 钻石选择页
      */
     selectDiamond() {
-      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch } = this.$store.state.design;
+      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch, comboId } = this.$store.state.design;
       const queryObj = {};
 
       queryObj.mark = mark;
@@ -585,6 +378,8 @@ export default {
       queryObj.diamondId = diamondId;
       queryObj.currentHandInch = currentHandInch;
       queryObj.bn = this.design_bn;
+      queryObj.comboId = comboId;
+      queryObj.isCombo = this.isCombo ? '1' : '0';
 
       let url = '//' + location.host + location.pathname + '?';
       for (let key in queryObj) {
@@ -597,6 +392,13 @@ export default {
       location.href = `/diamondList/?backUrl=${encodeURIComponent(url)}`
     },
 
+    // 打开刻印
+    openMark() {
+      this.footerTabId = 'mark'
+      this.my3d.setRotationState(false);
+      this.my3d.changeCameraPos(false, 0, 80, -60)
+    },
+
     /**
      * 保存刻印
      */
@@ -604,15 +406,13 @@ export default {
       this.$store.commit('setState', {
         mark: this.mark,
       });
-      
-      this.my3d.printUserTextOfLayer(940, this.mark)
-      this.my3d.changeCameraPos(false, 0, 80, -60)
-      
+      this.printUserMark(true);
     },
 
     // 刻印返回
     markBack() {
       this.footerTabId = 'default'
+      this.setInitCameraPos();
       this.my3d.setRotationState(true);
     },
 
@@ -628,7 +428,6 @@ export default {
      * @param handInch
      */
     changeHandInch(handInch) {
-      console.log('handInch',handInch);
       this.$store.commit('setState', {
         currentHandInch: handInch[0],
       });
@@ -659,7 +458,7 @@ export default {
      * @param partId
      */
     changePartId(partId) {
-      this.checkFromFixedDesign().then(() => {
+      this.checkFromComboDesign().then(() => {
         console.log('partId', partId);
         let loadState = this.my3d.getLoadModelState();
         if (loadState == 2) {
@@ -678,7 +477,7 @@ export default {
      * @param mainPartId
      */
     changeMainPartId(mainPartId) {
-      this.checkFromFixedDesign().then(() => {
+      this.checkFromComboDesign().then(() => {
         console.log('mainPartId', mainPartId);
         let loadState = this.my3d.getLoadModelState();
         if (loadState == 2) {
@@ -689,7 +488,7 @@ export default {
 
           setTimeout(() => {
             if (this.mark) {
-              this.my3d.printUserTextOfLayer(940, this.mark)
+              this.printUserMark();
               setTimeout(() => {
                 this.my3d.setRotationState(true);
               }, 200)
@@ -700,45 +499,13 @@ export default {
         this.getPrice()
       })
     },
-    /**
-     * 切换材料
-     * @param metalId
-     */
-    changeMetalId(metalId) {
-      const { metals } = this.$store.state.design;
-      let material;
-      metals.forEach((item) => {
-        if (+item.id === +metalId) {
-          material = item;
-        }
-      });
-
-      console.log('changeMetalId', metalId, material);
-
-      this.$store.commit('setState', {
-        metalId,
-      });
-
-      let name = '金属图层';
-      if (this.isFixedDesign) {
-        const cus = this.my3d.getCustomization()
-        const target = cus.find((c) => (/^Metal/i).test(c.name))
-        if (target) {
-          name = target.name
-        }
-      }
-
-      // 金属图层
-      material && this.my3d.customizeMetalClass(name, material);
-      this.getPrice()
-    },
 
     /**
      * 检查是否从固定款切换而来
      */
-    async checkFromFixedDesign() {
+    checkFromComboDesign() {
       return new Promise((resolve, reject) => {
-        if (this.isFixedDesign) {
+        if (this.isCombo) {
           this.$dialog.confirm({
             title: '提示',
             message: '是否以当前设计款式覆盖固定款式方案？',
@@ -750,27 +517,6 @@ export default {
         }
         resolve()
       })
-    },
-
-    /**
-     * 切换固定款
-     * @param fixedDesignId
-     */
-    changeFixedDesignId(fixedDesignId) {
-      this.$dialog.confirm({
-        title: '提示',
-        message: '是否以当前固定款式覆盖设计款式方案？',
-      })
-        .then(async () => {
-          this.$store.commit('setState', {
-            fixedDesignId,
-          });
-          this.$store.dispatch('getFixedDesignInfo', { designId: fixedDesignId })
-            .then((fixedDesign) => {
-              fixedDesign && this.initFixedDesign3D(fixedDesign);
-              this.getPrice()
-            });
-        });
     },
 
     /**
@@ -800,28 +546,6 @@ export default {
         this.my3d.onWindowResize(2);
       }
     },
-
-
-    // 实时获取金额
-    getPrice() {
-      const {
-        partId,
-        mainPartId,
-        metalId,
-        currentHandInch,
-        diamondId
-      } = this.$store.state.design;
-
-      this.$store.dispatch('getDesignPrice', {
-        currentHandInch: currentHandInch || 13,
-        partId,
-        mainPartId,
-        metalId,
-        diamondId
-      }).then((price) => {
-        this.price = price
-      })
-    }
   },
 
   filters: {
@@ -1035,6 +759,27 @@ export default {
           padding-top: 6px;
           font-size: 12px;
         }
+      }
+    }
+    .design-add-diamond {
+      width: 100%;
+      border: 2px dashed #c1b18a;
+      border-radius: 8px;
+      margin: 20px;
+      color: #c1b18a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+
+      &:before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        background: #c1b18a;
+        box-shadow: -4px 0 #c1b18a, 4px 0 #c1b18a, 0 -4px #c1b18a, 0 4px #c1b18a;
+        margin-right: 12px;
       }
     }
     .mark-cont {

@@ -16,42 +16,49 @@
         <van-tab title="款式参数">
           <div class="order-ks">
             <div class="order-cell order-cell__picker">
-              <span class="order-cell__label">手寸</span>
+              <span class="order-cell__label">
+                手寸
+                <van-icon name="question-o" size="24px" class="order-cell__picker-icon" @click="showHelpPopup"/>
+                <van-popup v-model="showHelp" closeable>
+                  <div class="order-help">
+                    <p>如何测量正确的手寸？</p>
+                    <van-swipe class="my-swipe">
+                      <van-swipe-item>
+                        <img src="https://h5.zbird.com/hybrid/html/custom/assets/size1.png" width="315px" height="220px"/>
+                      </van-swipe-item>
+                      <van-swipe-item>
+                        <img src="https://h5.zbird.com/hybrid/html/custom/assets/size2.png" width="315px" height="220px"/>
+                      </van-swipe-item>
+                      <van-swipe-item>
+                        <img src="https://h5.zbird.com/hybrid/html/custom/assets/size3.png" width="315px" height="220px"/>
+                      </van-swipe-item>
+                      <van-swipe-item>
+                        <img src="https://h5.zbird.com/hybrid/html/custom/assets/size4.png" width="315px" height="220px"/>
+                      </van-swipe-item>
+                    </van-swipe>
+                  </div>
+                </van-popup>
+              </span>
               <span class="order-cell__value">{{ksInfo.sc}}</span>
-              <van-icon name="question-o" size="24px" class="order-cell__picker-icon" @click="showHelpPopup"/>
-              <van-popup v-model="showHelp" closeable>
-                <div class="order-help">
-                  <p>如何测量正确的手寸？</p>
-                  <van-swipe class="my-swipe">
-                    <van-swipe-item>
-                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size1.png" width="315px" height="220px"/>
-                    </van-swipe-item>
-                    <van-swipe-item>
-                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size2.png" width="315px" height="220px"/>
-                    </van-swipe-item>
-                    <van-swipe-item>
-                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size3.png" width="315px" height="220px"/>
-                    </van-swipe-item>
-                    <van-swipe-item>
-                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size4.png" width="315px" height="220px"/>
-                    </van-swipe-item>
-                  </van-swipe>
-                </div>
-              </van-popup>
             </div>
-            
             <div class="order-cell">
               <span class="order-cell__label">材质</span>
               <span class="order-cell__value">{{ksInfo.cz}}</span>
             </div>
-            <div class="order-cell">
-              <span class="order-cell__label">戒臂</span>
-              <span class="order-cell__value">{{ksInfo.jb}}</span>
+            <div class="order-cell" v-if="isCombo">
+              <span class="order-cell__label">款式</span>
+              <span class="order-cell__value">{{comboId}}</span>
             </div>
-            <div class="order-cell">
-              <span class="order-cell__label">花头</span>
-              <span class="order-cell__value">{{ksInfo.ht}}</span>
-            </div>
+            <template v-else>
+              <div class="order-cell">
+                <span class="order-cell__label">戒臂</span>
+                <span class="order-cell__value">{{ksInfo.jb}}</span>
+              </div>
+              <div class="order-cell">
+                <span class="order-cell__label">花头</span>
+                <span class="order-cell__value">{{ksInfo.ht}}</span>
+              </div>
+            </template>
             <div class="order-cell">
               <span class="order-cell__label">刻字</span>
               <span class="order-cell__value">{{ksInfo.kz || '-'}}</span>
@@ -96,7 +103,7 @@
         </van-tab>
       </van-tabs>
     </div>
-    
+
     <div class="bag-btns">
       <div class="price">¥ {{ price | formatCost }}</div>
       <div class="btns">
@@ -141,7 +148,10 @@ export default {
       zsInfo: {
       },
       showSc: false,
-      showHelp: false
+      showHelp: false,
+
+      isCombo: false, // 固定款式
+      comboId: ''
     }
   },
   created () {
@@ -169,6 +179,10 @@ export default {
         this.ksInfo.jb = data.ring_arm_id
         this.ksInfo.cz_id = data.texture_id
 
+        // 固定款式
+        this.isCombo = !!data.combo_id
+        this.comboId = data.combo_id
+
         this.zsInfo = data.diamond_info
         colorList.forEach(item => {
           if (item.id === data.texture_id) {
@@ -179,11 +193,13 @@ export default {
         this.$get({
           url: '/api/3d/order/compute_price',
           data: {
-            diamond_id: data.diamond_id,	
+            diamond_id: data.diamond_id,
             texture_id: data.texture_id,
             ring_size: data.ring_size,
-            ring_arm_id: data.ring_arm_id,
-            flower_head_id: data.flower_head_id,
+
+            ring_arm_id: this.isCombo ? 0 : data.ring_arm_id,
+            flower_head_id: this.isCombo ? 0 : data.flower_head_id,
+            combo_id: this.isCombo ? data.combo_id : 0,
           }
         }).then((res) => {
           if (res.status === 1) {
@@ -229,15 +245,17 @@ export default {
         url: '/api/3d/saveDesign',
         data: {
           bn: this.bn,
-          flower_head_id: this.ksInfo.ht,
-          ring_arm_id: this.ksInfo.jb,
           diamond_id: this.zsInfo.zs,
           ring_print: this.ksInfo.kz,
           texture_id: this.ksInfo.cz_id,
           title: this.title,
           ring_size: this.ksInfo.sc.index,
           good_type: 1,
-          preview_image: this.preview_image
+          preview_image: this.preview_image,
+
+          ring_arm_id: this.isCombo ? 0 : this.ksInfo.jb,
+          flower_head_id: this.isCombo ? 0 : this.ksInfo.ht,
+          combo_id: this.isCombo ? this.comboId : 0,
         }
       }).then((res) => {
         this.$toast.fail('保存成功')
@@ -264,7 +282,7 @@ export default {
   width: 100vw;
   height: 100vh;
   overflow-y: auto;
-  background: #fff;
+  background-color: #3c3c44;
   box-sizing: border-box;
   padding-bottom: 30px;
 }
@@ -357,15 +375,18 @@ export default {
       display: flex;
       padding: 8px;
       align-items: center;
+      justify-content: space-between;
       .order-cell__label {
         width: 50%;
         padding-left: 16px;
         padding-right: 16px;
         text-align: left;
         font-size: 14px;
+        display: flex;
+        align-items: center;
       }
       .order-cell__value {
-        width: 140px;
+        text-align: right;
         color: rgb(193, 177, 138);
         text-align: right;
         font-size: 14px;
@@ -392,13 +413,14 @@ export default {
       }
       .order-cell__picker-icon {
         color: rgb(193, 177, 138);
-        margin-left: 4px;
+        margin-left: 8px;
       }
     }
     .order-help {
       color: #000;
       padding: 16px 0;
       font-weight: 700;
+      text-align: center;
       .my-swipe {
         margin: 32px 0;
         width: 315px;

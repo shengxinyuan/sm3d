@@ -64,7 +64,7 @@
         </van-tabs>
       </van-col>
       <van-col span="12">
-        <div class="bag-tab__right">{{swiperIndex || 0 + 1}}/{{list && list.length || '0'}}</div>
+        <div class="bag-tab__right">{{(swiperIndex || 0) + 1}}/{{list && list.length || '0'}}</div>
       </van-col>
       <van-col span="24">
       </van-col>
@@ -251,6 +251,10 @@ export default {
     background-color: #48484f;
   }
   .bag-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
     .bag-list__p {
       text-align: center;
       padding-top: 10px;

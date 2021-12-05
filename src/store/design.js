@@ -11,9 +11,11 @@ export default {
     // 花头
     partId: '',
     parts: [],
+    allParts: [], // 不过滤的全部
     // 戒臂
     mainParts: [],
     mainPartId: '',
+    allMainParts: [], // 不过滤的全部
     // 材质
     metals: [],
     metalId: '',
@@ -27,8 +29,9 @@ export default {
     // 设计标题
     title: '',
     // 固定款
-    fixedDesignList: [],
-    fixedDesignId: '',
+    comboList: [],
+    allComboList: [], // 不过滤的全部
+    comboId: '',
 
     otherGems: [],
     metalWeb: [],
@@ -128,19 +131,35 @@ export default {
      * 3 加载款式信息
      */
     loadDesignInfo({ commit, state }) {
-      return post({
-        url: apiUrl + 'app/getVariableDesignLayerInfo',
-        data: {
-          id: state.desNo
-        }
-      }).then((data) => {
-        if (data.code === 0) {
+      return Promise.all([
+        post({
+          url: apiUrl + 'app/getVariableDesignLayerInfo',
+          data: {
+            id: state.desNo
+          }
+        }),
+        get({ // 花头
+          url: '/api/3d/getAllHead'
+        }),
+        get({ // 戒臂
+          url: '/api/3d/getAllRing'
+        }),
+      ]).then(([data, heads, rings]) => {
+        if (data.code === 0 && heads.status === 1 && rings.status === 1) {
           const designInfo = data.info
-          const { mainParts } = designInfo
-          // 当前戒臂ID （主part ID）
-          const mainPartId = designInfo.mainParts[0].id
+
+          // let { mainParts } = designInfo
+          const allMainParts = designInfo.mainParts || []
+          const mainPartsFilter = (rings.data || []).map(d => d.ring_arm_id)
+          const mainParts = allMainParts.filter((m) => mainPartsFilter.includes(m.id))
+
           // 花头ID列表
-          const parts = designInfo.parts && designInfo.parts[0] || []
+          const allParts = designInfo.parts && designInfo.parts[0] || []
+          const partsFilter = (heads.data || []).map(d => d.flower_id)
+          const parts = allParts.filter((m) => partsFilter.includes(m.id))
+
+          // 当前戒臂ID （主part ID）
+          const mainPartId = mainParts[0] ? mainParts[0].id : ''
           // 当前花头ID
           const partId = parts[0] ? parts[0].id : ''
 
@@ -149,7 +168,9 @@ export default {
             mainParts,
             mainPartId,
             partId,
-            parts
+            parts,
+            allMainParts,
+            allParts,
           })
 
         } else {
@@ -303,7 +324,7 @@ export default {
     /**
      * 10 提交设计
      */
-    async submitDesign({ commit, state }, { image, bn }) {
+    async submitDesign({ commit, state }, { image, bn, isCombo }) {
       const { data, message } = await post({
         url:'/api/3d/design/upload_image',
         data: {
@@ -321,12 +342,11 @@ export default {
         metalId,
         diamondId,
         currentHandInch,
-        title
+        title,
+        comboId,
       } = state
 
       const query = {
-        flower_head_id: partId,
-        ring_arm_id: mainPartId,
         diamond_id: diamondId,
         ring_print: mark,
         texture_id: metalId,
@@ -334,6 +354,9 @@ export default {
         good_type: 1,
         title: title, 
         preview_image,
+        ring_arm_id: isCombo ? 0 : mainPartId,
+        flower_head_id: isCombo ? 0 : partId,
+        combo_id: isCombo ? comboId : 0,
       }
 
       if (bn) {
@@ -341,7 +364,7 @@ export default {
       }
 
       return post({
-        url:'/api/3d/saveDesign',
+        url: '/api/3d/saveDesign',
         data: query
       }).then((data) => {
         return data
@@ -383,21 +406,24 @@ export default {
     /**
      * 13 实时计算价钱
      */
-     getDesignPrice(_, {
-        currentHandInch,
-        partId,
-        mainPartId,
-        metalId,
-        diamondId
-      }) {
+    getDesignPrice(_, {
+      isCombo,
+      currentHandInch,
+      partId,
+      mainPartId,
+      metalId,
+      diamondId,
+      comboId,
+    }) {
       return get({
         url: '/api/3d/order/compute_price',
         data: {
-          diamond_id: diamondId,	
+          diamond_id: diamondId,
           texture_id: metalId,
           ring_size: currentHandInch,
-          ring_arm_id: mainPartId,
-          flower_head_id: partId,
+          ring_arm_id: isCombo ? 0 : mainPartId,
+          flower_head_id: isCombo ? 0 : partId,
+          combo_id: isCombo ? comboId : 0,
         }
       }).then((data) => {
         if (data.status === 1) {
@@ -411,19 +437,27 @@ export default {
     /**
      * 14 获取固定款列表
      */
-    loadFixedDesignList({ commit, state }) {
-      return post({
-        url: apiUrl + 'app/designList',
-        data: {
-          userId: state.userNo,
-          loadType: 1,
-          dgpage: 1,
-          rows: 200,
-        },
-      }).then((data) => {
-        if (data.code === 0) {
-          const fixedDesignList = data.list
-          commit('setState', { fixedDesignList })
+    loadComboList({ commit, state }) {
+      return Promise.all([
+        post({
+          url: apiUrl + 'app/designList',
+          data: {
+            userId: state.userNo,
+            loadType: 1,
+            dgpage: 1,
+            rows: 200,
+          },
+        }),
+        get({
+          url: '/api/3d/getAllCombo'
+        }),
+      ]).then(([data, combos]) => {
+        if (data.code === 0 && combos.status === 1) {
+          const allComboList = data.list || []
+          const filters = (combos.data || []).map((c) => c.combo_id)
+          const comboList = allComboList.filter((f) => filters.includes(f.id))
+
+          commit('setState', { comboList, allComboList })
         } else {
           myAlert('数据加载失败！', 'alert-danger')
         }
@@ -433,19 +467,19 @@ export default {
     /**
      * 15 获取固定款信息
      */
-    getFixedDesignInfo({ commit, state }, { designId }) {
+    getComboInfo({ commit, state }, { designId }) {
       const {
-        fixedDesignList
+        comboList
       } = state
-      let fixedDesign;
-      fixedDesignList.forEach((item) => {
+      let combo;
+      comboList.forEach((item) => {
         if (+item.id === +designId) {
-          fixedDesign = item;
+          combo = item;
         }
       });
 
-      if (fixedDesign && fixedDesign.layers) {
-        return fixedDesign;
+      if (combo && combo.layers) {
+        return combo;
       }
 
       return post({
@@ -455,15 +489,15 @@ export default {
         }
       }).then((data) => {
         if (data.code === 0) {
-          fixedDesign = data.designInfo
-          const newFixedDesignList = fixedDesignList.map((item) => {
+          combo = data.designInfo
+          const newComboList = comboList.map((item) => {
             if (+item.id === +designId) {
               return { ...item, ...data.designInfo }
             }
             return item;
           })
-          commit('setState', { fixedDesignList: newFixedDesignList })
-          return fixedDesign;
+          commit('setState', { comboList: newComboList })
+          return combo;
         } else {
           myAlert('数据加载失败！', 'alert-danger')
         }

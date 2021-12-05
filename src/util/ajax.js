@@ -3,6 +3,7 @@ import { stringify } from 'qs'
 
 // 正式环境是dis 其他都是nxm
 const host = location.host.includes('zuanshi.dis.wanheweb.com') ? 'http://zuanshi.dis.wanheweb.com/' : 'http://zuanshi.nxm.wanheweb.com/'
+// const host = 'https://yapi.kyy1996.com/mock/29';
 
 axios.defaults.baseURL = host;
 
