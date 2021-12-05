@@ -16,28 +16,30 @@
         <van-tab title="款式参数">
           <div class="order-ks">
             <div class="order-cell order-cell__picker">
-              <span class="order-cell__label">手寸</span>
+              <span class="order-cell__label">
+                手寸
+                <van-icon name="question-o" size="24px" class="order-cell__picker-icon" @click="showHelpPopup"/>
+                <van-popup v-model="showHelp" closeable>
+                  <div class="order-help">
+                    <p>如何测量正确的手寸？</p>
+                    <van-swipe class="my-swipe">
+                      <van-swipe-item>
+                        <img src="https://h5.zbird.com/hybrid/html/custom/assets/size1.png" width="315px" height="220px"/>
+                      </van-swipe-item>
+                      <van-swipe-item>
+                        <img src="https://h5.zbird.com/hybrid/html/custom/assets/size2.png" width="315px" height="220px"/>
+                      </van-swipe-item>
+                      <van-swipe-item>
+                        <img src="https://h5.zbird.com/hybrid/html/custom/assets/size3.png" width="315px" height="220px"/>
+                      </van-swipe-item>
+                      <van-swipe-item>
+                        <img src="https://h5.zbird.com/hybrid/html/custom/assets/size4.png" width="315px" height="220px"/>
+                      </van-swipe-item>
+                    </van-swipe>
+                  </div>
+                </van-popup>
+              </span>
               <span class="order-cell__value">{{ksInfo.sc}}</span>
-              <van-icon name="question-o" size="24px" class="order-cell__picker-icon" @click="showHelpPopup"/>
-              <van-popup v-model="showHelp" closeable>
-                <div class="order-help">
-                  <p>如何测量正确的手寸？</p>
-                  <van-swipe class="my-swipe">
-                    <van-swipe-item>
-                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size1.png" width="315px" height="220px"/>
-                    </van-swipe-item>
-                    <van-swipe-item>
-                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size2.png" width="315px" height="220px"/>
-                    </van-swipe-item>
-                    <van-swipe-item>
-                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size3.png" width="315px" height="220px"/>
-                    </van-swipe-item>
-                    <van-swipe-item>
-                      <img src="https://h5.zbird.com/hybrid/html/custom/assets/size4.png" width="315px" height="220px"/>
-                    </van-swipe-item>
-                  </van-swipe>
-                </div>
-              </van-popup>
             </div>
             <div class="order-cell">
               <span class="order-cell__label">材质</span>
@@ -280,7 +282,7 @@ export default {
   width: 100vw;
   height: 100vh;
   overflow-y: auto;
-  background: #fff;
+  background-color: #3c3c44;
   box-sizing: border-box;
   padding-bottom: 30px;
 }
@@ -373,15 +375,18 @@ export default {
       display: flex;
       padding: 8px;
       align-items: center;
+      justify-content: space-between;
       .order-cell__label {
         width: 50%;
         padding-left: 16px;
         padding-right: 16px;
         text-align: left;
         font-size: 14px;
+        display: flex;
+        align-items: center;
       }
       .order-cell__value {
-        width: 140px;
+        text-align: right;
         color: rgb(193, 177, 138);
         text-align: right;
         font-size: 14px;
@@ -408,13 +413,14 @@ export default {
       }
       .order-cell__picker-icon {
         color: rgb(193, 177, 138);
-        margin-left: 4px;
+        margin-left: 8px;
       }
     }
     .order-help {
       color: #000;
       padding: 16px 0;
       font-weight: 700;
+      text-align: center;
       .my-swipe {
         margin: 32px 0;
         width: 315px;

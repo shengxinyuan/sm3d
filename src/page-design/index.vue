@@ -77,7 +77,7 @@
                 }"
               ></i>
             </div>
-            <div class="txt">花头{{ i | formatIndex }}</div>
+            <div class="txt">花头{{ v.id }}</div>
           </div>
         </div>
         <div class="list" v-if="designTab === 2">
@@ -105,7 +105,7 @@
                 }"
               ></i>
             </div>
-            <div class="txt">戒托{{ i | formatIndex }}</div>
+            <div class="txt">戒托{{ v.id }}</div>
           </div>
         </div>
         <div class="list" v-if="designTab === 3">
@@ -161,7 +161,7 @@
                 }"
               ></i>
             </div>
-            <div class="txt">款式{{ i | formatIndex }}</div>
+            <div class="txt">款式{{ v.id }}</div>
           </div>
         </div>
       </div>
@@ -175,13 +175,17 @@
         <a class="active">选择主钻</a>
       </div>
       <div class="design-tabs-cont">
-        <img
+        <!-- <img
           v-if="!this.$store.state.design.diamondId"
           src="../assets/diamond-list/add-diamond.png"
           @click="selectDiamond"
           alt=""
-          width="100%"
-        />
+        /> -->
+        <div
+          class="design-add-diamond"
+          v-if="!this.$store.state.design.diamondId"
+          @click="selectDiamond"
+        >添加钻石</div>
         <div class="diamond-detail" v-else>
           <div class="diamond-info-cont">
             <img
@@ -755,6 +759,27 @@ export default {
           padding-top: 6px;
           font-size: 12px;
         }
+      }
+    }
+    .design-add-diamond {
+      width: 100%;
+      border: 2px dashed #c1b18a;
+      border-radius: 8px;
+      margin: 20px;
+      color: #c1b18a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+
+      &:before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        background: #c1b18a;
+        box-shadow: -4px 0 #c1b18a, 4px 0 #c1b18a, 0 -4px #c1b18a, 0 4px #c1b18a;
+        margin-right: 12px;
       }
     }
     .mark-cont {

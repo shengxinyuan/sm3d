@@ -177,9 +177,9 @@ export default {
             this.userInfo.balance = ddData.user_info.balance
             this.userInfo.is_vip = ddData.user_info.is_vip
             colorList.forEach(item => {
-                if (item.id === data.texture_id) {
-                  this.ksInfo.cz = item.nameCn
-                }
+              if (item.id === data.texture_id) {
+                this.ksInfo.cz = item.nameCn
+              }
             });
           } else {
             this.$toast.fail(res.message || '获取数据失败')

@@ -251,6 +251,10 @@ export default {
     background-color: #48484f;
   }
   .bag-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
     .bag-list__p {
       text-align: center;
       padding-top: 10px;
