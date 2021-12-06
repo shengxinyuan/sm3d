@@ -127,6 +127,9 @@ export default {
         if (params.good_type === 4) {
           this.preview_image = 'https://img.alicdn.com/imgextra/i1/O1CN01L5tea41oZy6pUVPgm_!!6000000005240-49-tps-100-100.webp'
           this.infoList = [{
+            label: '钻石图片仅供参考，保证GIA认证',
+            value: ''
+          }, {
             label: 'GIA：',
             value: data.diamond_info.cert_num
           }, {
@@ -208,10 +211,11 @@ export default {
       })
     },
     buy () {
+      console.log(this.good_type, this.diamond_id);
       if (this.$store.state.orderConfirm.currtAddress.id) {
         this.$post({
           url: '/api/3d/order',
-          data: this.good_type === 4 ? {
+          data: +this.good_type === 4 ? {
             diamond_id: this.diamond_id,
             coupon_id: 0,
             comment: this.comment,
