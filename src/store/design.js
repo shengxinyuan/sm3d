@@ -68,6 +68,28 @@ export default {
       })
     },
 
+    // 勿删，查看全部定制款
+    getDesignList ({ commit, state }) {
+      return post({
+        url: apiUrl + 'app/designList',
+        data: {
+          typeId: 1,
+          rows: 50,
+          dgpage: 1,
+          userId: state.userNo,
+          loadType: 1
+        },
+      }).then((data) => {
+        if (data.code === 0) {
+          let all = ''
+          data.list.forEach((item) => {
+            all += ',' + item.id
+          })
+        }
+      })
+
+    },
+
     /**
      * 2 获取金属材质列表（用于切换材质）
      */
