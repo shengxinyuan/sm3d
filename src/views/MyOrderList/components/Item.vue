@@ -3,6 +3,9 @@
     <div class="order-number">
       <span class="flex1">订单编号: {{info.bn}}</span>
       <span class="red">{{statusList[info.status]}}</span>
+      <span class="txt" v-if="(info.status === 45 || 40) && cancel_count_down">
+        <van-count-down :time="cancel_count_down" format="DD天 HH:mm:ss"/>
+      </span>
     </div>
     <div class="order-info-box">
       <div class="design-img" v-if="info.design_info && info.design_info.preview_image" :style="{ backgroundImage: 'url(' + info.design_info.preview_image +'',}"></div>
@@ -36,10 +39,23 @@ export default {
       statusList,
       loading: false,
       finished: false,
+      cancel_count_down: 0,
     };
   },
   computed: {},
+  created() {
+    this.cancel_count_down = this.info.cancel_count_down * 1000
+    this.count()
+  },
   methods: {
+    count() {
+      setTimeout(() => {
+        if (this.cancel_count_down > 0) {
+          this.cancel_count_down-= 1000
+          this.count()
+        }
+      }, 1000)
+    },
     detail(info) {
       if (info.good_type === 4) {
         this.$router.push(`/myOrderDetail?bn=${info.bn}&good_type=${info.good_type}`)
@@ -94,8 +110,14 @@ export default {
     line-height: 45px;
     border-bottom: 0.5px solid #eee;
     display: flex;
+    align-items: center;
     & > span {
       display: block;
+    }
+    font-size: 14px;
+    .txt {
+      margin-left: 10px;
+      height: 20px;
     }
   }
   .order-info-box {

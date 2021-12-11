@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import 'vant/lib/index.css'
-import { Tag, Tab, Tabs, Toast, NavBar, Col, Row, Button, Swipe, SwipeItem, Tabbar, TabbarItem, Icon, Divider, List, Picker, Popup, AddressList, Dialog, Field } from 'vant'
+import { Tag, Tab, Tabs, Toast, NavBar, Col, Row, Button, Swipe, SwipeItem, Tabbar, TabbarItem, Icon, Divider, List, Picker, Popup, AddressList, Dialog, Field, CountDown } from 'vant'
 import { get, post } from '../src/util/ajax'
 import TitleBar from './components/TitleBar'
 
@@ -27,6 +27,7 @@ Vue.use(Picker)
 Vue.use(Popup)
 Vue.use(Dialog)
 Vue.use(Field)
+Vue.use(CountDown)
 
 Vue.component('title-bar', TitleBar)
 Vue.prototype.$get = get

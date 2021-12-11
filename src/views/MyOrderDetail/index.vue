@@ -265,10 +265,10 @@ import { statusList, typeList, sfTypeList } from '../../const/order'
       margin: 0 auto;
     }
     .design-diamond {
-      width: 360px;
-      height: 360px;
+      width: 180px;
+      height: 180px;
       background-repeat: no-repeat;
-      background-size: 360px 360px;
+      background-size: 180px 180px;
       background-position: center;
       margin: 0 auto;
     }
