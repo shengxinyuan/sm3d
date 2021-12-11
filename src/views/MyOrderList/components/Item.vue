@@ -6,17 +6,18 @@
     </div>
     <div class="order-info-box">
       <div class="design-img" v-if="info.design_info && info.design_info.preview_image" :style="{ backgroundImage: 'url(' + info.design_info.preview_image +'',}"></div>
+      <div class="design-diamond" v-else :style="{ backgroundImage: 'url(https://img.alicdn.com/imgextra/i1/O1CN01L5tea41oZy6pUVPgm_!!6000000005240-49-tps-100-100.webp)'}"></div>
       <div class="detail">
-        <p class="title">3D定制订单</p>
+        <p class="title">{{ info.good_type === 4 ? '钻石订单' : '3D定制订单' }}</p>
         <p>类型: {{typeList[info.good_type]}}</p>
-        <p>定金比例: {{info.deposit_ratio}}%</p>
+        <p v-if="info.good_type === 1">定金比例: {{info.deposit_ratio}}%</p>
         <p>收货方式: {{sfTypeList[info.sf_type]}}</p>
         <p>创建时间: {{info.create_time}}</p>
       </div>
     </div>
     <div class="order-price">
-      <span class="price">合计：¥ {{ info.total_amount }}</span>
-      <a class="order-btn" @click="() => {detail(info.bn)}">查看详情</a>
+      <span class="price">合计：¥ {{info.user_info && info.user_info.is_vip ? info.total_vip : info.total_amount}}元</span>
+      <a class="order-btn" @click="() => {detail(info)}">查看详情</a>
     </div>
   </div>
 </template>
@@ -39,8 +40,12 @@ export default {
   },
   computed: {},
   methods: {
-    detail(bn) {
-      this.$router.push(`/orderDetail?bn=${bn}`)
+    detail(info) {
+      if (info.good_type === 4) {
+        this.$router.push(`/myOrderDetail?bn=${info.bn}&good_type=${info.good_type}`)
+      } else {
+        this.$router.push(`/myOrderDetail?bn=${info.bn}&good_type=${info.good_type}`)
+      }
     },
   },
   filters: {
@@ -61,7 +66,15 @@ export default {
   margin: 0 auto;
   background-size: 100px 160px;
   background-position: center;
-
+  
+}
+.design-diamond {
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  margin: 0 auto;
+  background-size: 100px 100px;
+  background-position: center;
 }
 .flex1 {
   flex: 1;

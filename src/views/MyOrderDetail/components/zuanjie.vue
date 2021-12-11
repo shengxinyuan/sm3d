@@ -58,7 +58,8 @@
       <div class="cell">
         <span>3D定制订单</span>
       </div>
-      <div class="design-img" :style="{ backgroundImage: 'url(' +orderInfo.design_info.preview_image+'',}"></div>
+      <div class="design-img" v-if="orderInfo.good_type !== 4" :style="{ backgroundImage: 'url(' +orderInfo.design_info.preview_image+'',}"></div>
+      <div class="design-diamond" v-else :style="{ backgroundImage: 'url(https://img.alicdn.com/imgextra/i1/O1CN01L5tea41oZy6pUVPgm_!!6000000005240-49-tps-100-100.webp)',}"></div>
       <div class="detail">
         <p class="title">定制详情</p>
         <div class="cell">
@@ -116,7 +117,7 @@
 </template>
 
 <script>
-import { statusList, typeList, sfTypeList } from '../const/order'
+import { statusList, typeList, sfTypeList } from '../../const/order'
   export default {
     data() {
       return {
@@ -164,7 +165,8 @@ import { statusList, typeList, sfTypeList } from '../const/order'
         this.$get({
             url: '/api/3d/order/detail',
             data: {
-              order_bn: this.$route.query.bn
+              order_bn: this.$route.query.bn || this.$route.query.diamond_id,
+              good_type: this.$route.query.good_type
             }
           }).then(({ status, data, message }) => {
             if (status === 1) {
