@@ -59,7 +59,7 @@
         <span>3D定制订单</span>
       </div>
       <div class="design-img" v-if="orderInfo.good_type !== 4" :style="{ backgroundImage: 'url(' +orderInfo.design_info.preview_image+'',}"></div>
-      <div class="design-diamond" v-else :style="{ backgroundImage: 'url(https://img.alicdn.com/imgextra/i1/O1CN01L5tea41oZy6pUVPgm_!!6000000005240-49-tps-100-100.webp)',}"></div>
+      <div class="design-diamond" v-else :style="{ backgroundImage: 'url(https://img.alicdn.com/imgextra/i3/O1CN01Lam6dK1ShpMPsD8nj_!!6000000002279-2-tps-600-600.png)',}"></div>
       <div class="detail">
         <p class="title">定制详情</p>
         <div class="cell">

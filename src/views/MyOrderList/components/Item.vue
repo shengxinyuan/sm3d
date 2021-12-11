@@ -6,7 +6,7 @@
     </div>
     <div class="order-info-box">
       <div class="design-img" v-if="info.design_info && info.design_info.preview_image" :style="{ backgroundImage: 'url(' + info.design_info.preview_image +'',}"></div>
-      <div class="design-diamond" v-else :style="{ backgroundImage: 'url(https://img.alicdn.com/imgextra/i1/O1CN01L5tea41oZy6pUVPgm_!!6000000005240-49-tps-100-100.webp)'}"></div>
+      <div class="design-diamond" v-else :style="{ backgroundImage: 'url(https://img.alicdn.com/imgextra/i3/O1CN01Lam6dK1ShpMPsD8nj_!!6000000002279-2-tps-600-600.png)'}"></div>
       <div class="detail">
         <p class="title">{{ info.good_type === 4 ? '钻石订单' : '3D定制订单' }}</p>
         <p>类型: {{typeList[info.good_type]}}</p>

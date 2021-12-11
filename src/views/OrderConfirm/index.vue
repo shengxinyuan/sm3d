@@ -125,7 +125,7 @@ export default {
         this.userInfo.is_vip = data.user_info.is_vip
 
         if (params.good_type === 4) {
-          this.preview_image = 'https://img.alicdn.com/imgextra/i1/O1CN01L5tea41oZy6pUVPgm_!!6000000005240-49-tps-100-100.webp'
+          this.preview_image = 'https://img.alicdn.com/imgextra/i3/O1CN01Lam6dK1ShpMPsD8nj_!!6000000002279-2-tps-600-600.png'
           this.infoList = [{
             label: '钻石图片仅供参考，保证GIA认证',
             value: ''
