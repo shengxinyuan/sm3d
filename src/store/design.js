@@ -95,36 +95,36 @@ export default {
      */
     loadMetalList({ commit, state }) {
       let metals = []
-      return post({
-        url: apiUrl + 'app/findUserMetalByUser',
-        data: {
-          userId: state.userNo
-        },
-      }).then((data) => {
-        if (data.code === 0) {
-          if (data.list.length > 0) {
-            let metalId = ''
-            metals = data.list.map(item => {
-              console.log(item.metal);
-              if (item.metal && item.metal.nameCn && item.metal.nameCn === '铂金') {
-                metalId = item.metal.id
-              }
-              return item.metal
-            })
+      // return post({
+      //   url: apiUrl + 'app/findUserMetalByUser',
+      //   data: {
+      //     userId: state.userNo
+      //   },
+      // }).then((data) => {
+      //   if (data.code === 0) {
+      //     if (data.list.length > 0) {
+      //       let metalId = ''
+      //       metals = data.list.map(item => {
+      //         console.log(item.metal);
+      //         if (item.metal && item.metal.nameCn && item.metal.nameCn === '铂金') {
+      //           metalId = item.metal.id
+      //         }
+      //         return item.metal
+      //       })
 
-            metalId = metalId || metals[0].id
+      //       metalId = metalId || metals[0].id
 
-            commit('setState', {
-              metals,
-              metalId,
-            })
-          } else {
-            post({
-              url: apiUrl + 'app/desMetalList',
-            }).then((data) => {
-              if (data.code === 0) {
+      //       commit('setState', {
+      //         metals,
+      //         metalId,
+      //       })
+      //     } else {
+      //       post({
+      //         url: apiUrl + 'app/desMetalList',
+      //       }).then((data) => {
+      //         if (data.code === 0) {
                 let metalId = ''
-                // metals = data.list
+      //           // metals = data.list
                 metals = colorList
 
                 metals.forEach(item => {
@@ -139,15 +139,15 @@ export default {
                   metals,
                   metalId
                 })
-              } else {
-                myAlert('数据加载失败！', 'alert-danger')
-              }
-            })
-          }
-        } else {
-          myAlert('数据加载失败！', 'alert-danger')
-        }
-      })
+      //         } else {
+      //           myAlert('数据加载失败！', 'alert-danger')
+      //         }
+      //       })
+      //     }
+      //   } else {
+      //     myAlert('数据加载失败！', 'alert-danger')
+      //   }
+      // })
     },
     /**
      * 3 加载款式信息
