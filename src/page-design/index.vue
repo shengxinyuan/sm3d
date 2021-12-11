@@ -564,7 +564,7 @@ export default {
 
 <style lang="scss" scoped>
 ::v-deep {
-  canvas {
+  #web3d > div {
     background: rgb(37, 37, 42) !important;
   }
 }
