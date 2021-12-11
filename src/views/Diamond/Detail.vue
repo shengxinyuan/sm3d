@@ -10,15 +10,11 @@
           ><span>{{ info.cert_num }}</span></span
         >
       </div>
-      <div class="flex align-center">
+      <div class="flex align-center" @click="goGIA(info.cert_num)">
         <span
           class="text-24"
           style="color: rgb(193, 177, 138); margin-left: 8px"
-          ><span>权威鉴定</span></span
-        ><span
-          class="text-24"
-          style="color: rgb(193, 177, 138); margin-left: 8px"
-          ><span>国际证书</span></span
+          ><span>复制GIA去鉴定</span></span
         >
       </div>
     </div>
@@ -99,6 +95,7 @@
 </template>
 
 <script>
+import copy from 'copy-to-clipboard';
 import { urlParse } from '../../util/index'
 
 export default {
@@ -120,6 +117,12 @@ export default {
     });
   },
   methods: {
+    goGIA(gia) {
+      const txt = gia.replace('GIA','')
+      copy(txt);
+      location.href='https://www.gia.edu/CN/report-check-landing?ivk_sa=1024320u'
+      // <a href="https://www.gia.edu/CN/report-check-landing?ivk_sa=1024320u" target="_blank">
+    },
     confirm() {
       if (this.$route.query.source === 'buy') {
         this.$router.push(`/orderConfirm?diamond_id=${this.$route.query.id}&good_type=4`)
