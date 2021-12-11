@@ -30,9 +30,7 @@
 				if (this.type === 1) {
         	window.history.go(-1)
 				} else if (window.uni.reLaunch) {
-					window.uni.reLaunch({
-						url: '../../pages/index/index'
-					});
+					window.uni.navigateBack();
 				}
       }
     },
