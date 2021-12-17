@@ -240,7 +240,7 @@ export default {
               }
               // 定金支付使用定金bn design_bn_id
               window.uni.navigateTo({
-                url: `../my/payments?data=${this.good_type === 4 ? res.data.bn : res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`
+                url: `../my/payments?data=${this.good_type == 4 ? res.data.bn : res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`
               })
             }
           } else {

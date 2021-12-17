@@ -6,7 +6,7 @@
       <a  v-if="orderInfo.status == 40" class="order-btn" @click="orderFinal">支付尾款</a>
       <a  v-if="orderInfo.status == 10" class="order-btn" @click="orderBefore">支付定金</a>
       <a  v-if="orderInfo.status == 60" class="order-btn" @click="delivered">确认收货</a>
-      <a  v-if="orderInfo.status == 45" class="order-btn" @click="orderFinal">支付全款</a>
+      <a  v-if="orderInfo.status == 45" class="order-btn" @click="orderAll">支付全款</a>
     </div>
     <div class="divider" />
     <div class="p8" fz>
