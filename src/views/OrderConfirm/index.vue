@@ -238,6 +238,7 @@ export default {
                 menber_price: this.userInfo.balance ? +this.userInfo.balance : 0,
                 shop_price: this.ddInfo.deposit ? +this.ddInfo.deposit : 0
               }
+              console.log(res.data,`../my/payments?data=${this.good_type == 4 ? res.data.bn : res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`);
               // 定金支付使用定金bn design_bn_id
               window.uni.navigateTo({
                 url: `../my/payments?data=${this.good_type == 4 ? res.data.bn : res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`

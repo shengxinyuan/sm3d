@@ -181,7 +181,7 @@ import { statusList, typeList, sfTypeList } from '../../const/order'
         this.order({
           vip: this.orderInfo.user_info.is_vip,
           menber_price: +this.orderInfo.user_info.balance,
-          shop_price: this.orderInfo.user_info.is_vip ? this.orderInfo.total_vip - this.orderInfo.deposit : this.orderInfo.total_amount - this.orderInfo.deposit,
+          shop_price: this.orderInfo.user_info.is_vip ? (+this.orderInfo.total_vip) - (+this.orderInfo.deposit) : (+this.orderInfo.total_amount) - (+this.orderInfo.deposit),
         }, this.orderInfo.final_bn_id
         )
       },
@@ -197,11 +197,12 @@ import { statusList, typeList, sfTypeList } from '../../const/order'
         this.order({
           vip: this.orderInfo.user_info.is_vip ? 1 : 0,
           menber_price: +this.orderInfo.user_info.balance,
-          shop_price: this.orderInfo.user_info.is_vip ? this.orderInfo.total_vip : this.orderInfo.total_amount,
+          shop_price: this.orderInfo.user_info.is_vip ? +this.orderInfo.total_vip : +this.orderInfo.total_amount,
         }, this.orderInfo.bn
         )
       },
       order(payment_data, bnId) {
+        console.log(`../my/payments?data=${bnId}&shop=${JSON.stringify(payment_data)}&source=3d`);
         if (window.uni) {
           window.uni.navigateTo({
             url: `../my/payments?data=${bnId}&shop=${JSON.stringify(payment_data)}&source=3d`
