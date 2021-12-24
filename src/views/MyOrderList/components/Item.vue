@@ -3,7 +3,7 @@
     <div class="order-number">
       <span class="flex1">订单编号: {{info.bn}}</span>
       <span class="red">{{statusList[info.status]}}</span>
-      <span class="txt" v-if="(info.status === 45 || 40) && cancel_count_down">
+      <span class="txt" v-if="(info.status === 45 || info.status === 40) && cancel_count_down">
         <van-count-down :time="cancel_count_down" format="DD天 HH:mm:ss"/>
       </span>
     </div>
