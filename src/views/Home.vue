@@ -14,37 +14,37 @@
 export default {
   name: 'Home',
   components: {},
-  data() {
+  data () {
     return {
       num: 0
     }
   },
   created () {
     if (this.$route.query.hasOwnProperty('token')) {
-      localStorage.setItem('token',this.$route.query.token);
+      localStorage.setItem('token', this.$route.query.token)
     }
   },
   methods: {
-    goDesign() {
+    goDesign () {
       this.check()
       if (this.num < 10) return
       location.href = '/design.html'
     },
-    goMyDesign() {
+    goMyDesign () {
       this.check()
       if (this.num < 10) return
       this.$router.push('/mydesign')
     },
-    buyDiamond() {
+    buyDiamond () {
       this.check()
       if (this.num < 10) return
       this.$router.push('/diamondList?source=buy')
     },
-    check() {
-      this.num++;
+    check () {
+      this.num++
       this.$toast.success('暂未开放功能，敬请期待！')
     }
-  },
+  }
 }
 </script>
 

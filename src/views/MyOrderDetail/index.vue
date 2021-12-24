@@ -52,7 +52,7 @@
         <span>尾款</span>
         <span>¥ {{(orderInfo.user_info.is_vip ? orderInfo.total_vip - orderInfo.deposit : orderInfo.total_amount - orderInfo.deposit)}}.00</span>
       </div>
-      
+
     </div>
     <div class="divider" />
     <div class="order-info-box">
@@ -113,115 +113,115 @@
       </div>
     </div>
     <div class="divider" />
-    
+
   </div>
 </template>
 
 <script>
 import { statusList, typeList, sfTypeList } from '../../const/order'
-  export default {
-    data() {
-      return {
-        title: '3D定制订单',
-        typeList,
-        sfTypeList,
-        statusList,
-        diamond_info: {},
-        design_info: {},
-        orderInfo: {
-          status: 3,
-          member_id: 0,
-          deposit: 0,
-          total_vip: 0,
-          total_amount: 0,
-          address_info: {
-            address: '',
-            name: '',
-            tel: ''
-          },
-          user_info: {
-            is_vip: 0,
-            balance: 0,
-          }
+export default {
+  data () {
+    return {
+      title: '3D定制订单',
+      typeList,
+      sfTypeList,
+      statusList,
+      diamond_info: {},
+      design_info: {},
+      orderInfo: {
+        status: 3,
+        member_id: 0,
+        deposit: 0,
+        total_vip: 0,
+        total_amount: 0,
+        address_info: {
+          address: '',
+          name: '',
+          tel: ''
         },
-        payment_data: {
-          vip: 0,
-          menber_price: 3000,
-          shop_price: 300
+        user_info: {
+          is_vip: 0,
+          balance: 0
         }
+      },
+      payment_data: {
+        vip: 0,
+        menber_price: 3000,
+        shop_price: 300
       }
-    },
-    computed: {
-    },
-    created () {
-      this.loadList()
-    },
-    methods: {
-      loadList() {
-        this.$get({
-            url: '/api/3d/order/detail',
-            data: {
-              order_bn: this.$route.query.bn || this.$route.query.diamond_id,
-              good_type: this.$route.query.good_type
-            }
-          }).then(({ status, data, message }) => {
-            if (status === 1) {
-              this.orderInfo = data
-              this.diamond_info = data.diamond_info
-              this.design_info = data.design_info || {}
-              if (data.good_type === 4) {
-                this.title = ''
-              }
-            } else {
-              this.$toast.fail(message || '获取数据失败')
-            }
-          }).catch(() => {})
-      },
-      orderFinal () {
-        this.order({
-          vip: this.orderInfo.user_info.is_vip,
-          menber_price: +this.orderInfo.user_info.balance,
-          shop_price: this.orderInfo.user_info.is_vip ? (+this.orderInfo.total_vip) - (+this.orderInfo.deposit) : (+this.orderInfo.total_amount) - (+this.orderInfo.deposit),
-        }, this.orderInfo.final_bn_id
-        )
-      },
-      orderBefore () {
-        this.order({
-          vip: this.orderInfo.user_info.is_vip ? 1 : 0,
-          menber_price: +this.orderInfo.user_info.balance,
-          shop_price: this.orderInfo.deposit ? +this.orderInfo.deposit : 0,
-        }, this.orderInfo.deposit_bn_id
-        )
-      },
-      orderAll() {
-        this.order({
-          vip: this.orderInfo.user_info.is_vip ? 1 : 0,
-          menber_price: +this.orderInfo.user_info.balance,
-          shop_price: this.orderInfo.user_info.is_vip ? +this.orderInfo.total_vip : +this.orderInfo.total_amount,
-        }, this.orderInfo.bn
-        )
-      },
-      order(payment_data, bnId) {
-        console.log(`../my/payments?data=${bnId}&shop=${JSON.stringify(payment_data)}&source=3d`);
-        if (window.uni) {
-          window.uni.navigateTo({
-            url: `../my/payments?data=${bnId}&shop=${JSON.stringify(payment_data)}&source=3d`
-          })
+    }
+  },
+  computed: {
+  },
+  created () {
+    this.loadList()
+  },
+  methods: {
+    loadList () {
+      this.$get({
+        url: '/api/3d/order/detail',
+        data: {
+          order_bn: this.$route.query.bn || this.$route.query.diamond_id,
+          good_type: this.$route.query.good_type
         }
-      },
-      delivered() {
-        this.$post({
-          url: '/api/3d/order/confirm_delivered',
-          data: {
-            order_bn: this.orderInfo.bn
+      }).then(({ status, data, message }) => {
+        if (status === 1) {
+          this.orderInfo = data
+          this.diamond_info = data.diamond_info
+          this.design_info = data.design_info || {}
+          if (data.good_type === 4) {
+            this.title = ''
           }
-        }).then(() => {
-          this.$toast.success('确认收货成功')
-          this.loadList()
-        }).catch(() => {})
+        } else {
+          this.$toast.fail(message || '获取数据失败')
+        }
+      }).catch(() => {})
+    },
+    orderFinal () {
+      this.order({
+        vip: this.orderInfo.user_info.is_vip,
+        menber_price: +this.orderInfo.user_info.balance,
+        shop_price: this.orderInfo.user_info.is_vip ? (+this.orderInfo.total_vip) - (+this.orderInfo.deposit) : (+this.orderInfo.total_amount) - (+this.orderInfo.deposit)
+      }, this.orderInfo.final_bn_id
+      )
+    },
+    orderBefore () {
+      this.order({
+        vip: this.orderInfo.user_info.is_vip ? 1 : 0,
+        menber_price: +this.orderInfo.user_info.balance,
+        shop_price: this.orderInfo.deposit ? +this.orderInfo.deposit : 0
+      }, this.orderInfo.deposit_bn_id
+      )
+    },
+    orderAll () {
+      this.order({
+        vip: this.orderInfo.user_info.is_vip ? 1 : 0,
+        menber_price: +this.orderInfo.user_info.balance,
+        shop_price: this.orderInfo.user_info.is_vip ? +this.orderInfo.total_vip : +this.orderInfo.total_amount
+      }, this.orderInfo.bn
+      )
+    },
+    order (payment_data, bnId) {
+      console.log(`../my/payments?data=${bnId}&shop=${JSON.stringify(payment_data)}&source=3d`)
+      if (window.uni) {
+        window.uni.navigateTo({
+          url: `../my/payments?data=${bnId}&shop=${JSON.stringify(payment_data)}&source=3d`
+        })
       }
     },
+    delivered () {
+      this.$post({
+        url: '/api/3d/order/confirm_delivered',
+        data: {
+          order_bn: this.orderInfo.bn
+        }
+      }).then(() => {
+        this.$toast.success('确认收货成功')
+        this.loadList()
+      }).catch(() => {})
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>

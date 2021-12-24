@@ -32,46 +32,46 @@ export default {
   name: 'orderItem',
   props: ['info'],
   components: {},
-  data() {
+  data () {
     return {
       typeList,
       sfTypeList,
       statusList,
       loading: false,
       finished: false,
-      cancel_count_down: 0,
-    };
+      cancel_count_down: 0
+    }
   },
   computed: {},
-  created() {
+  created () {
     this.cancel_count_down = this.info.cancel_count_down * 1000
     this.count()
   },
   methods: {
-    count() {
+    count () {
       setTimeout(() => {
         if (this.cancel_count_down > 0) {
-          this.cancel_count_down-= 1000
+          this.cancel_count_down -= 1000
           this.count()
         }
       }, 1000)
     },
-    detail(info) {
+    detail (info) {
       if (info.good_type === 4) {
         this.$router.push(`/myOrderDetail?bn=${info.bn}&good_type=${info.good_type}`)
       } else {
         this.$router.push(`/myOrderDetail?bn=${info.bn}&good_type=${info.good_type}`)
       }
-    },
+    }
   },
   filters: {
-    formatCost(num) {
-      if (typeof num === 'number' && !isNaN(num) ) {
+    formatCost (num) {
+      if (typeof num === 'number' && !isNaN(num)) {
         return num.toString() + '.00'
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -82,7 +82,7 @@ export default {
   margin: 0 auto;
   background-size: 100px 160px;
   background-position: center;
-  
+
 }
 .design-diamond {
   width: 100px;
@@ -171,6 +171,6 @@ export default {
       text-align: center;
     }
   }
-  
+
 }
 </style>

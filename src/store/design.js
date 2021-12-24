@@ -40,26 +40,26 @@ export default {
     gemWebDefault: [],
     materialWeb: [],
     materialWebDefault: [],
-    webModelPics: [],
+    webModelPics: []
   },
   mutations: {
-    setState(state, payload) {
-      for (let key in payload) {
+    setState (state, payload) {
+      for (const key in payload) {
         state[key] = payload[key]
       }
-    },
+    }
   },
   actions: {
     /**
      * 1 加载账号信息
      * @param userId
      */
-    loadUserInfo({ commit, state }) {
+    loadUserInfo ({ commit, state }) {
       return post({
         url: apiUrl + 'app/userInfo',
         data: {
           id: state.userNo
-        },
+        }
       }).then((data) => {
         if (data.code === 0) {
           const userInfo = data.user
@@ -78,7 +78,7 @@ export default {
           dgpage: 1,
           userId: state.userNo,
           loadType: 1
-        },
+        }
       }).then((data) => {
         if (data.code === 0) {
           let all = ''
@@ -87,13 +87,12 @@ export default {
           })
         }
       })
-
     },
 
     /**
      * 2 获取金属材质列表（用于切换材质）
      */
-    loadMetalList({ commit, state }) {
+    loadMetalList ({ commit, state }) {
       let metals = []
       // return post({
       //   url: apiUrl + 'app/findUserMetalByUser',
@@ -123,22 +122,22 @@ export default {
       //         url: apiUrl + 'app/desMetalList',
       //       }).then((data) => {
       //         if (data.code === 0) {
-                let metalId = ''
+      let metalId = ''
       //           // metals = data.list
-                metals = colorList
+      metals = colorList
 
-                metals.forEach(item => {
-                  if (item && item.nameCn && item.nameCn === '铂金') {
-                    metalId = item.id
-                  }
-                });
+      metals.forEach(item => {
+        if (item && item.nameCn && item.nameCn === '铂金') {
+          metalId = item.id
+        }
+      })
 
-                metalId = metalId || metals[0].id
+      metalId = metalId || metals[0].id
 
-                commit('setState', {
-                  metals,
-                  metalId
-                })
+      commit('setState', {
+        metals,
+        metalId
+      })
       //         } else {
       //           myAlert('数据加载失败！', 'alert-danger')
       //         }
@@ -152,7 +151,7 @@ export default {
     /**
      * 3 加载款式信息
      */
-    loadDesignInfo({ commit, state }) {
+    loadDesignInfo ({ commit, state }) {
       return Promise.all([
         post({
           url: apiUrl + 'app/getVariableDesignLayerInfo',
@@ -165,7 +164,7 @@ export default {
         }),
         get({ // 戒臂
           url: '/api/3d/getAllRing'
-        }),
+        })
       ]).then(([data, heads, rings]) => {
         if (data.code === 0 && heads.status === 1 && rings.status === 1) {
           const designInfo = data.info
@@ -192,9 +191,8 @@ export default {
             partId,
             parts,
             allMainParts,
-            allParts,
+            allParts
           })
-
         } else {
           console.log('数据加载失败！')
         }
@@ -204,7 +202,7 @@ export default {
     /**
      * 4 获取宝石材质列表（用于切换材质）
      */
-    loadGemList({ commit, state }) {
+    loadGemList ({ commit, state }) {
       return post({
         url: apiUrl + 'app/findUserGemByUser',
         data: {
@@ -218,7 +216,7 @@ export default {
             commit('setState', { gems })
           } else {
             post({
-              url: apiUrl + 'app/desGemList',
+              url: apiUrl + 'app/desGemList'
             }).then((data) => {
               if (data.code === 0) {
                 gems = data.list
@@ -237,9 +235,9 @@ export default {
     /**
      * 5 获取其它宝石列表（用于切换材质）
      */
-    loadOtherGemList({ commit, state }) {
+    loadOtherGemList ({ commit, state }) {
       post({
-        url: apiUrl + 'app/otherGemList',
+        url: apiUrl + 'app/otherGemList'
       }).then((data) => {
         if (data.code === 0) {
           const otherGems = data.list
@@ -254,7 +252,7 @@ export default {
      * 6 获取金属web材质参数（用于渲染）
      * @param userId
      */
-    loadMetalWeb({ commit, state }) {
+    loadMetalWeb ({ commit, state }) {
       post({
         url: apiUrl + 'app/findMetalWebsByUser',
         data: {
@@ -278,7 +276,7 @@ export default {
      * 7 获取宝石web材质列表（用于渲染）
      * @param userId
      */
-    loadGemWeb({ commit, state }) {
+    loadGemWeb ({ commit, state }) {
       post({
         url: apiUrl + 'app/findGemWebsByUser',
         data: {
@@ -302,7 +300,7 @@ export default {
      * 8 获取其它材质web材质列表（用于渲染、切换材质）
      * @param userId
      */
-    loadMaterialWeb({ commit, state }) {
+    loadMaterialWeb ({ commit, state }) {
       post({
         url: apiUrl + 'app/findMaterialWebsByUserAndType',
         data: {
@@ -325,13 +323,13 @@ export default {
     /**
      * 9 获取试戴背景图列表
      */
-    loadModelPicList({ commit, state }) {
+    loadModelPicList ({ commit, state }) {
       return post({
         url: apiUrl + 'app/webModelPicList',
         data: {
           userId: state.userNo,
           desTypeId: state.designInfo.type.id
-        },
+        }
       }).then((data) => {
         if (data.code === 0) {
           const webModelPics = data.list
@@ -341,14 +339,13 @@ export default {
         }
       })
     },
-    
 
     /**
      * 10 提交设计
      */
-    async submitDesign({ commit, state }, { image, bn, isCombo }) {
+    async submitDesign ({ commit, state }, { image, bn, isCombo }) {
       const { data, message } = await post({
-        url:'/api/3d/design/upload_image',
+        url: '/api/3d/design/upload_image',
         data: {
           base64: image
         }
@@ -365,7 +362,7 @@ export default {
         diamondId,
         currentHandInch,
         title,
-        comboId,
+        comboId
       } = state
 
       const query = {
@@ -374,11 +371,11 @@ export default {
         texture_id: metalId,
         ring_size: currentHandInch,
         good_type: 1,
-        title: title, 
+        title: title,
         preview_image,
         ring_arm_id: isCombo ? 0 : mainPartId,
         flower_head_id: isCombo ? 0 : partId,
-        combo_id: isCombo ? comboId : 0,
+        combo_id: isCombo ? comboId : 0
       }
 
       if (bn) {
@@ -396,7 +393,7 @@ export default {
     /**
      * 11 获取钻石信息
      */
-    getDiamondInfo({ commit, state }, { id }) {
+    getDiamondInfo ({ commit, state }, { id }) {
       get({
         url: '/api/3d/get_diamond',
         data: {
@@ -414,7 +411,7 @@ export default {
     /**
      * 12 获取设计信息
      */
-    getDesignInfo(_, { design_bn }) {
+    getDesignInfo (_, { design_bn }) {
       return get({
         url: '/api/3d/design_detail',
         data: {
@@ -428,14 +425,14 @@ export default {
     /**
      * 13 实时计算价钱
      */
-    getDesignPrice(_, {
+    getDesignPrice (_, {
       isCombo,
       currentHandInch,
       partId,
       mainPartId,
       metalId,
       diamondId,
-      comboId,
+      comboId
     }) {
       return get({
         url: '/api/3d/order/compute_price',
@@ -445,7 +442,7 @@ export default {
           ring_size: currentHandInch,
           ring_arm_id: isCombo ? 0 : mainPartId,
           flower_head_id: isCombo ? 0 : partId,
-          combo_id: isCombo ? comboId : 0,
+          combo_id: isCombo ? comboId : 0
         }
       }).then((data) => {
         if (data.status === 1) {
@@ -459,7 +456,7 @@ export default {
     /**
      * 14 获取固定款列表
      */
-    loadComboList({ commit, state }) {
+    loadComboList ({ commit, state }) {
       return Promise.all([
         post({
           url: apiUrl + 'app/designList',
@@ -467,12 +464,12 @@ export default {
             userId: state.userNo,
             loadType: 1,
             dgpage: 1,
-            rows: 200,
-          },
+            rows: 200
+          }
         }),
         get({
           url: '/api/3d/getAllCombo'
-        }),
+        })
       ]).then(([data, combos]) => {
         if (data.code === 0 && combos.status === 1) {
           const allComboList = data.list || []
@@ -489,19 +486,19 @@ export default {
     /**
      * 15 获取固定款信息
      */
-    getComboInfo({ commit, state }, { designId }) {
+    getComboInfo ({ commit, state }, { designId }) {
       const {
         comboList
       } = state
-      let combo;
+      let combo
       comboList.forEach((item) => {
         if (+item.id === +designId) {
-          combo = item;
+          combo = item
         }
-      });
+      })
 
       if (combo && combo.layers) {
-        return combo;
+        return combo
       }
 
       return post({
@@ -516,16 +513,15 @@ export default {
             if (+item.id === +designId) {
               return { ...item, ...data.designInfo }
             }
-            return item;
+            return item
           })
           commit('setState', { comboList: newComboList })
-          return combo;
+          return combo
         } else {
           myAlert('数据加载失败！', 'alert-danger')
         }
       })
-    },
-    
+    }
 
   }
 }

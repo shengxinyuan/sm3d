@@ -273,13 +273,13 @@
 </template>
 
 <script>
-import { handInch } from '../const/design';
-import designMixin from '../mixins/design';
+import { handInch } from '../const/design'
+import designMixin from '../mixins/design'
 
 export default {
   mixins: [designMixin],
   props: [],
-  data() {
+  data () {
     return {
       // 手寸
       handInch,
@@ -295,29 +295,29 @@ export default {
       edit3dPartType: 1,
 
       // 截图图片地址
-      imgUrl: '',
-    };
+      imgUrl: ''
+    }
   },
-  mounted() {},
+  mounted () {},
 
   methods: {
     /**
      * 确认设计
      */
-    async confirmDesign() {
-      const { currentHandInch, diamondId } = this.$store.state.design;
+    async confirmDesign () {
+      const { currentHandInch, diamondId } = this.$store.state.design
 
       // 未选择手寸
       if (!currentHandInch) {
         this.$dialog
           .alert({
             title: '请选择手寸',
-            message: '您未选择手寸，请选择戒指手寸大小',
+            message: '您未选择手寸，请选择戒指手寸大小'
           })
           .then(() => {
-            this.handPicker = true;
-          });
-        return;
+            this.handPicker = true
+          })
+        return
       }
 
       // 未选择钻石
@@ -325,100 +325,100 @@ export default {
         this.$dialog
           .alert({
             title: '请选择钻石',
-            message: '您未选择钻石，请选择钻石',
+            message: '您未选择钻石，请选择钻石'
           })
           .then(() => {
-            this.footerTabId = 'diamond';
-          });
-        return;
+            this.footerTabId = 'diamond'
+          })
+        return
       }
 
       // 是否在试戴中
-      const state = this.my3d.getTryOnState();
+      const state = this.my3d.getTryOnState()
       if (state !== 0) {
-        this.my3d.setModelTryonMode(false, null);
-        this.my3d.onWindowResize(2);
+        this.my3d.setModelTryonMode(false, null)
+        this.my3d.onWindowResize(2)
       }
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
+      await new Promise(resolve => setTimeout(resolve, 200))
+
       // 设置固定角度
-      this.loading = true;
-      this.my3d.changeBackground('72,72,79');
-      this.setInitCameraPos();
+      this.loading = true
+      this.my3d.changeBackground('72,72,79')
+      this.setInitCameraPos()
 
       // 截图
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 200))
       const canvas = document.querySelector('#mainCanvas')
-      this.imgUrl = this.my3d.getDesignImage(canvas.offsetWidth * 2, canvas.offsetHeight * 2);
+      this.imgUrl = this.my3d.getDesignImage(canvas.offsetWidth * 2, canvas.offsetHeight * 2)
       this.$store
         .dispatch('submitDesign', {
           image: this.imgUrl,
           bn: this.design_bn,
-          isCombo: this.isCombo,
+          isCombo: this.isCombo
         })
         .then(({ data }) => {
           location.href = `/order/?bn=${data}`
         })
         .catch(({ message }) => {
-          console.log(message);
+          console.log(message)
         })
     },
 
     /**
      * 钻石选择页
      */
-    selectDiamond() {
-      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch, comboId } = this.$store.state.design;
-      const queryObj = {};
+    selectDiamond () {
+      const { mark, mainPartId, partId, metalId, diamondId, currentHandInch, comboId } = this.$store.state.design
+      const queryObj = {}
 
-      queryObj.mark = mark;
-      queryObj.mainPartId = mainPartId;
-      queryObj.partId = partId;
-      queryObj.metalId = metalId;
-      queryObj.diamondId = diamondId;
-      queryObj.currentHandInch = currentHandInch;
-      queryObj.bn = this.design_bn;
-      queryObj.comboId = comboId;
-      queryObj.isCombo = this.isCombo ? '1' : '0';
+      queryObj.mark = mark
+      queryObj.mainPartId = mainPartId
+      queryObj.partId = partId
+      queryObj.metalId = metalId
+      queryObj.diamondId = diamondId
+      queryObj.currentHandInch = currentHandInch
+      queryObj.bn = this.design_bn
+      queryObj.comboId = comboId
+      queryObj.isCombo = this.isCombo ? '1' : '0'
 
-      let url = '//' + location.host + location.pathname + '?';
-      for (let key in queryObj) {
+      let url = '//' + location.host + location.pathname + '?'
+      for (const key in queryObj) {
         if (queryObj[key]) {
-          url += key + '=' + queryObj[key] + '&';
+          url += key + '=' + queryObj[key] + '&'
         }
       }
-      url = url.slice(0, url.length - 1);
+      url = url.slice(0, url.length - 1)
 
       location.href = `/diamondList/?backUrl=${encodeURIComponent(url)}`
     },
 
     // 打开刻印
-    openMark() {
+    openMark () {
       this.footerTabId = 'mark'
-      this.my3d.setRotationState(false);
+      this.my3d.setRotationState(false)
       this.my3d.changeCameraPos(false, 0, 80, -60)
     },
 
     /**
      * 保存刻印
      */
-    saveMark() {
+    saveMark () {
       this.$store.commit('setState', {
-        mark: this.mark,
-      });
-      this.printUserMark(true);
+        mark: this.mark
+      })
+      this.printUserMark(true)
     },
 
     // 刻印返回
-    markBack() {
+    markBack () {
       this.footerTabId = 'default'
-      this.setInitCameraPos();
-      this.my3d.setRotationState(true);
+      this.setInitCameraPos()
+      this.my3d.setRotationState(true)
     },
 
-    onKeyup(e) {
+    onKeyup (e) {
       if (e.keyCode == '13') {
-        //回车执行查询
+        // 回车执行查询
         this.saveMark()
       }
     },
@@ -427,22 +427,22 @@ export default {
      * 切换手寸
      * @param handInch
      */
-    changeHandInch(handInch) {
+    changeHandInch (handInch) {
       this.$store.commit('setState', {
-        currentHandInch: handInch[0],
-      });
-      this.handPicker = false;
+        currentHandInch: handInch[0]
+      })
+      this.handPicker = false
 
       this.getPrice()
     },
 
     // 打开手寸
-    openHandInch() {
-      this.handPicker = true;
-      const { currentHandInch } = this.$store.state.design;
+    openHandInch () {
+      this.handPicker = true
+      const { currentHandInch } = this.$store.state.design
       this.$nextTick(() => {
         if (currentHandInch) {
-          let index = 8;
+          let index = 8
           handInch.forEach((item, i) => {
             if (+item === +currentHandInch) {
               index = i
@@ -457,15 +457,15 @@ export default {
      * 切换花头
      * @param partId
      */
-    changePartId(partId) {
+    changePartId (partId) {
       this.checkFromComboDesign().then(() => {
-        console.log('partId', partId);
-        let loadState = this.my3d.getLoadModelState();
+        console.log('partId', partId)
+        const loadState = this.my3d.getLoadModelState()
         if (loadState == 2) {
-          this.my3d.switchPart(this.edit3dPartType, Number(partId));
+          this.my3d.switchPart(this.edit3dPartType, Number(partId))
           this.$store.commit('setState', {
-            partId,
-          });
+            partId
+          })
         }
 
         this.getPrice()
@@ -476,24 +476,24 @@ export default {
      * 切换戒臂
      * @param mainPartId
      */
-    changeMainPartId(mainPartId) {
+    changeMainPartId (mainPartId) {
       this.checkFromComboDesign().then(() => {
-        console.log('mainPartId', mainPartId);
-        let loadState = this.my3d.getLoadModelState();
+        console.log('mainPartId', mainPartId)
+        const loadState = this.my3d.getLoadModelState()
         if (loadState == 2) {
-          this.my3d.switchPart(this.edit3dPartType, Number(mainPartId));
+          this.my3d.switchPart(this.edit3dPartType, Number(mainPartId))
           this.$store.commit('setState', {
-            mainPartId,
-          });
+            mainPartId
+          })
 
           setTimeout(() => {
             if (this.mark) {
-              this.printUserMark();
+              this.printUserMark()
               setTimeout(() => {
-                this.my3d.setRotationState(true);
+                this.my3d.setRotationState(true)
               }, 200)
             }
-          }, 1000);
+          }, 1000)
         }
 
         this.getPrice()
@@ -503,17 +503,17 @@ export default {
     /**
      * 检查是否从固定款切换而来
      */
-    checkFromComboDesign() {
+    checkFromComboDesign () {
       return new Promise((resolve, reject) => {
         if (this.isCombo) {
           this.$dialog.confirm({
             title: '提示',
-            message: '是否以当前设计款式覆盖固定款式方案？',
+            message: '是否以当前设计款式覆盖固定款式方案？'
           })
             .then(() => {
               this.init3D()
               resolve()
-            }).catch(reject);
+            }).catch(reject)
         }
         resolve()
       })
@@ -522,44 +522,44 @@ export default {
     /**
      * 试戴 todo
      */
-    tryOn() {
-      const { webModelPics } = this.$store.state.design;
+    tryOn () {
+      const { webModelPics } = this.$store.state.design
       if (webModelPics && webModelPics.length) {
-        this.hasModeltryOn();
+        this.hasModeltryOn()
       } else {
         this.$store.dispatch('loadModelPicList').then(() => {
-          this.hasModeltryOn();
+          this.hasModeltryOn()
         })
       }
     },
 
-    hasModeltryOn() {
-      const { webModelPics, userNo } = this.$store.state.design;
-      const state = this.my3d.getTryOnState();
+    hasModeltryOn () {
+      const { webModelPics, userNo } = this.$store.state.design
+      const state = this.my3d.getTryOnState()
       if (state === 0) {
-        this.my3d.onWindowResize(0);
-        const nowWebModelPic = webModelPics[0];
-        nowWebModelPic.imgUrl = 'https://design.bavlo.com/WebModelPics/' + userNo + '/' + nowWebModelPic.name;
-        this.my3d.setModelTryonMode(true, nowWebModelPic);
+        this.my3d.onWindowResize(0)
+        const nowWebModelPic = webModelPics[0]
+        nowWebModelPic.imgUrl = 'https://design.bavlo.com/WebModelPics/' + userNo + '/' + nowWebModelPic.name
+        this.my3d.setModelTryonMode(true, nowWebModelPic)
       } else {
-        this.my3d.setModelTryonMode(false, null);
-        this.my3d.onWindowResize(2);
+        this.my3d.setModelTryonMode(false, null)
+        this.my3d.onWindowResize(2)
       }
-    },
+    }
   },
 
   filters: {
-    formatIndex(num) {
-      num = num + 1;
-      return num < 10 ? '0' + num : num;
+    formatIndex (num) {
+      num = num + 1
+      return num < 10 ? '0' + num : num
     },
-    formatCost(num) {
-      if (typeof num === 'number' && !isNaN(num) ) {
+    formatCost (num) {
+      if (typeof num === 'number' && !isNaN(num)) {
         return num.toString() + '.00'
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

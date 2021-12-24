@@ -50,24 +50,24 @@ export function jsLoader (url) {
 }
 
 export const getUrlParam = (name) => {
-  let reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`);
-  let r = window.location.search.substr(1).match(reg);
-  if (r != null) return unescape(r[2]);
-  return null;
+  const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`)
+  const r = window.location.search.substr(1).match(reg)
+  if (r != null) return unescape(r[2])
+  return null
 }
 
-export function urlParse(URL) {
-  let url = URL || window.location.search;
-  let obj = {};
-  let reg = /[?&][^?&]+=[^?&]+/g;
-  let arr = url.match(reg);
+export function urlParse (URL) {
+  const url = URL || window.location.search
+  const obj = {}
+  const reg = /[?&][^?&]+=[^?&]+/g
+  const arr = url.match(reg)
   if (arr) {
     arr.forEach((item) => {
-      let tempArr = item.substring(1).split('=');
-      let key = decodeURIComponent(tempArr[0]);
-      let val = decodeURIComponent(tempArr[1]);
-      obj[key] = val;
-    });
+      const tempArr = item.substring(1).split('=')
+      const key = decodeURIComponent(tempArr[0])
+      const val = decodeURIComponent(tempArr[1])
+      obj[key] = val
+    })
   }
-  return obj;
+  return obj
 };

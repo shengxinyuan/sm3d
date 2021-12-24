@@ -48,15 +48,15 @@ export default {
   name: 'diamondItem',
   props: ['info'],
   components: {},
-  data() {
+  data () {
     return {
       loading: false,
-      finished: false,
-    };
+      finished: false
+    }
   },
   computed: {},
   methods: {
-    detail(id) {
+    detail (id) {
       let backUrl = getUrlParam('backUrl') || ''
       let source = getUrlParam('source') || ''
       if (backUrl) {
@@ -65,11 +65,11 @@ export default {
       if (source) {
         source = `&source=${source}`
       }
-      
+
       this.$router.push(`/diamondDetail?id=${id}${backUrl}${source}`)
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

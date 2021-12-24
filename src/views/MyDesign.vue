@@ -121,8 +121,8 @@ export default {
     deleteDesign () {
       this.$dialog
         .confirm({
-          title: "提示",
-          message: "请确认是否要删除当前设计",
+          title: '提示',
+          message: '请确认是否要删除当前设计'
         })
         .then(() => {
           this.$post({
@@ -140,7 +140,7 @@ export default {
           }).catch(() => {
             this.$toast.fail('删除失败')
           })
-        });
+        })
     },
     jumpDesign () {
       location.href = `/design.html?bn=${this.currtBn}`
@@ -148,21 +148,21 @@ export default {
     share () {
       if (window.parent.uni && window.parent.uni.share) {
         window.parent.uni.share({
-          provider: "weixin",
-          scene: "WXSceneSession",
+          provider: 'weixin',
+          scene: 'WXSceneSession',
           type: 0,
           href: `http://zuanshi.dis.wanheweb.com/smsj/index.html#/pages/index/threedesign?url=share&bn=${this.currtBn}`,
           title: '奢美珠宝',
           summary: '我在奢美珠宝设计了我的专属钻戒，快来看看吧！',
           imageUrl: 'http://zuanshi.nxm.wanheweb.com/uploads/designImage/20211019/design_223313_5661.png',
-          success: function(res) {
-            // console.log(res) 
+          success: function (res) {
+            // console.log(res)
           },
-          fail: function(err) {
+          fail: function (err) {
             // console.log(err)
             // that.com.msg('失败')
           }
-        });
+        })
       }
     },
     jumpOrderConfirm () {
@@ -331,7 +331,7 @@ export default {
       width: 30%;
     }
   }
-  
+
 }
 
 </style>

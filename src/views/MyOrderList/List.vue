@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Item from './components/Item.vue';
+import Item from './components/Item.vue'
 
 export default {
   components: {
@@ -29,11 +29,11 @@ export default {
   },
   created () {
     if (this.$route.query.hasOwnProperty('token')) {
-      localStorage.setItem('token', this.$route.query.token);
+      localStorage.setItem('token', this.$route.query.token)
     };
   },
   methods: {
-    getList() {
+    getList () {
       this.$get({
         url: '/api/3d/order/list',
         data: {
@@ -41,14 +41,14 @@ export default {
         }
       }).then((res) => {
         if (res.status === 1) {
-          const data = res.data;
-          this.list = this.page === 1 ? data.data : [...this.list, ...data.data];
+          const data = res.data
+          this.list = this.page === 1 ? data.data : [...this.list, ...data.data]
           this.page = data.current_page + 1
-          this.finished = data.last_page === data.current_page || data.last_page === 0;
+          this.finished = data.last_page === data.current_page || data.last_page === 0
           this.loading = false
         }
       })
-    },
+    }
   }
 }
 </script>

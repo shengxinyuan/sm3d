@@ -16,5 +16,5 @@ module.exports = {
     //   landscapeUnit: "vw",
     //   landscapeWidth: 568,
     // },
-  },
-};
+  }
+}

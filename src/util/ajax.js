@@ -5,14 +5,14 @@ import { stringify } from 'qs'
 const host = location.host.includes('zuanshi.dis.wanheweb.com') ? 'http://zuanshi.dis.wanheweb.com/' : 'http://zuanshi.nxm.wanheweb.com/'
 // const host = 'https://yapi.kyy1996.com/mock/29';
 
-axios.defaults.baseURL = host;
+axios.defaults.baseURL = host
 
 const getRequest = method => {
   return ({ url, data, options = {}, isForm = true }) => {
-    let tokenHeader = {}
+    const tokenHeader = {}
 
     if (localStorage.getItem('token') && !url.includes('jcd.bavlo.com')) {
-      tokenHeader.token = localStorage.getItem('token');
+      tokenHeader.token = localStorage.getItem('token')
     }
     return axios({
       url,

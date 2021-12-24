@@ -46,37 +46,37 @@
         ></div
       ><div class="tr flex align-center justify-around"
         ><span
-         
+
           class="td"
           style="color: rgb(193, 177, 138)"
           ><span>{{ info.size }}</span></span
         ><span
-         
+
           class="td"
           style="color: rgb(193, 177, 138)"
           ><span>{{ info.color }}</span></span
         ><span
-         
+
           class="td"
           style="color: rgb(193, 177, 138)"
           ><span>{{ info.clarity }}</span></span
         ><span
-         
+
           class="td"
           style="color: rgb(193, 177, 138)"
           ><span>{{ info.cut }}</span></span
         ><span
-         
+
           class="td"
           style="color: rgb(193, 177, 138)"
           ><span>{{info.symmetry}}</span></span
         ><span
-         
+
           class="td"
           style="color: rgb(193, 177, 138)"
           ><span>{{info.polish}}</span></span
         ><span
-         
+
           class="td"
           style="color: rgb(193, 177, 138)"
           ><span>{{info.flr_intensity}}</span></span
@@ -90,40 +90,40 @@
       <div class="cost">售价 ¥ {{info.price}}</div>
       <div class="buy-btn" @click="confirm">选定钻石</div>
     </div>
-    
+
   </div>
 </template>
 
 <script>
-import copy from 'copy-to-clipboard';
+import copy from 'copy-to-clipboard'
 import { urlParse } from '../../util/index'
 
 export default {
   components: {},
-  data() {
+  data () {
     return {
-      info: {},
-    };
+      info: {}
+    }
   },
   computed: {},
-  created() {
+  created () {
     this.$get({
       url: '/api/3d/get_diamond',
       data: {
-        id: this.$route.query.id,
-      },
+        id: this.$route.query.id
+      }
     }).then((res) => {
-      this.info = res.data;
-    });
+      this.info = res.data
+    })
   },
   methods: {
-    goGIA(gia) {
-      const txt = gia.replace('GIA','')
-      copy(txt);
-      location.href='https://www.gia.edu/CN/report-check-landing?ivk_sa=1024320u'
+    goGIA (gia) {
+      const txt = gia.replace('GIA', '')
+      copy(txt)
+      location.href = 'https://www.gia.edu/CN/report-check-landing?ivk_sa=1024320u'
       // <a href="https://www.gia.edu/CN/report-check-landing?ivk_sa=1024320u" target="_blank">
     },
-    confirm() {
+    confirm () {
       if (this.$route.query.source === 'buy') {
         this.$router.push(`/orderConfirm?diamond_id=${this.$route.query.id}&good_type=4`)
       } else {
@@ -131,15 +131,15 @@ export default {
         const queryObj = urlParse(backUrl)
         queryObj.diamondId = this.$route.query.id
         let url = ''
-        for(let key in queryObj) {
+        for (const key in queryObj) {
           url += key + '=' + queryObj[key] + '&'
         }
-        url = url.slice(0,url.length-1)
+        url = url.slice(0, url.length - 1)
         location.href = `/design.html?${url}`
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

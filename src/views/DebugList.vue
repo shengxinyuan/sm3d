@@ -7,14 +7,14 @@
 </template>
 
 <script>
-  import {routes} from '../router/index'
-  export default {
-    data() {
-      return {
-        routes: routes
-      }
+import { routes } from '../router/index'
+export default {
+  data () {
+    return {
+      routes: routes
     }
   }
+}
 </script>
 
 <style lang="scss">

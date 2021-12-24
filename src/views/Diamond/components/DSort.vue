@@ -16,33 +16,32 @@ export default {
   components: {
   },
   props: ['list'],
-  data() {
+  data () {
     return {
-      on: '',
-    };
+      on: ''
+    }
   },
   methods: {
-    changeStatus(value) {
-      this.on = value;
+    changeStatus (value) {
+      this.on = value
       const list = []
       this.list.forEach((item) => {
         let status = ''
         if (item.value === value) {
           status = item.status === '' ? 'asc' : item.status === 'asc' ? 'desc' : 'asc'
-          
         } else {
           status = ''
         }
         list.push({
           name: item.name,
           value: item.value,
-          status,
+          status
         })
       })
       this.$emit('changeList', list, value)
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang="scss" scoped>

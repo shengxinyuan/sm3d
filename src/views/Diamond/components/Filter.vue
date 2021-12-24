@@ -1,6 +1,6 @@
 <template>
   <div class="diamond-filter" @scroll.stop>
-    
+
     <van-nav-bar
       title="条件筛选"
       left-text=""
@@ -59,45 +59,44 @@
 
 <script>
 const diamondSize = []
-for (let i = 0.3; i < 20.1; i= i + .1) {
+for (let i = 0.3; i < 20.1; i = i + 0.1) {
   diamondSize.push(i.toFixed(1))
-} 
-
+}
 
 export default {
   components: {
   },
   props: ['option_list', 'size'],
-  data() {
+  data () {
     return {
       list: [],
       showPicker: false,
       minsize: 0,
-      maxsize: 0,
-    };
+      maxsize: 0
+    }
   },
   computed: {
-    columns() {
+    columns () {
       return [
         {
           values: diamondSize,
-          defaultIndex: 0,
+          defaultIndex: 0
         },
         {
           values: diamondSize.filter(v => +v > this.minsize),
-          defaultIndex: 7,
-        },
+          defaultIndex: 7
+        }
       ]
     }
   },
-  created() {
+  created () {
     this.list = this.option_list
     this.minsize = this.size.minsize
     this.maxsize = this.size.maxsize
   },
   methods: {
-    reset() {
-      for (let v in this.size) {
+    reset () {
+      for (const v in this.size) {
         this[v] = this.size[v]
       }
 
@@ -106,33 +105,33 @@ export default {
         value: ''
       }))
     },
-    goback() {
+    goback () {
       this.$emit('close')
     },
-    selected() {
-      this.$emit('selected', this.list, {minsize: this.minsize, maxsize:this.maxsize})
+    selected () {
+      this.$emit('selected', this.list, { minsize: this.minsize, maxsize: this.maxsize })
     },
-    onChange(_, val) {
+    onChange (_, val) {
       const [minsize, maxsize] = val
       this.minsize = minsize
       this.maxsize = maxsize
     },
-    onConfirm(val) {
+    onConfirm (val) {
       const [minsize, maxsize] = val
       this.minsize = minsize
       this.maxsize = maxsize
       this.showPicker = false
     },
-    selectItem(name, value) {
+    selectItem (name, value) {
       this.list.forEach(val => {
         if (val.name === name) {
           val.value = value
         }
-      });
+      })
       this.list = [...this.list]
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang="scss" scoped>

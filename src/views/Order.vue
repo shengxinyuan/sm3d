@@ -5,7 +5,7 @@
       <div class="design-img" :style="{ backgroundImage: 'url(' + preview_image +'',}"></div>
       <p class="order-tip">3D定制效果仅供参考，商品以实物为准</p>
     </div>
-    
+
     <div class="order-name" @click="toggleShow" v-if="title">
       <span style="line-height: 24px;">设计名称：</span>
       <span class="order-title">{{title}}</span>
@@ -188,7 +188,7 @@ export default {
           if (item.id === data.texture_id) {
             this.ksInfo.cz = item.nameCn
           }
-        });
+        })
 
         this.$get({
           url: '/api/3d/order/compute_price',
@@ -199,7 +199,7 @@ export default {
 
             ring_arm_id: this.isCombo ? 0 : data.ring_arm_id,
             flower_head_id: this.isCombo ? 0 : data.flower_head_id,
-            combo_id: this.isCombo ? data.combo_id : 0,
+            combo_id: this.isCombo ? data.combo_id : 0
           }
         }).then((res) => {
           if (res.status === 1) {
@@ -208,7 +208,6 @@ export default {
             this.$toast.fail(res.message || '获取数据失败，请稍后重试')
           }
         })
-
       }).catch(() => {
         this.$toast.fail('获取数据失败，请稍后重试')
       })
@@ -255,7 +254,7 @@ export default {
 
           ring_arm_id: this.isCombo ? 0 : this.ksInfo.jb,
           flower_head_id: this.isCombo ? 0 : this.ksInfo.ht,
-          combo_id: this.isCombo ? this.comboId : 0,
+          combo_id: this.isCombo ? this.comboId : 0
         }
       }).then((res) => {
         this.$toast.fail('保存成功')
@@ -268,12 +267,12 @@ export default {
     }
   },
   filters: {
-    formatCost(num) {
-      if (typeof num === 'number' && !isNaN(num) ) {
+    formatCost (num) {
+      if (typeof num === 'number' && !isNaN(num)) {
         return num.toString() + '.00'
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

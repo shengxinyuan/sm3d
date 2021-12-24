@@ -27,12 +27,12 @@
         <div>
           <div class="design-img" :style="{ backgroundImage: 'url(' + preview_image +'',}"></div>
         </div>
-        
+
         <div class="order-cell" v-for="(item, index) in infoList" :key="index">
           <span class="order-cell__label">{{ item.label }}</span>
           <span class="order-cell__value">{{ item.value }}</span>
         </div>
-        
+
         <!-- <div class="order-cell">
           <span class="order-cell__label">辅石：</span>
           <span class="order-cell__value">{{ksInfo.fs}}</span>
@@ -100,7 +100,7 @@ export default {
         cost: 0,
         deposit: 0,
         total_amount: 0,
-        total_vip: 0,
+        total_vip: 0
       }
     }
   },
@@ -115,7 +115,7 @@ export default {
         this.getOrder({ diamond_id: this.diamond_id, good_type: 4 })
       }
     },
-    getOrder(params) {
+    getOrder (params) {
       this.$get({
         url: '/api/3d/order',
         data: params
@@ -179,7 +179,7 @@ export default {
           }, {
             label: 'GIA：',
             value: data.design_info.diamond_info.cert_num
-          },  {
+          }, {
             label: '大小：',
             value: data.design_info.diamond_info.size
           }, {
@@ -202,16 +202,15 @@ export default {
             value: data.design_info.diamond_info.flr_intensity
           }]
 
-          this.paymentTxt = `定金：${this.ddInfo.deposit}元 + 尾款：${this.userInfo.is_vip ? this.ddInfo.total_vip  - this.ddInfo.deposit : this.ddInfo.total_amount - this.ddInfo.deposit}元`
+          this.paymentTxt = `定金：${this.ddInfo.deposit}元 + 尾款：${this.userInfo.is_vip ? this.ddInfo.total_vip - this.ddInfo.deposit : this.ddInfo.total_amount - this.ddInfo.deposit}元`
         }
-        
       }).catch((err) => {
-        console.log(err);
+        console.log(err)
         this.$toast.fail('获取数据失败')
       })
     },
     buy () {
-      console.log(this.good_type, this.diamond_id);
+      console.log(this.good_type, this.diamond_id)
       if (this.$store.state.orderConfirm.currtAddress.id) {
         this.$post({
           url: '/api/3d/order',
@@ -227,7 +226,7 @@ export default {
             coupon_id: 0,
             comment: this.comment,
             address_id: this.$store.state.orderConfirm.currtAddress.id,
-            vip: 0,
+            vip: 0
           }
         }).then((res) => {
           if (res.status == 1) {
@@ -238,7 +237,7 @@ export default {
                 menber_price: this.userInfo.balance ? +this.userInfo.balance : 0,
                 shop_price: this.ddInfo.deposit ? +this.ddInfo.deposit : 0
               }
-              console.log(res.data,`../my/payments?data=${this.good_type == 4 ? res.data.bn : res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`);
+              console.log(res.data, `../my/payments?data=${this.good_type == 4 ? res.data.bn : res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`)
               // 定金支付使用定金bn design_bn_id
               window.uni.navigateTo({
                 url: `../my/payments?data=${this.good_type == 4 ? res.data.bn : res.data.deposit_bn_id}&shop=${JSON.stringify(payment_data)}&source=3d`

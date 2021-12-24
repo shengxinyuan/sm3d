@@ -6,7 +6,6 @@ export function getTextureCname (texture_id) {
     if (item.id === texture_id) {
       name = item.nameCn
     }
-  });
+  })
   return name
 }
-

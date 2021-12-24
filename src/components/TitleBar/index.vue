@@ -13,28 +13,28 @@
 </template>
 
 <script>
-  export default {
-		name: 'TitleBar',
-    props: {
-      title: {
-        type: String,
-        default: ''
-      },
-			type: {
-				type: Number,
-				default: 1 // 1默认返回 2uni返回
-			}
+export default {
+  name: 'TitleBar',
+  props: {
+    title: {
+      type: String,
+      default: ''
     },
-    methods: {
-      onClickLeft () {
-				if (this.type === 1) {
+    type: {
+      type: Number,
+      default: 1 // 1默认返回 2uni返回
+    }
+  },
+  methods: {
+    onClickLeft () {
+      if (this.type === 1) {
         	window.history.go(-1)
-				} else if (window.uni.reLaunch) {
-					window.uni.navigateBack();
-				}
+      } else if (window.uni.reLaunch) {
+        window.uni.navigateBack()
       }
-    },
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>

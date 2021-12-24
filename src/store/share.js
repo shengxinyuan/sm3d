@@ -29,27 +29,27 @@ export default {
     gemWebDefault: [],
     materialWeb: [],
     materialWebDefault: [],
-    webModelPics: [],
-    
+    webModelPics: []
+
   },
   mutations: {
-    setState(state, payload) {
-      for (let key in payload) {
+    setState (state, payload) {
+      for (const key in payload) {
         state[key] = payload[key]
       }
-    },
+    }
   },
   actions: {
     /**
      * 1 加载账号信息
      * @param userId
      */
-    share_loadUserInfo({ commit, state }) {
+    share_loadUserInfo ({ commit, state }) {
       return post({
         url: apiUrl + 'app/userInfo',
         data: {
           id: state.userNo
-        },
+        }
       }).then((data) => {
         if (data.code === 0) {
           const userInfo = data.user
@@ -61,19 +61,19 @@ export default {
     /**
      * 2 获取金属材质列表（用于切换材质）
      */
-     share_loadMetalList({ commit, state }) {
+    share_loadMetalList ({ commit, state }) {
       let metals = []
       return post({
         url: apiUrl + 'app/findUserMetalByUser',
         data: {
           userId: state.userNo
-        },
+        }
       }).then((data) => {
         if (data.code === 0) {
           if (data.list.length > 0) {
             let metalId = ''
             metals = data.list.map(item => {
-              console.log(item.metal);
+              console.log(item.metal)
               if (item.metal && item.metal.nameCn && item.metal.nameCn === '铂金') {
                 metalId = item.metal.id
               }
@@ -84,11 +84,11 @@ export default {
 
             commit('setState', {
               metals,
-              metalId,
+              metalId
             })
           } else {
             post({
-              url: apiUrl + 'app/desMetalList',
+              url: apiUrl + 'app/desMetalList'
             }).then((data) => {
               if (data.code === 0) {
                 let metalId = ''
@@ -97,7 +97,7 @@ export default {
                   if (item && item.nameCn && item.nameCn === '铂金') {
                     metalId = item.id
                   }
-                });
+                })
 
                 metalId = metalId || metals[0].id
 
@@ -118,7 +118,7 @@ export default {
     /**
      * 3 加载款式信息
      */
-     share_loadDesignInfo({ commit, state }) {
+    share_loadDesignInfo ({ commit, state }) {
       return post({
         url: apiUrl + 'app/getVariableDesignLayerInfo',
         data: {
@@ -142,7 +142,6 @@ export default {
             partId,
             parts
           })
-
         } else {
           console.log('数据加载失败！')
         }
@@ -152,7 +151,7 @@ export default {
     /**
      * 4 获取宝石材质列表（用于切换材质）
      */
-     share_loadGemList({ commit, state }) {
+    share_loadGemList ({ commit, state }) {
       return post({
         url: apiUrl + 'app/findUserGemByUser',
         data: {
@@ -166,7 +165,7 @@ export default {
             commit('setState', { gems })
           } else {
             post({
-              url: apiUrl + 'app/desGemList',
+              url: apiUrl + 'app/desGemList'
             }).then((data) => {
               if (data.code === 0) {
                 gems = data.list
@@ -186,7 +185,7 @@ export default {
      * 6 获取金属web材质参数（用于渲染）
      * @param userId
      */
-     share_loadMetalWeb({ commit, state }) {
+    share_loadMetalWeb ({ commit, state }) {
       post({
         url: apiUrl + 'app/findMetalWebsByUser',
         data: {
@@ -210,7 +209,7 @@ export default {
      * 7 获取宝石web材质列表（用于渲染）
      * @param userId
      */
-     share_loadGemWeb({ commit, state }) {
+    share_loadGemWeb ({ commit, state }) {
       post({
         url: apiUrl + 'app/findGemWebsByUser',
         data: {
@@ -233,7 +232,7 @@ export default {
     /**
      * 11 获取设计信息
      */
-    share_getDesignInfo(_, { design_bn }) {
+    share_getDesignInfo (_, { design_bn }) {
       return get({
         url: 'api/3d/design_detail',
         data: {
@@ -247,30 +246,30 @@ export default {
     /**
      * 13 实时计算价钱
      */
-     share_getDesignPrice(_, {
+    share_getDesignPrice (_, {
       currentHandInch,
       partId,
       mainPartId,
       metalId,
       diamondId
     }) {
-    return get({
-      url: '/api/3d/order/compute_price',
-      data: {
-        diamond_id: diamondId,	
-        texture_id: metalId,
-        ring_size: currentHandInch,
-        ring_arm_id: mainPartId,
-        flower_head_id: partId,
-      }
-    }).then((data) => {
-      if (data.status === 1) {
-        return data.data.price
-      } else {
-        return '-'
-      }
-    })
-  },
+      return get({
+        url: '/api/3d/order/compute_price',
+        data: {
+          diamond_id: diamondId,
+          texture_id: metalId,
+          ring_size: currentHandInch,
+          ring_arm_id: mainPartId,
+          flower_head_id: partId
+        }
+      }).then((data) => {
+        if (data.status === 1) {
+          return data.data.price
+        } else {
+          return '-'
+        }
+      })
+    }
 
   }
 }

@@ -31,9 +31,9 @@
 </template>
 
 <script>
-import DItem from './components/Item.vue';
-import DFilter from './components/Filter.vue';
-import DSort from './components/DSort.vue';
+import DItem from './components/Item.vue'
+import DFilter from './components/Filter.vue'
+import DSort from './components/DSort.vue'
 
 export default {
   components: {
@@ -41,7 +41,7 @@ export default {
     DFilter,
     DSort
   },
-  data() {
+  data () {
     return {
       loading: false,
       finished: false,
@@ -51,10 +51,10 @@ export default {
       option_list: [],
       size: {
         minsize: '0.3',
-        maxsize: '1.0',
+        maxsize: '1.0'
       },
       query: {
-        page: 1,
+        page: 1
       },
       sortList: [
         {
@@ -68,73 +68,73 @@ export default {
           status: ''
         }
       ]
-    };
+    }
   },
   methods: {
-    changeWeight(min, max) {
-      this.size.minsize = min;
-      this.size.maxsize = max;
-      this.query.page = 1;
-      this.query.size_lower = min * 100;
-      this.query.size_upper = max * 100;
+    changeWeight (min, max) {
+      this.size.minsize = min
+      this.size.maxsize = max
+      this.query.page = 1
+      this.query.size_lower = min * 100
+      this.query.size_upper = max * 100
       this.getList()
     },
-    changeList(list, current) {
-      this.sortList = list;
+    changeList (list, current) {
+      this.sortList = list
       list.forEach((item) => {
         if (item.value === current) {
           this.query.order_field = item.value
           this.query.order_dir = item.status
         }
       })
-      this.query.page = 1;
+      this.query.page = 1
       this.getList()
     },
-    filter() {
-      this.filterStatus = true;
+    filter () {
+      this.filterStatus = true
     },
-    close() {
-      this.filterStatus = false;
+    close () {
+      this.filterStatus = false
     },
-    selected(res, size) {
+    selected (res, size) {
       this.size = size
-      this.option_list = res;
-      this.filterStatus = false;
-      const params = {};
+      this.option_list = res
+      this.filterStatus = false
+      const params = {}
       res.forEach(item => {
         if (item.value) {
           params[item.name] = item.value
         }
-      });
+      })
       this.query = {
         page: 1,
         ...params,
         size_lower: size.minsize * 100,
-        size_upper: size.maxsize * 100,
+        size_upper: size.maxsize * 100
       }
       this.getList()
     },
-    getList() {
+    getList () {
       this.$get({
         url: '/api/3d/get_all_diamonds',
         data: this.query
       }).then((res) => {
         if (res.status === 1) {
-          const data = res.data;
-          this.total = data.total;
-          this.list = this.query.page === 1 ? data.data : [...this.list, ...data.data];
-          this.option_list = this.option_list.length ? this.option_list : data.option_list;
-          this.finished = data.last_page === data.current_page || data.last_page === 0;
+          const data = res.data
+          this.total = data.total
+          this.list = this.query.page === 1 ? data.data : [...this.list, ...data.data]
+          this.option_list = this.option_list.length ? this.option_list : data.option_list
+          this.finished = data.last_page === data.current_page || data.last_page === 0
           this.loading = false
           this.query.page = data.current_page + 1
         }
       })
     },
-    onLoad() {
+    onLoad () {
       this.getList()
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

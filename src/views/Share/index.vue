@@ -36,21 +36,21 @@
         <div class="tip" >下载奢美饰界APP，设计你的钻戒！</div>
       </div>
     </section>
-    
+
   </div>
 </template>
 
 <script>
-import designMixin from '../../mixins/design';
+import designMixin from '../../mixins/design'
 
 export default {
   mixins: [designMixin],
   props: [],
-  data() {
-    return {};
+  data () {
+    return {}
   },
-  computed: {},
-};
+  computed: {}
+}
 </script>
 
 <style lang="scss" scoped>
