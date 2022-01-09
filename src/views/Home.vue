@@ -1,11 +1,13 @@
 <template>
   <div class="home">
     <title-bar title="3D设计" :type="2"/>
-    <img class="bg" src="https://img.alicdn.com/imgextra/i2/O1CN01dJSghE1EbxeleU7et_!!6000000000371-0-tps-1181-1505.jpg" alt="">
-    <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN01wpcP3V1LHzhiI3sFa_!!6000000001275-0-tps-1181-299.jpg" alt="" @click="goDesign">
-    <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN010zvOy524FO9yVUlmn_!!6000000007361-0-tps-1181-311.jpg" alt="" @click="goMyDesign">
-    <img class="bg" src="https://img.alicdn.com/imgextra/i1/O1CN01JbD8qj1hSSITIqtJz_!!6000000004276-0-tps-1181-311.jpg" alt="" @click="buyDiamond">
-    <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN01RKzJpt1DNTW8q5Y8f_!!6000000000204-0-tps-1181-1319.jpg" alt="">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i2/O1CN01KMx9cb1vgZ8Gflxzv_!!6000000006202-2-tps-999-1193.png" alt="">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN01FbZgwa1xnYPRlUKhw_!!6000000006488-2-tps-1000-338.png" alt="" @click="goDesign">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i3/O1CN018gICFk1ZCPViWnrFP_!!6000000003158-2-tps-996-290.png" alt="" @click="goComboDesign">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i2/O1CN01S2fbJU1dJW7DvsG1d_!!6000000003715-2-tps-1000-293.png" alt="" @click="buyDiamond">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN01vVqZ5G1PxS23KBnCP_!!6000000001907-2-tps-1000-305.png" alt="" @click="buyGem">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i3/O1CN01IkCgIR1ZdQsISkeBn_!!6000000003217-2-tps-1000-323.png" alt="" @click="goMyDesign">
+    <img class="bg" src="https://img.alicdn.com/imgextra/i1/O1CN01TQNS171LbgkIvc8Xa_!!6000000001318-2-tps-1000-264.png" alt="">
   </div>
 </template>
 
@@ -30,10 +32,18 @@ export default {
       if (this.num < 10) return
       location.href = '/design.html'
     },
+    goComboDesign () {
+      this.check()
+      if (this.num < 10) return
+      location.href = '/design.html?isCombo=1'
+    },
     goMyDesign () {
       this.check()
       if (this.num < 10) return
       this.$router.push('/mydesign')
+    },
+    buyGem () {
+      this.check()
     },
     buyDiamond () {
       this.check()
