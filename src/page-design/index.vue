@@ -14,6 +14,7 @@
           <van-icon name="arrow-left" />返回
         </div>
         <a
+          v-if="!isCombo"
           :class="designTab === 1 ? 'active' : ''"
           @click="
             () => {
@@ -24,6 +25,7 @@
           >花头款式</a
         >
         <a
+          v-if="!isCombo"
           :class="designTab === 2 ? 'active' : ''"
           class=""
           @click="
@@ -35,12 +37,6 @@
           >戒托款式</a
         >
         <a
-          :class="designTab === 3 ? 'active' : ''"
-          class=""
-          @click="() => (designTab = 3)"
-          >戒托材质</a
-        >
-        <a
           :class="designTab === 4 ? 'active' : ''"
           @click="
             () => {
@@ -48,7 +44,14 @@
               edit3dPartType = 4;
             }
           "
+          v-if="isCombo"
           >固定款式</a
+        >
+        <a
+          :class="designTab === 3 ? 'active' : ''"
+          class=""
+          @click="() => (designTab = 3)"
+          >戒托材质</a
         >
       </div>
       <div class="design-tabs-cont">
@@ -230,7 +233,7 @@
 
     <section class="page-footer" v-else>
       <div class="btns-group">
-        <a class="option" @click="() => (footerTabId = 'design')">
+        <a class="option" @click="openDesign">
           <i class="icon-design"></i>
           <span class="txt">设计</span>
         </a>
@@ -390,6 +393,12 @@ export default {
       url = url.slice(0, url.length - 1)
 
       location.href = `/diamondList/?backUrl=${encodeURIComponent(url)}`
+    },
+
+    // 打开设计
+    openDesign () {
+      this.footerTabId = 'design'
+      this.designTab = this.isCombo ? 4 : 1
     },
 
     // 打开刻印

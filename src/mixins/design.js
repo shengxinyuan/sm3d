@@ -83,13 +83,14 @@ export default {
         this.getDiamond(diamondId)
         this.mark = mark || ''
         this.isCombo = !!Number(isCombo)
+        const { comboList } = this.$store.state.design
         this.setRenderParams({
           partId,
           mainPartId,
           metalId,
           mark,
           currentHandInch,
-          comboId: comboId
+          comboId: comboId || comboList[0].id
         })
       }
     })
