@@ -28,26 +28,27 @@ export default {
   },
   methods: {
     goDesign () {
-      this.check()
-      if (this.num < 10) return
+      // this.check()
+      // if (this.num < 10) return
       location.href = '/design.html'
     },
     goComboDesign () {
-      this.check()
-      if (this.num < 10) return
+      // this.check()
+      // if (this.num < 10) return
       location.href = '/design.html?isCombo=1'
     },
     goMyDesign () {
-      this.check()
-      if (this.num < 10) return
+      // this.check()
+      // if (this.num < 10) return
       this.$router.push('/mydesign')
     },
     buyGem () {
-      this.check()
+      // this.check()
+      this.$toast.success('暂未开放功能，敬请期待！')
     },
     buyDiamond () {
-      this.check()
-      if (this.num < 10) return
+      // this.check()
+      // if (this.num < 10) return
       this.$router.push('/diamondList?source=buy')
     },
     check () {
