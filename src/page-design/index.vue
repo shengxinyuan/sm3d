@@ -360,7 +360,7 @@ export default {
           isCombo: this.isCombo
         })
         .then(({ data }) => {
-          location.href = `/order/?bn=${data}`
+          location.href = `/#/order/?bn=${data}`
         })
         .catch(({ message }) => {
           console.log(message)
@@ -392,7 +392,7 @@ export default {
       }
       url = url.slice(0, url.length - 1)
 
-      location.href = `/diamondList/?backUrl=${encodeURIComponent(url)}`
+      location.href = `/#/diamondList/?backUrl=${encodeURIComponent(url)}`
     },
 
     // 打开设计
