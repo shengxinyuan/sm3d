@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <div class="env-tip" v-if="envTxt">{{ envTxt }}</div>
     <title-bar title="3D设计" :type="2"/>
     <img class="bg" src="https://img.alicdn.com/imgextra/i2/O1CN01KMx9cb1vgZ8Gflxzv_!!6000000006202-2-tps-999-1193.png" alt="">
     <img class="bg" src="https://img.alicdn.com/imgextra/i4/O1CN01FbZgwa1xnYPRlUKhw_!!6000000006488-2-tps-1000-338.png" alt="" @click="goDesign">
@@ -18,12 +19,16 @@ export default {
   components: {},
   data () {
     return {
-      num: 0
+      num: 0,
+      envTxt: ''
     }
   },
   created () {
     if (this.$route.query.hasOwnProperty('token')) {
       localStorage.setItem('token', this.$route.query.token)
+    }
+    if (location.host !== '3d-zuanshi.semoh.cn') {
+      this.envTxt = `测试环境 域名：${location.host}`
     }
   },
   methods: {
@@ -68,6 +73,14 @@ export default {
     width: 100%;
     padding: 0;
     margin: 0;
+  }
+  .env-tip {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    color: red;
+    background: #fff;
+    padding: 0 10px;
   }
 }
 </style>

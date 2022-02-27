@@ -13,7 +13,7 @@ module.exports = {
     },
     proxy: {
       '/api': {
-        target: 'http://zhuanshi.nxm.wanheweb.com/',
+        target: 'http://test-zuanshi.semoh.cn/',
         changeOrigin: true // 如果接口跨域，需要进行这个参数配置
         // pathRewrite: { "^/dev-api": "" }
       }

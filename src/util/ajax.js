@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { stringify } from 'qs'
 
-const host = location.host.includes('test-3d-zuanshi.semoh.cn') ? 'http://test-zuanshi.semoh.cn/' : 'http://zuanshi.semoh.cn/'
+const host = location.host === '3d-zuanshi.semoh.cn' ? 'http://zuanshi.semoh.cn/' : 'http://test-zuanshi.semoh.cn/'
 // const host = 'https://yapi.kyy1996.com/mock/29';
 
 axios.defaults.baseURL = host
